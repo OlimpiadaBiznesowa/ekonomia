@@ -848,6 +848,32 @@ footer { padding:35px 0 45px; color:#858b85; font-size:12px; border-top:1px soli
   .learn-result-grid { grid-template-columns:1fr; }
   .learn-result-grid > div,.learn-result-grid > div:first-child { border-left:0; border-top:1px solid var(--line); }
   .learn-result-grid > div:first-child { border-top:0; }
+  .flashcard,.flashcard-inner {
+    width:100%;
+    height:clamp(340px,62dvh,520px);
+    min-height:340px;
+  }
+  .flashcard .card-face {
+    box-sizing:border-box;
+    align-items:flex-start;
+    max-height:100%;
+    padding:66px 20px 56px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overflow-wrap:anywhere;
+    word-break:break-word;
+    hyphens:auto;
+    overscroll-behavior-y:contain;
+    touch-action:pan-y;
+    -webkit-overflow-scrolling:touch;
+  }
+  .flashcard .card-front { font-size:clamp(24px,7vw,33px); line-height:1.18; }
+  .flashcard .card-back { font-size:clamp(16px,4.6vw,18px); line-height:1.52; }
+  .focus-mode .flashcard,.focus-mode .flashcard-inner {
+    height:calc(100dvh - 105px);
+    min-height:0;
+    max-height:calc(100dvh - 105px);
+  }
 }
 
 /* Tryb ciemny */

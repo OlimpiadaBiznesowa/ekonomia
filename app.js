@@ -1585,10 +1585,12 @@ function resolveLearnAnswer({ correct, sourceElement, skipped = false }) {
     session.correct += 1;
     session.streak += 1;
     session.bestStreak = Math.max(session.bestStreak, session.streak);
+    let rewardBase = 0;
+    let rewardLabel = 'poprawna odpowiedź w trybie Ucz się';
     const rewardKey = `${item.card.id}:${stage}`;
     if (!session.rewardedStages.has(rewardKey)) {
       session.rewardedStages.add(rewardKey);
-      session.points += awardPoints(5, 'poprawna odpowiedź w trybie Ucz się', sourceElement);
+      rewardBase += 5;
     }
     if (stage === 'choice') {
       item.stage = 'written';
@@ -1599,11 +1601,14 @@ function resolveLearnAnswer({ correct, sourceElement, skipped = false }) {
       if (!progress.mastered.includes(item.card.id)) progress.mastered.push(item.card.id);
       if (!progress.awardedFlashcards.includes(item.card.id)) {
         progress.awardedFlashcards.push(item.card.id);
-        session.points += awardPoints(5, 'opanowanie nowego zagadnienia', $('#learnCard'));
-      } else {
-        saveProgress();
+        rewardBase += 5;
+        rewardLabel = rewardBase > 5
+          ? 'poprawna odpowiedź i opanowanie zagadnienia'
+          : 'opanowanie nowego zagadnienia';
       }
     }
+    if (rewardBase) session.points += awardPoints(rewardBase, rewardLabel, sourceElement || $('#learnCard'));
+    else saveProgress();
   } else {
     session.streak = 0;
     item.mistakes += 1;

@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f3ed" />
     <title>Ekonomia · Mikroekonomia i makroekonomia</title>
+    <script>
+      try {
+        if (localStorage.getItem('ekonomia-theme-v1') === 'dark') document.documentElement.dataset.theme = 'dark';
+      } catch {}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260821-book-map" />
+    <link rel="stylesheet" href="styles.css?v=20260828-learn" />
   </head>
   <body class="home-active">
     <div class="page-shell">
@@ -54,7 +59,6 @@
                 <div class="progress-track rank-track" aria-hidden="true"><i id="rankBar"></i></div>
               </div>
             </div>
-            <button class="reset-button" id="resetProgress">Wyzeruj postęp</button>
           </section>
 
           <section class="home-overview" aria-labelledby="homeOverviewTitle">
@@ -85,6 +89,89 @@
 
         <div class="learning-layout">
           <div class="learning-content">
+
+        <section class="study-panel" id="learn" data-panel="learn">
+          <div class="section-heading compact learn-heading">
+            <div>
+              <p class="eyebrow" id="learnEyebrow">UCZ SIĘ · MIKROEKONOMIA</p>
+              <h2>Ucz się</h2>
+            </div>
+            <div class="heading-actions">
+              <button class="text-button" id="leaveLearnSession" type="button" hidden>Zakończ sesję</button>
+              <button class="focus-toggle" type="button" data-focus="learn" aria-label="Włącz tryb skupienia nauki" title="Tryb skupienia">⛶</button>
+            </div>
+          </div>
+
+          <div class="learn-setup" id="learnSetup">
+            <div class="learn-intro">
+              <span class="learn-intro-mark" aria-hidden="true">↗</span>
+              <div>
+                <h3>Spersonalizowana ścieżka nauki</h3>
+                <p>Zaczniesz od rozpoznawania odpowiedzi, a następnie przejdziesz do samodzielnego wpisywania pojęć. Trudne zagadnienia wrócą automatycznie.</p>
+              </div>
+            </div>
+            <div class="learn-setup-grid">
+              <label class="compact-select">Zakres
+                <select id="learnChapter" aria-label="Wybierz rozdział trybu Ucz się"></select>
+              </label>
+              <label class="compact-select">Cel sesji
+                <select id="learnGoal" aria-label="Wybierz liczbę zagadnień w sesji">
+                  <option value="10" selected>10 zagadnień</option>
+                  <option value="20">20 zagadnień</option>
+                  <option value="30">30 zagadnień</option>
+                  <option value="all">Cały wybrany zakres</option>
+                </select>
+              </label>
+            </div>
+            <div class="learn-path-preview" aria-label="Etapy sesji">
+              <div><span>1</span><strong>Rozpoznaj</strong><small>Wybierz właściwe pojęcie</small></div>
+              <i aria-hidden="true">→</i>
+              <div><span>2</span><strong>Przypomnij</strong><small>Wpisz odpowiedź samodzielnie</small></div>
+              <i aria-hidden="true">→</i>
+              <div><span>3</span><strong>Opanuj</strong><small>Utrwal postęp i zdobądź punkty</small></div>
+            </div>
+            <p class="learn-pool" id="learnPoolCount"></p>
+            <button class="primary-button learn-start" id="startLearn" type="button">Rozpocznij naukę <span>→</span></button>
+          </div>
+
+          <div class="learn-session" id="learnSession" hidden>
+            <div class="learn-session-stats">
+              <div><small>OPANOWANO</small><strong id="learnMasteredStat">0 / 10</strong></div>
+              <div><small>SKUTECZNOŚĆ</small><strong id="learnAccuracyStat">—</strong></div>
+              <div><small>PASSA</small><strong id="learnStreakStat">0</strong></div>
+              <div><small>PUNKTY</small><strong id="learnPointsStat">+0</strong></div>
+            </div>
+            <div class="learn-progress" aria-hidden="true"><i id="learnProgressBar"></i></div>
+            <article class="learn-card" id="learnCard">
+              <div class="learn-question-meta">
+                <span id="learnQuestionType">WYBÓR ODPOWIEDZI</span>
+                <span id="learnQuestionChapter">ROZDZIAŁ 1</span>
+              </div>
+              <p class="learn-question-label" id="learnQuestionLabel">Którego pojęcia dotyczy ta definicja?</p>
+              <h3 id="learnQuestion"></h3>
+              <div class="learn-answer-area" id="learnAnswerArea"></div>
+              <p class="learn-feedback" id="learnFeedback" aria-live="polite"></p>
+              <div class="learn-card-actions">
+                <button class="text-button learn-dont-know" id="learnDontKnow" type="button">Nie wiem</button>
+                <button class="primary-button" id="nextLearnQuestion" type="button" hidden>Dalej <span>→</span></button>
+              </div>
+            </article>
+          </div>
+
+          <article class="learn-result" id="learnResult" hidden>
+            <span class="learn-result-emblem" aria-hidden="true">✓</span>
+            <p class="eyebrow">CEL OSIĄGNIĘTY</p>
+            <h3>Sesja ukończona</h3>
+            <p id="learnResultCopy"></p>
+            <div class="learn-result-grid">
+              <div><small>OPANOWANE</small><strong id="learnResultMastered">0</strong></div>
+              <div><small>SKUTECZNOŚĆ</small><strong id="learnResultAccuracy">0%</strong></div>
+              <div><small>ZDOBYTE PUNKTY</small><strong id="learnResultPoints">+0</strong></div>
+            </div>
+            <button class="primary-button" id="learnAgain" type="button">Ucz się dalej <span>↻</span></button>
+            <button class="text-button" id="learnChangeSettings" type="button">Zmień zakres</button>
+          </article>
+        </section>
 
         <section class="study-panel" id="flashcards" data-panel="flashcards">
           <div class="section-heading study-heading">
@@ -411,6 +498,7 @@
         </section>
 
         <nav class="app-menu-nav" aria-label="Nawigacja strony">
+          <button class="menu-nav-button learn-menu-button" type="button" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></button>
           <button class="menu-nav-button active" type="button" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></button>
           <p class="menu-section-label">NAUKA</p>
           <button class="menu-nav-button" type="button" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></button>
@@ -418,7 +506,6 @@
           <button class="menu-nav-button" type="button" data-menu-mode="concepts"><span>03</span><div><strong>Zagadnienia</strong><small>Słownik pojęć z książki</small></div></button>
           <button class="menu-nav-button" type="button" data-menu-mode="leaderboard"><span>04</span><div><strong>Ranking</strong><small>Punkty i rangi uczniów</small></div></button>
           <button class="menu-nav-button" type="button" data-menu-mode="more"><span>05</span><div><strong>Więcej</strong><small>Test, odpowiedzi, streszczenia i wzory</small></div></button>
-          <button class="menu-nav-button" type="button" data-menu-mode="legal"><span>06</span><div><strong>Źródła i prawa</strong><small>Bibliografia i zasady korzystania</small></div></button>
         </nav>
 
         <div class="app-menu-profile">
@@ -458,7 +545,7 @@
           <p class="eyebrow">JAK ZDOBYWASZ PUNKTY</p>
           <ul>
             <li><span>Opanowanie nowej fiszki</span><strong>+5 pkt</strong></li>
-            <li><span>Poprawna odpowiedź w quizie lub teście</span><strong>+5 pkt</strong></li>
+            <li><span>Poprawna odpowiedź w Ucz się, quizie lub teście</span><strong>+5 pkt</strong></li>
             <li><span>Wynik 80–99% w zestawie</span><strong>+5 pkt</strong></li>
             <li><span>Zestaw bez błędu</span><strong>+10 pkt</strong></li>
             <li><span>15 minut aktywnej nauki</span><strong>+20 pkt</strong></li>
@@ -533,6 +620,20 @@
             <button class="delete-account-button" id="deleteAccountButton" type="button" disabled>Usuń konto na stałe</button>
           </section>
         </div>
+        <section class="account-settings" aria-labelledby="accountSettingsTitle">
+          <div class="account-settings-heading">
+            <p class="eyebrow">PREFERENCJE</p>
+            <h3 id="accountSettingsTitle">Ustawienia</h3>
+          </div>
+          <label class="setting-row" for="darkModeToggle">
+            <span><strong>Tryb ciemny</strong><small>Przyciemnij interfejs i ogranicz jasne tło.</small></span>
+            <span class="toggle-switch"><input id="darkModeToggle" type="checkbox" role="switch" /><i aria-hidden="true"></i></span>
+          </label>
+          <div class="setting-row reset-setting">
+            <span><strong>Wyzeruj postęp</strong><small>Usuń punkty, rangi, opanowane i trudne fiszki oraz historię sesji.</small></span>
+            <button class="settings-reset-button" id="resetProgress" type="button">Wyzeruj</button>
+          </div>
+        </section>
       </section>
 
       <button class="email-confirmation-backdrop" id="emailConfirmationBackdrop" hidden aria-label="Zamknij komunikat"></button>
@@ -565,6 +666,6 @@
     <script src="book-data.js?v=20260821-macro"></script>
     <script src="curriculum-data.js?v=20260821-macro"></script>
     <script src="macro-data.js?v=20260821-book-map"></script>
-    <script src="app.js?v=20260821-book-map"></script>
+    <script src="app.js?v=20260828-learn"></script>
   </body>
 </html>

@@ -9,6 +9,8 @@ const notificationStorageKey = 'mankiw-taylor-notifications-v1';
 const notificationReadStorageKey = 'mankiw-taylor-notifications-read-v1';
 const flashcardDirectionStorageKey = 'mankiw-taylor-flashcard-direction-v1';
 const subjectStorageKey = 'ekonomia-active-subject-v1';
+const themeStorageKey = 'ekonomia-theme-v1';
+const learnKnowledgeStorageKey = 'ekonomia-learn-knowledge-v1';
 
 const siteUpdateNotifications = [
   {
@@ -166,6 +168,7 @@ const blankProgress = () => ({
   awardedFlashcards: [],
   completedQuizzes: 0,
   completedTests: 0,
+  completedLearnSessions: 0,
   studySeconds: 0,
   awardedStudyBlocks: 0,
   boostActivatedOn: '',
@@ -181,6 +184,7 @@ const normalizeProgress = value => {
     awardedFlashcards: Array.isArray(parsed.awardedFlashcards) ? parsed.awardedFlashcards.filter(item => typeof item === 'string') : [],
     completedQuizzes: Number.isFinite(parsed.completedQuizzes) ? Math.max(0, Math.floor(parsed.completedQuizzes)) : 0,
     completedTests: Number.isFinite(parsed.completedTests) ? Math.max(0, Math.floor(parsed.completedTests)) : 0,
+    completedLearnSessions: Number.isFinite(parsed.completedLearnSessions) ? Math.max(0, Math.floor(parsed.completedLearnSessions)) : 0,
     studySeconds: Number.isFinite(parsed.studySeconds) ? Math.max(0, parsed.studySeconds) : 0,
     awardedStudyBlocks: Number.isFinite(parsed.awardedStudyBlocks) ? Math.max(0, Math.floor(parsed.awardedStudyBlocks)) : 0,
     boostActivatedOn: typeof parsed.boostActivatedOn === 'string' ? parsed.boostActivatedOn : '',
@@ -198,6 +202,7 @@ const mergeProgress = (localValue, cloudValue) => {
     awardedFlashcards: [...new Set([...local.awardedFlashcards, ...cloud.awardedFlashcards])],
     completedQuizzes: Math.max(local.completedQuizzes, cloud.completedQuizzes),
     completedTests: Math.max(local.completedTests, cloud.completedTests),
+    completedLearnSessions: Math.max(local.completedLearnSessions, cloud.completedLearnSessions),
     studySeconds: Math.max(local.studySeconds, cloud.studySeconds),
     awardedStudyBlocks: Math.max(local.awardedStudyBlocks, cloud.awardedStudyBlocks),
     boostActivatedOn: local.boostActivatedOn > cloud.boostActivatedOn ? local.boostActivatedOn : cloud.boostActivatedOn,
@@ -231,6 +236,9 @@ const supabaseConfigured = Boolean(
   && String(supabaseSettings.publishableKey || '').length > 20
 );
 let selectedFlashcardChapter = 'all';
+let selectedLearnChapter = 'all';
+let selectedLearnGoal = '10';
+let learnSessionState = null;
 let showStarredOnly = false;
 let cardTransitioning = false;
 let selectedQuizChapter = 'all';
@@ -267,6 +275,37 @@ try {
   activeSubject = localStorage.getItem(subjectStorageKey) === 'macro' ? 'macro' : 'micro';
 } catch {
   activeSubject = 'micro';
+}
+
+function loadLearnKnowledge() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(learnKnowledgeStorageKey) || '{}');
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    return Object.fromEntries(Object.entries(parsed).filter(([, value]) => value && typeof value === 'object'));
+  } catch {
+    return {};
+  }
+}
+
+let learnKnowledge = loadLearnKnowledge();
+
+function applyTheme(theme, { persist = true } = {}) {
+  const dark = theme === 'dark';
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+  const toggle = $('#darkModeToggle');
+  if (toggle) toggle.checked = dark;
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.content = dark ? '#111817' : '#f6f3ed';
+  if (persist) {
+    try { localStorage.setItem(themeStorageKey, dark ? 'dark' : 'light'); } catch {}
+  }
+}
+
+function initializeTheme() {
+  let savedTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  try { savedTheme = localStorage.getItem(themeStorageKey) === 'dark' ? 'dark' : 'light'; } catch {}
+  applyTheme(savedTheme, { persist: false });
 }
 
 const normalizeText = value => String(value)
@@ -1037,6 +1076,7 @@ function applySubjectUi() {
     ? 'Zakres i streszczenia zachowują kolejność przesłanego wydania.'
     : 'Zakres i streszczenia zachowują kolejność przesłanego wydania.';
   $('#flashcardsEyebrow').textContent = `ZAGADNIENIA · ${data.chapters.length} ROZDZIAŁÓW · ${data.label.toLocaleUpperCase('pl-PL')}`;
+  $('#learnEyebrow').textContent = `UCZ SIĘ · ${data.label.toLocaleUpperCase('pl-PL')}`;
   $('#quizEyebrow').textContent = `QUIZ · ${data.label.toLocaleUpperCase('pl-PL')}`;
   $('#testEyebrow').textContent = `TEST PISEMNY · ${data.label.toLocaleUpperCase('pl-PL')}`;
   $('#scopeEyebrow').textContent = 'SPIS TREŚCI I OPRACOWANIA';
@@ -1060,6 +1100,7 @@ function switchSubject(nextSubject) {
   activeSubject = nextSubject;
   try { localStorage.setItem(subjectStorageKey, activeSubject); } catch {}
   selectedFlashcardChapter = 'all';
+  selectedLearnChapter = 'all';
   selectedQuizChapter = 'all';
   selectedTestChapter = 'all';
   selectedAnswerChapter = 'all';
@@ -1068,14 +1109,16 @@ function switchSubject(nextSubject) {
   showStarredOnly = false;
   $('#starredFilter').classList.remove('active');
   $('#starredFilter').setAttribute('aria-pressed', 'false');
-  ['#flashcardChapter', '#quizChapter', '#testChapter', '#answerChapter', '#mathChapter'].forEach(selector => {
-    renderChapterSelect(selector, selector.includes('flashcard') || selector.includes('quiz') || selector.includes('test') ? `Cała ${activeSubject === 'micro' ? 'mikroekonomia' : 'makroekonomia'}` : 'Wszystkie rozdziały');
+  ['#learnChapter', '#flashcardChapter', '#quizChapter', '#testChapter', '#answerChapter', '#mathChapter'].forEach(selector => {
+    renderChapterSelect(selector, selector.includes('learn') || selector.includes('flashcard') || selector.includes('quiz') || selector.includes('test') ? `Cała ${activeSubject === 'micro' ? 'mikroekonomia' : 'makroekonomia'}` : 'Wszystkie rozdziały');
   });
   $('#conceptSearch').value = '';
   $('#answerSearch').value = '';
   $('#scopeSearch').value = '';
   $('#mathSearch').value = '';
   applySubjectUi();
+  showLearnSetup();
+  updateLearnPoolUi();
   renderCard();
   renderScope();
   renderAnswers();
@@ -1104,6 +1147,7 @@ function switchMode(mode) {
   document.body.classList.toggle('home-active', mode === 'home');
   setAppMenu(false, { returnFocus: false });
   if (mode === 'leaderboard') loadLeaderboard();
+  if (mode === 'learn' && !learnSessionState) updateLearnPoolUi();
   document.getElementById(mode)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -1115,7 +1159,7 @@ function enterFocusMode(panelId) {
   document.querySelectorAll('[data-focus]').forEach(button => {
     const active = button.dataset.focus === panelId;
     button.textContent = active ? '×' : '⛶';
-    if (active) button.setAttribute('aria-label', `Wyłącz tryb skupienia ${panelId === 'quiz' ? 'quizu' : 'fiszek'}`);
+    if (active) button.setAttribute('aria-label', `Wyłącz tryb skupienia ${focusModeLabel(panelId)}`);
   });
   document.documentElement.requestFullscreen?.().catch(() => {});
 }
@@ -1125,9 +1169,15 @@ function exitFocusMode() {
   document.querySelectorAll('.study-panel').forEach(item => item.classList.remove('focus-active'));
   document.querySelectorAll('[data-focus]').forEach(button => {
     button.textContent = '⛶';
-    button.setAttribute('aria-label', `Włącz tryb skupienia ${button.dataset.focus === 'quiz' ? 'quizu' : 'fiszek'}`);
+    button.setAttribute('aria-label', `Włącz tryb skupienia ${focusModeLabel(button.dataset.focus)}`);
   });
   if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+}
+
+function focusModeLabel(panelId) {
+  if (panelId === 'quiz') return 'quizu';
+  if (panelId === 'learn') return 'nauki';
+  return 'fiszek';
 }
 
 function filteredCards() {
@@ -1293,6 +1343,314 @@ function navigateCard(step) {
     ], { duration: 260, easing: 'cubic-bezier(.22,1,.36,1)' });
     enterAnimation.finished.finally(() => { cardTransitioning = false; });
   }).catch(() => { cardTransitioning = false; });
+}
+
+function learnPool() {
+  return currentStudyCards().filter(item => selectedLearnChapter === 'all' || item.chapter === Number(selectedLearnChapter));
+}
+
+function learnPriority(card) {
+  const knowledge = learnKnowledge[card.id] || {};
+  const familiarity = Number.isFinite(knowledge.level) ? knowledge.level : 0;
+  const masteredPenalty = progress.mastered.includes(card.id) ? 2.5 : 0;
+  const difficultBonus = progress.starred.includes(card.id) ? -2 : 0;
+  return familiarity + masteredPenalty + difficultBonus;
+}
+
+function updateLearnPoolUi() {
+  const pool = learnPool();
+  const requested = selectedLearnGoal === 'all' ? pool.length : Number(selectedLearnGoal);
+  const sessionSize = Math.min(pool.length, requested || 0);
+  const unmastered = pool.filter(card => !progress.mastered.includes(card.id)).length;
+  $('#learnPoolCount').textContent = pool.length
+    ? `${sessionSize} w sesji · ${unmastered} jeszcze nieopanowanych · trudniejsze zagadnienia pojawią się wcześniej`
+    : 'W wybranym rozdziale nie ma zagadnień do nauki.';
+  $('#startLearn').disabled = sessionSize === 0;
+}
+
+function persistLearnKnowledge() {
+  try { localStorage.setItem(learnKnowledgeStorageKey, JSON.stringify(learnKnowledge)); } catch {}
+}
+
+function updateLearnKnowledge(cardId, { correct, stage }) {
+  const previous = learnKnowledge[cardId] || { level: 0, attempts: 0, correct: 0 };
+  const step = correct ? (stage === 'written' ? 1 : .45) : -.65;
+  learnKnowledge[cardId] = {
+    level: Math.max(0, Math.min(5, (Number(previous.level) || 0) + step)),
+    attempts: Math.max(0, Number(previous.attempts) || 0) + 1,
+    correct: Math.max(0, Number(previous.correct) || 0) + (correct ? 1 : 0),
+    lastSeen: new Date().toISOString()
+  };
+  persistLearnKnowledge();
+}
+
+function showLearnSetup() {
+  learnSessionState = null;
+  $('#learnSetup').hidden = false;
+  $('#learnSession').hidden = true;
+  $('#learnResult').hidden = true;
+  $('#leaveLearnSession').hidden = true;
+  updateLearnPoolUi();
+}
+
+function startLearnSession() {
+  const pool = learnPool();
+  const requested = selectedLearnGoal === 'all' ? pool.length : Number(selectedLearnGoal);
+  const targets = shuffle(pool)
+    .sort((a, b) => learnPriority(a) - learnPriority(b))
+    .slice(0, Math.min(pool.length, requested || 0));
+  if (!targets.length) return;
+
+  const items = targets.map(card => {
+    const familiarity = Number(learnKnowledge[card.id]?.level) || 0;
+    return {
+      card,
+      stage: familiarity >= 2 || progress.mastered.includes(card.id) ? 'written' : 'choice',
+      mistakes: 0,
+      mastered: false
+    };
+  });
+
+  learnSessionState = {
+    targets,
+    queue: shuffle(items),
+    current: null,
+    answered: false,
+    attempts: 0,
+    correct: 0,
+    mastered: 0,
+    streak: 0,
+    bestStreak: 0,
+    points: 0,
+    rewardedStages: new Set(),
+    difficultIds: new Set()
+  };
+
+  $('#learnSetup').hidden = true;
+  $('#learnResult').hidden = true;
+  $('#learnSession').hidden = false;
+  $('#leaveLearnSession').hidden = false;
+  renderNextLearnQuestion();
+}
+
+function insertLearnRetry(item, delay = 2) {
+  const session = learnSessionState;
+  if (!session) return;
+  const position = Math.min(session.queue.length, Math.max(1, delay));
+  session.queue.splice(position, 0, item);
+}
+
+function buildLearnOptions(item) {
+  const pool = learnPool().filter(candidate => candidate.id !== item.id);
+  const sameChapter = pool.filter(candidate => candidate.chapter === item.chapter);
+  const other = pool.filter(candidate => !sameChapter.includes(candidate));
+  return shuffle([item, ...shuffle(sameChapter), ...shuffle(other)].filter((candidate, index, items) => (
+    items.findIndex(entry => entry.id === candidate.id) === index
+  )).slice(0, 4));
+}
+
+function learnAccuracy() {
+  if (!learnSessionState?.attempts) return null;
+  return Math.round((learnSessionState.correct / learnSessionState.attempts) * 100);
+}
+
+function updateLearnSessionUi() {
+  const session = learnSessionState;
+  if (!session) return;
+  const accuracy = learnAccuracy();
+  $('#learnMasteredStat').textContent = `${session.mastered} / ${session.targets.length}`;
+  $('#learnAccuracyStat').textContent = accuracy === null ? '—' : `${accuracy}%`;
+  $('#learnStreakStat').textContent = session.streak >= 3 ? `${session.streak} 🔥` : String(session.streak);
+  $('#learnPointsStat').textContent = `+${session.points}`;
+  $('#learnProgressBar').style.width = `${session.targets.length ? (session.mastered / session.targets.length) * 100 : 0}%`;
+}
+
+function renderNextLearnQuestion() {
+  const session = learnSessionState;
+  if (!session) return;
+  if (!session.queue.length) {
+    completeLearnSession();
+    return;
+  }
+
+  const item = session.queue.shift();
+  session.current = item;
+  session.answered = false;
+  const written = item.stage === 'written';
+  const card = item.card;
+  $('#learnCard').classList.remove('correct', 'wrong');
+  $('#learnQuestionType').textContent = written ? 'WPISZ ODPOWIEDŹ' : 'WYBÓR ODPOWIEDZI';
+  $('#learnQuestionChapter').textContent = card.chapter ? `ROZDZIAŁ ${card.chapter}` : 'SŁOWNIK';
+  $('#learnQuestionLabel').textContent = written
+    ? 'Wpisz pojęcie, którego dotyczy ta definicja.'
+    : 'Którego pojęcia dotyczy ta definicja?';
+  $('#learnQuestion').textContent = card.back;
+  $('#learnFeedback').textContent = '';
+  $('#learnFeedback').className = 'learn-feedback';
+  $('#nextLearnQuestion').hidden = true;
+  $('#learnDontKnow').hidden = false;
+
+  if (written) {
+    $('#learnAnswerArea').innerHTML = `
+      <form class="learn-written-form" id="learnWrittenForm">
+        <label for="learnWrittenAnswer">Twoja odpowiedź</label>
+        <div><input id="learnWrittenAnswer" type="text" autocomplete="off" spellcheck="false" placeholder="Wpisz nazwę pojęcia…" required /><button class="primary-button" type="submit">Sprawdź</button></div>
+      </form>
+    `;
+    $('#learnWrittenForm').addEventListener('submit', event => {
+      event.preventDefault();
+      submitLearnWrittenAnswer($('#learnWrittenAnswer').value);
+    });
+    window.setTimeout(() => $('#learnWrittenAnswer')?.focus(), 0);
+  } else {
+    const options = buildLearnOptions(card);
+    $('#learnAnswerArea').innerHTML = `<div class="learn-options">${options.map((option, index) => `
+      <button class="answer" type="button" data-learn-card-id="${escapeHtml(option.id)}">
+        <span class="letter">${'ABCD'[index]}</span><span>${escapeHtml(option.front)}</span>
+      </button>
+    `).join('')}</div>`;
+    document.querySelectorAll('[data-learn-card-id]').forEach(button => {
+      button.addEventListener('click', () => submitLearnChoice(button.dataset.learnCardId, button));
+    });
+  }
+  updateLearnSessionUi();
+}
+
+function levenshteinDistance(left, right) {
+  const a = String(left);
+  const b = String(right);
+  const row = Array.from({ length: b.length + 1 }, (_, index) => index);
+  for (let i = 1; i <= a.length; i += 1) {
+    let previous = row[0];
+    row[0] = i;
+    for (let j = 1; j <= b.length; j += 1) {
+      const saved = row[j];
+      row[j] = Math.min(row[j] + 1, row[j - 1] + 1, previous + (a[i - 1] === b[j - 1] ? 0 : 1));
+      previous = saved;
+    }
+  }
+  return row[b.length];
+}
+
+function learnWrittenAnswerMatches(value, card) {
+  const submitted = normalizeText(value);
+  const expectedValues = [card.term, card.front, String(card.front).replace(/\s*\([^)]*\)\s*/g, ' ')]
+    .map(normalizeText)
+    .filter(Boolean);
+  if (!submitted) return false;
+  return expectedValues.some(expected => {
+    if (submitted === expected) return true;
+    const tolerance = expected.length >= 14 ? 2 : expected.length >= 7 ? 1 : 0;
+    return tolerance > 0 && Math.abs(submitted.length - expected.length) <= tolerance
+      && levenshteinDistance(submitted, expected) <= tolerance;
+  });
+}
+
+function submitLearnChoice(cardId, sourceButton) {
+  const session = learnSessionState;
+  if (!session || session.answered) return;
+  const item = session.current;
+  const correct = cardId === item.card.id;
+  document.querySelectorAll('[data-learn-card-id]').forEach(button => {
+    button.disabled = true;
+    if (button.dataset.learnCardId === item.card.id) button.classList.add('correct');
+    if (button === sourceButton && !correct) button.classList.add('wrong');
+  });
+  resolveLearnAnswer({ correct, sourceElement: sourceButton });
+}
+
+function submitLearnWrittenAnswer(value) {
+  const session = learnSessionState;
+  if (!session || session.answered) return;
+  const input = $('#learnWrittenAnswer');
+  const correct = learnWrittenAnswerMatches(value, session.current.card);
+  if (input) {
+    input.disabled = true;
+    input.classList.add(correct ? 'correct' : 'wrong');
+  }
+  $('#learnWrittenForm button').disabled = true;
+  resolveLearnAnswer({ correct, sourceElement: input });
+}
+
+function resolveLearnAnswer({ correct, sourceElement, skipped = false }) {
+  const session = learnSessionState;
+  if (!session || session.answered) return;
+  session.answered = true;
+  const item = session.current;
+  const stage = item.stage;
+  session.attempts += 1;
+  updateLearnKnowledge(item.card.id, { correct, stage });
+
+  if (correct) {
+    session.correct += 1;
+    session.streak += 1;
+    session.bestStreak = Math.max(session.bestStreak, session.streak);
+    const rewardKey = `${item.card.id}:${stage}`;
+    if (!session.rewardedStages.has(rewardKey)) {
+      session.rewardedStages.add(rewardKey);
+      session.points += awardPoints(5, 'poprawna odpowiedź w trybie Ucz się', sourceElement);
+    }
+    if (stage === 'choice') {
+      item.stage = 'written';
+      insertLearnRetry(item, 2 + Math.floor(Math.random() * 2));
+    } else {
+      item.mastered = true;
+      session.mastered += 1;
+      if (!progress.mastered.includes(item.card.id)) progress.mastered.push(item.card.id);
+      if (!progress.awardedFlashcards.includes(item.card.id)) {
+        progress.awardedFlashcards.push(item.card.id);
+        session.points += awardPoints(5, 'opanowanie nowego zagadnienia', $('#learnCard'));
+      } else {
+        saveProgress();
+      }
+    }
+  } else {
+    session.streak = 0;
+    item.mistakes += 1;
+    session.difficultIds.add(item.card.id);
+    progress.mastered = progress.mastered.filter(id => id !== item.card.id);
+    insertLearnRetry(item, 2 + Math.min(2, item.mistakes));
+    saveProgress();
+  }
+
+  $('#learnCard').classList.add(correct ? 'correct' : 'wrong');
+  $('#learnFeedback').textContent = correct
+    ? stage === 'choice'
+      ? `Dobrze. Za chwilę wpiszesz „${item.card.term || item.card.front}” samodzielnie.`
+      : `Opanowane: „${item.card.term || item.card.front}”.`
+    : `${skipped ? 'Zapamiętaj' : 'Poprawna odpowiedź'}: „${item.card.term || item.card.front}”. To zagadnienie wróci za chwilę.`;
+  $('#learnFeedback').classList.add(correct ? 'correct' : 'wrong');
+  $('#learnAnswerArea').querySelectorAll('button,input').forEach(control => { control.disabled = true; });
+  $('#learnDontKnow').hidden = true;
+  $('#nextLearnQuestion').hidden = false;
+  updateLearnSessionUi();
+  window.setTimeout(() => $('#nextLearnQuestion').focus(), 0);
+}
+
+function completeLearnSession() {
+  const session = learnSessionState;
+  if (!session) return;
+  const accuracy = learnAccuracy() ?? 0;
+  const bonus = accuracy === 100 ? 10 : accuracy >= 80 ? 5 : 0;
+  if (bonus) session.points += awardPoints(bonus, accuracy === 100 ? 'premia za bezbłędną naukę' : 'premia za skuteczność 80%+', $('#learnResult'));
+  progress.completedLearnSessions += 1;
+  saveProgress();
+  $('#learnSession').hidden = true;
+  $('#learnResult').hidden = false;
+  $('#leaveLearnSession').hidden = true;
+  $('#learnResultMastered').textContent = session.mastered;
+  $('#learnResultAccuracy').textContent = `${accuracy}%`;
+  $('#learnResultPoints').textContent = `+${session.points}`;
+  $('#learnResultCopy').textContent = session.difficultIds.size
+    ? `Świetnie — cel osiągnięty. ${session.difficultIds.size} trudniejszych ${session.difficultIds.size === 1 ? 'zagadnienie wróciło' : 'zagadnień wróciło'} w trakcie sesji, a najlepsza passa wyniosła ${session.bestStreak}.`
+    : `Świetnie — cel osiągnięty bez pomyłek. Najlepsza passa wyniosła ${session.bestStreak}.`;
+  updateLearnSessionUi();
+}
+
+function leaveLearnSession() {
+  if (learnSessionState && learnSessionState.mastered < learnSessionState.targets.length
+    && !window.confirm('Zakończyć bieżącą sesję? Zdobyte punkty i opanowane zagadnienia zostaną zachowane.')) return;
+  showLearnSetup();
 }
 
 function quizPool() {
@@ -1865,6 +2223,21 @@ document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.addEventListener('click', () => switchMode(tab.dataset.mode));
 });
 
+$('#learnChapter').addEventListener('change', event => {
+  selectedLearnChapter = event.target.value;
+  updateLearnPoolUi();
+});
+$('#learnGoal').addEventListener('change', event => {
+  selectedLearnGoal = event.target.value;
+  updateLearnPoolUi();
+});
+$('#startLearn').addEventListener('click', startLearnSession);
+$('#nextLearnQuestion').addEventListener('click', renderNextLearnQuestion);
+$('#learnDontKnow').addEventListener('click', () => resolveLearnAnswer({ correct: false, sourceElement: $('#learnDontKnow'), skipped: true }));
+$('#learnAgain').addEventListener('click', startLearnSession);
+$('#learnChangeSettings').addEventListener('click', showLearnSetup);
+$('#leaveLearnSession').addEventListener('click', leaveLearnSession);
+
 $('#flashcardChapter').addEventListener('change', event => {
   selectedFlashcardChapter = event.target.value;
   currentCard = 0;
@@ -1937,14 +2310,18 @@ $('#mathChapter').addEventListener('change', event => {
 $('#mathSearch').addEventListener('input', renderMath);
 
 $('#resetProgress').addEventListener('click', () => {
-  if (!window.confirm('Wyzerować fiszki, oznaczenia trudności, punkty, rangi, czas nauki oraz historię quizów i testów?')) return;
+  if (!window.confirm('Wyzerować tryb Ucz się, fiszki, oznaczenia trudności, punkty, rangi, czas nauki oraz historię quizów i testów?')) return;
   progress = blankProgress();
+  learnKnowledge = {};
+  try { localStorage.removeItem(learnKnowledgeStorageKey); } catch {}
   saveProgress();
   showStarredOnly = false;
   $('#starredFilter').classList.remove('active');
   $('#starredFilter').setAttribute('aria-pressed', 'false');
   renderCard();
+  showLearnSetup();
   updateStudyTimer();
+  setAuthModal(false);
 });
 
 function setAppMenu(open, { returnFocus = true } = {}) {
@@ -2182,6 +2559,7 @@ $('#homeAccountCta').addEventListener('click', () => {
 });
 $('#authClose').addEventListener('click', () => setAuthModal(false));
 $('#authBackdrop').addEventListener('click', () => setAuthModal(false));
+$('#darkModeToggle').addEventListener('change', event => applyTheme(event.target.checked ? 'dark' : 'light'));
 $('#emailConfirmationClose').addEventListener('click', closeEmailConfirmation);
 $('#emailConfirmationBackdrop').addEventListener('click', closeEmailConfirmation);
 $('#loginTab').addEventListener('click', () => setAuthMode('login'));
@@ -2254,6 +2632,7 @@ document.addEventListener('keydown', event => {
   }
 });
 
+initializeTheme();
 switchSubject(activeSubject);
 renderNotifications();
 updateStudyTimer();

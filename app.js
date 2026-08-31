@@ -11,8 +11,16 @@ const flashcardDirectionStorageKey = 'mankiw-taylor-flashcard-direction-v1';
 const subjectStorageKey = 'ekonomia-active-subject-v1';
 const themeStorageKey = 'ekonomia-theme-v1';
 const learnKnowledgeStorageKey = 'ekonomia-learn-knowledge-v1';
+const oweQuestions = Array.isArray(window.OWE_QUESTIONS) ? window.OWE_QUESTIONS : [];
 
 const siteUpdateNotifications = [
+  {
+    id: 'update-owe-archive-2026-08-31',
+    type: 'update',
+    title: 'Quiz z arkuszy Olimpiady Wiedzy Ekonomicznej',
+    message: 'Dodaliśmy 150 oficjalnych pytań testowych z XXXVI–XXXVIII OWE wraz z odpowiedziami i źródłami PTE.',
+    createdAt: '2026-08-31T12:00:00+02:00'
+  },
   {
     id: 'update-reversed-flashcards-2026-08-17',
     type: 'update',
@@ -243,6 +251,8 @@ let showStarredOnly = false;
 let cardTransitioning = false;
 let selectedQuizChapter = 'all';
 let selectedQuizLength = 20;
+let selectedOweQuizStage = 'all';
+let oweQuizState = null;
 let currentCard = 0;
 let flashcardDefinitionFirst = false;
 try {
@@ -742,7 +752,6 @@ function updateAuthGate({ closeAfterUnlock = false } = {}) {
     if (document.body.classList.contains('focus-mode')) exitFocusMode();
     setAppMenu(false, { returnFocus: false });
     setPointsMenu(false);
-    setAuthModal(true);
   } else if (closeAfterUnlock && $('#emailConfirmationPopup').hidden) {
     setAuthModal(false);
   }
@@ -1130,7 +1139,7 @@ function switchSubject(nextSubject) {
 }
 
 function switchMode(mode) {
-  const publicModes = ['home', 'legal'];
+  const publicModes = ['home', 'owe', 'legal'];
   if (!currentUser && !publicModes.includes(mode)) {
     setAuthModal(true);
     return;
@@ -1148,6 +1157,7 @@ function switchMode(mode) {
   setAppMenu(false, { returnFocus: false });
   if (mode === 'leaderboard') loadLeaderboard();
   if (mode === 'learn' && !learnSessionState) updateLearnPoolUi();
+  if (mode === 'owe') updateOweQuizPool();
   document.getElementById(mode)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -2198,6 +2208,148 @@ function renderMath() {
   `).join('') : '<p class="concept-empty">Nie znaleziono wzoru dla tego filtra.</p>';
 }
 
+function oweQuizPool() {
+  const edition = $('#oweQuizEdition')?.value || 'all';
+  return oweQuestions.filter(question => (
+    (edition === 'all' || question.edition === edition)
+    && (selectedOweQuizStage === 'all' || question.stage === selectedOweQuizStage)
+  ));
+}
+
+function updateOweQuizPool() {
+  if (!$('#oweQuizPoolCount')) return;
+  const pool = oweQuizPool();
+  const editions = new Set(pool.map(question => question.edition));
+  const stages = new Set(pool.map(question => question.stage));
+  const requestedCount = Number($('#oweQuizCount').value);
+  if (requestedCount > pool.length && pool.length) {
+    const availableCount = [30, 20, 10].find(value => value <= pool.length) || pool.length;
+    $('#oweQuizCount').value = String(availableCount);
+  }
+  $('#oweQuizPoolCount').textContent = polishCount(pool.length, 'pytanie', 'pytania', 'pytań');
+  $('#oweQuizPoolMeta').textContent = ` · ${polishCount(editions.size, 'edycja', 'edycje', 'edycji')} · ${polishCount(stages.size, 'etap', 'etapy', 'etapów')}`;
+  $('#oweQuizStart').disabled = pool.length === 0;
+}
+
+function showOweQuizSetup() {
+  $('#oweQuizSetup').hidden = false;
+  $('#oweQuizSession').hidden = true;
+  $('#oweQuizResult').hidden = true;
+  updateOweQuizPool();
+  $('#oweQuizSetup').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function startOweQuiz() {
+  const pool = oweQuizPool();
+  if (!pool.length) return;
+  const requestedCount = Math.max(1, Number($('#oweQuizCount').value) || 10);
+  const questions = shuffle(pool).slice(0, Math.min(requestedCount, pool.length));
+  oweQuizState = {
+    questions,
+    index: 0,
+    score: 0,
+    answered: false,
+    responses: []
+  };
+  $('#oweQuizSetup').hidden = true;
+  $('#oweQuizResult').hidden = true;
+  $('#oweQuizSession').hidden = false;
+  renderOweQuizQuestion();
+  $('#oweQuizSession').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderOweQuizQuestion() {
+  if (!oweQuizState) return;
+  const { questions, index } = oweQuizState;
+  const question = questions[index];
+  oweQuizState.answered = false;
+  $('#oweQuizQuestionMeta').textContent = `${question.edition} OWE · ${question.year} · ${question.stageLabel} · PYTANIE ${question.number}`;
+  $('#oweQuizProgressText').textContent = `Pytanie ${index + 1} z ${questions.length}`;
+  $('#oweQuizProgressBar').style.width = `${((index + 1) / questions.length) * 100}%`;
+  $('#oweQuizQuestion').textContent = question.question;
+  $('#oweQuizFeedback').hidden = true;
+  $('#oweQuizNext').hidden = true;
+  $('#oweQuizNext').innerHTML = index === questions.length - 1
+    ? 'Zobacz wynik <span>→</span>'
+    : 'Następne pytanie <span>→</span>';
+  $('#oweQuizAnswers').innerHTML = question.options.map((option, optionIndex) => `
+    <button class="owe-answer-option" type="button" data-owe-answer="${optionIndex}">
+      <span>${String.fromCharCode(65 + optionIndex)}</span><b>${escapeHtml(option)}</b>
+    </button>
+  `).join('');
+  document.querySelectorAll('[data-owe-answer]').forEach(button => {
+    button.addEventListener('click', () => answerOweQuizQuestion(Number(button.dataset.oweAnswer)));
+  });
+}
+
+function answerOweQuizQuestion(selectedIndex) {
+  if (!oweQuizState || oweQuizState.answered) return;
+  const question = oweQuizState.questions[oweQuizState.index];
+  const isCorrect = selectedIndex === question.correct;
+  oweQuizState.answered = true;
+  if (isCorrect) oweQuizState.score += 1;
+  oweQuizState.responses.push({ question, selectedIndex, isCorrect });
+  document.querySelectorAll('[data-owe-answer]').forEach(button => {
+    const answerIndex = Number(button.dataset.oweAnswer);
+    button.disabled = true;
+    button.classList.toggle('correct', answerIndex === question.correct);
+    button.classList.toggle('wrong', answerIndex === selectedIndex && !isCorrect);
+  });
+  $('#oweQuizFeedback').hidden = false;
+  $('#oweQuizFeedback').classList.toggle('is-correct', isCorrect);
+  $('#oweQuizFeedback').classList.toggle('is-wrong', !isCorrect);
+  $('#oweQuizFeedbackTitle').textContent = isCorrect ? 'Dobra odpowiedź.' : 'Jeszcze nie tym razem.';
+  $('#oweQuizFeedbackCopy').textContent = isCorrect
+    ? `Poprawna odpowiedź: ${String.fromCharCode(65 + question.correct)}.`
+    : `Poprawna odpowiedź to ${String.fromCharCode(65 + question.correct)}: ${question.options[question.correct]}`;
+  $('#oweQuizQuestionSource').href = question.sourceUrl;
+  $('#oweQuizNext').hidden = false;
+  $('#oweQuizNext').focus({ preventScroll: true });
+}
+
+function showOweQuizResult() {
+  if (!oweQuizState) return;
+  const { score, questions, responses } = oweQuizState;
+  const percent = Math.round((score / questions.length) * 100);
+  const mistakes = responses.filter(response => !response.isCorrect);
+  $('#oweQuizSession').hidden = true;
+  $('#oweQuizResult').hidden = false;
+  $('#oweQuizScore').textContent = `${score}/${questions.length}`;
+  $('#oweQuizPercent').textContent = `${percent}%`;
+  $('#oweQuizResultTitle').textContent = percent >= 90
+    ? 'Poziom olimpijski.'
+    : percent >= 70
+      ? 'Bardzo solidny wynik.'
+      : percent >= 50
+        ? 'Dobry punkt wyjścia.'
+        : 'Ten zestaw warto powtórzyć.';
+  $('#oweQuizResultCopy').textContent = mistakes.length
+    ? `Masz ${polishCount(mistakes.length, 'pytanie', 'pytania', 'pytań')} do powtórki. Poniżej znajdziesz prawidłowe odpowiedzi i oficjalne źródła.`
+    : 'Wszystkie odpowiedzi są poprawne. Spróbuj teraz innego etapu albo dłuższego zestawu.';
+  $('#oweQuizReview').innerHTML = mistakes.length
+    ? `<h4>Do powtórki</h4>${mistakes.map(({ question, selectedIndex }) => `
+        <article>
+          <span>${escapeHtml(question.edition)} · ${escapeHtml(question.stageLabel)} · pyt. ${question.number}</span>
+          <strong>${escapeHtml(question.question)}</strong>
+          <p>Twoja odpowiedź: ${String.fromCharCode(65 + selectedIndex)} · <b>Poprawna: ${String.fromCharCode(65 + question.correct)} — ${escapeHtml(question.options[question.correct])}</b></p>
+          <a href="${escapeHtml(question.sourceUrl)}" target="_blank" rel="noopener noreferrer">Oficjalny klucz PTE ↗</a>
+        </article>
+      `).join('')}`
+    : '<p class="owe-perfect-result">Bez błędów — świetna robota.</p>';
+  $('#oweQuizResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function advanceOweQuiz() {
+  if (!oweQuizState?.answered) return;
+  if (oweQuizState.index >= oweQuizState.questions.length - 1) {
+    showOweQuizResult();
+    return;
+  }
+  oweQuizState.index += 1;
+  renderOweQuizQuestion();
+  $('#oweQuizSession').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function renderConcepts() {
   const data = subjectData();
   const query = $('#conceptSearch').value.trim().toLocaleLowerCase('pl-PL');
@@ -2227,6 +2379,25 @@ document.querySelectorAll('[data-go]').forEach(button => {
 document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.addEventListener('click', () => switchMode(tab.dataset.mode));
 });
+
+$('#oweQuizEdition').addEventListener('change', updateOweQuizPool);
+$('#oweQuizCount').addEventListener('change', updateOweQuizPool);
+document.querySelectorAll('[data-owe-quiz-stage]').forEach(button => {
+  button.addEventListener('click', () => {
+    selectedOweQuizStage = button.dataset.oweQuizStage;
+    document.querySelectorAll('[data-owe-quiz-stage]').forEach(item => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', String(active));
+    });
+    updateOweQuizPool();
+  });
+});
+$('#oweQuizStart').addEventListener('click', startOweQuiz);
+$('#oweQuizNext').addEventListener('click', advanceOweQuiz);
+$('#oweQuizExit').addEventListener('click', showOweQuizSetup);
+$('#oweQuizAgain').addEventListener('click', startOweQuiz);
+$('#oweQuizChange').addEventListener('click', showOweQuizSetup);
 
 $('#learnChapter').addEventListener('change', event => {
   selectedLearnChapter = event.target.value;
@@ -2639,6 +2810,7 @@ document.addEventListener('keydown', event => {
 
 initializeTheme();
 switchSubject(activeSubject);
+updateOweQuizPool();
 renderNotifications();
 updateStudyTimer();
 initializeCloud();

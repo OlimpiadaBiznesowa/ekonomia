@@ -13,10 +13,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260828-learn-fix1" />
+    <link rel="stylesheet" href="styles.css?v=20260831-panel-b" />
   </head>
   <body class="home-active">
     <div class="page-shell">
+      <aside class="workspace-sidebar" aria-label="Główna nawigacja">
+        <a class="workspace-brand" href="#start" data-menu-mode="home" aria-label="Ekonomia — strona główna">
+          <span>E.</span>
+          <strong>Ekonomia</strong>
+        </a>
+        <nav class="workspace-nav">
+          <p>TWÓJ PANEL</p>
+          <button class="active" type="button" data-menu-mode="home"><span>⌂</span><b>Plan na dziś</b></button>
+          <button type="button" data-menu-mode="learn"><span>↗</span><b>Ucz się</b></button>
+          <button type="button" data-menu-mode="flashcards"><span>▱</span><b>Fiszki</b></button>
+          <button type="button" data-menu-mode="quiz"><span>?</span><b>Quiz</b></button>
+          <p>OLIMPIADA</p>
+          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OWE</span><b>Arkusze OWE</b><i>150</i></button>
+          <p>POSTĘP</p>
+          <button type="button" data-menu-mode="concepts"><span>≡</span><b>Zagadnienia</b></button>
+          <button type="button" data-menu-mode="leaderboard"><span>♢</span><b>Ranking</b></button>
+          <button type="button" data-menu-mode="more"><span>＋</span><b>Więcej</b></button>
+        </nav>
+        <div class="workspace-sidebar-foot">
+          <span class="workspace-streak">7</span>
+          <div><strong>Seria nauki</strong><small>Wracaj codziennie</small></div>
+        </div>
+      </aside>
       <header class="topbar">
         <a class="brand" href="#start" aria-label="Mikroekonomia – strona główna">
           <span class="brand-mark" id="brandMark">μ</span>
@@ -253,6 +276,92 @@
             <button class="primary-button" id="quizAgain">Spróbuj ponownie <span>↻</span></button>
             <button class="focus-toggle focus-corner" type="button" data-focus="quiz" aria-label="Włącz tryb skupienia quizu" title="Tryb skupienia">⛶</button>
           </article>
+        </section>
+
+        <section class="study-panel owe-panel" id="owe" data-panel="owe">
+          <div class="section-heading owe-heading">
+            <div>
+              <p class="eyebrow">OLIMPIADA WIEDZY EKONOMICZNEJ · OFICJALNE PYTANIA PTE</p>
+              <h2>Quiz z arkuszy OWE</h2>
+            </div>
+            <a class="owe-source-link" href="https://owe.pte.pl/informacje/poprzednie-edycje/zestawy-pytan-z-poprzednich-edycji.html" target="_blank" rel="noopener noreferrer">Oficjalne archiwum PTE ↗</a>
+          </div>
+
+          <article class="owe-quiz-setup" id="oweQuizSetup">
+            <div class="owe-setup-copy">
+              <span class="owe-intro-mark" aria-hidden="true">OWE</span>
+              <div>
+                <p class="eyebrow">TRENING OLIMPIJSKI</p>
+                <h3>Prawdziwe pytania. Natychmiastowy wynik.</h3>
+                <p>Bank obejmuje 150 pytań testowych z XXXVI–XXXVIII OWE. Po każdej odpowiedzi zobaczysz rozwiązanie z oficjalnego klucza i odnośnik do arkusza PTE.</p>
+              </div>
+            </div>
+            <div class="owe-setup-grid">
+              <label>
+                <span>Edycja</span>
+                <select id="oweQuizEdition">
+                  <option value="all">Wszystkie edycje</option>
+                  <option value="XXXVIII">XXXVIII OWE · 2024/2025</option>
+                  <option value="XXXVII">XXXVII OWE · 2023/2024</option>
+                  <option value="XXXVI">XXXVI OWE · 2022/2023</option>
+                </select>
+              </label>
+              <label>
+                <span>Liczba pytań</span>
+                <select id="oweQuizCount">
+                  <option value="10">10 pytań</option>
+                  <option value="20">20 pytań</option>
+                  <option value="30">30 pytań</option>
+                </select>
+              </label>
+              <div class="owe-setup-stage">
+                <span>Etap zawodów</span>
+                <div class="owe-stage-filter" role="group" aria-label="Wybierz etap zawodów">
+                  <button class="active" type="button" data-owe-quiz-stage="all" aria-pressed="true">Wszystkie</button>
+                  <button type="button" data-owe-quiz-stage="school" aria-pressed="false">Szkolny</button>
+                  <button type="button" data-owe-quiz-stage="district" aria-pressed="false">Okręgowy</button>
+                </div>
+              </div>
+            </div>
+            <div class="owe-setup-action">
+              <p><strong id="oweQuizPoolCount">150 pytań</strong><span id="oweQuizPoolMeta"> · 3 edycje · 2 etapy</span></p>
+              <button class="primary-button" id="oweQuizStart" type="button">Rozpocznij quiz <span>→</span></button>
+            </div>
+          </article>
+
+          <article class="owe-quiz-session" id="oweQuizSession" hidden aria-live="polite">
+            <div class="owe-session-head">
+              <div>
+                <p class="eyebrow" id="oweQuizQuestionMeta">XXXVIII OWE · ETAP SZKOLNY</p>
+                <p id="oweQuizProgressText">Pytanie 1 z 10</p>
+              </div>
+              <button class="text-button" id="oweQuizExit" type="button">Zmień zestaw</button>
+            </div>
+            <div class="owe-progress" aria-hidden="true"><i id="oweQuizProgressBar"></i></div>
+            <div class="owe-question-card">
+              <h3 id="oweQuizQuestion"></h3>
+              <div class="owe-answer-list" id="oweQuizAnswers"></div>
+              <div class="owe-feedback" id="oweQuizFeedback" hidden>
+                <div><strong id="oweQuizFeedbackTitle"></strong><p id="oweQuizFeedbackCopy"></p></div>
+                <a id="oweQuizQuestionSource" href="#" target="_blank" rel="noopener noreferrer">Zobacz oficjalny klucz PTE ↗</a>
+              </div>
+              <button class="primary-button owe-next" id="oweQuizNext" type="button" hidden>Następne pytanie <span>→</span></button>
+            </div>
+          </article>
+
+          <article class="owe-quiz-result" id="oweQuizResult" hidden>
+            <p class="eyebrow">WYNIK TRENINGU OWE</p>
+            <div class="owe-result-score"><strong id="oweQuizScore">0/10</strong><span id="oweQuizPercent">0%</span></div>
+            <h3 id="oweQuizResultTitle">Dobra rozgrzewka.</h3>
+            <p id="oweQuizResultCopy"></p>
+            <div class="owe-review" id="oweQuizReview"></div>
+            <div class="owe-result-actions">
+              <button class="primary-button" id="oweQuizAgain" type="button">Nowy zestaw <span>↻</span></button>
+              <button class="secondary-button" id="oweQuizChange" type="button">Zmień ustawienia</button>
+            </div>
+          </article>
+
+          <p class="owe-attribution">Pytania i klucze odpowiedzi pochodzą z oficjalnych materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Zachowano numer pytania, edycję i etap.</p>
         </section>
 
         <section class="study-panel" id="more" data-panel="more">
@@ -499,6 +608,7 @@
 
         <nav class="app-menu-nav" aria-label="Nawigacja strony">
           <button class="menu-nav-button learn-menu-button" type="button" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></button>
+          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OWE</span><div><strong>Quiz z arkuszy OWE</strong><small>150 oficjalnych pytań z kluczami</small></div></button>
           <button class="menu-nav-button active" type="button" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></button>
           <p class="menu-section-label">NAUKA</p>
           <button class="menu-nav-button" type="button" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></button>
@@ -666,6 +776,7 @@
     <script src="book-data.js?v=20260821-macro"></script>
     <script src="curriculum-data.js?v=20260821-macro"></script>
     <script src="macro-data.js?v=20260821-book-map"></script>
-    <script src="app.js?v=20260828-learn-fix1"></script>
+    <script src="owe-quiz-data.js?v=20260831-150q"></script>
+    <script src="app.js?v=20260831-panel-b"></script>
   </body>
 </html>

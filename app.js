@@ -679,10 +679,22 @@ function questCardMarkup(quest) {
 }
 
 function renderQuests() {
-  const homeList = $('#homeQuestList');
   const pointsList = $('#pointsQuestList');
-  if (homeList) homeList.innerHTML = questDefinitions.filter(quest => quest.featured).map(questCardMarkup).join('');
   if (pointsList) pointsList.innerHTML = questDefinitions.map(questCardMarkup).join('');
+  const completedCount = questDefinitions.filter(quest => questProgressValue(quest) >= quest.target).length;
+  const readyCount = questDefinitions.filter(quest => (
+    questProgressValue(quest) >= quest.target && !Number.isFinite(progress.questRewards[quest.id])
+  )).length;
+  const readyBadge = $('#questReadyBadge');
+  readyBadge.hidden = readyCount === 0;
+  readyBadge.textContent = String(readyCount);
+  $('#questQuickButton').classList.toggle('has-ready', readyCount > 0);
+  $('#questQuickButton').setAttribute('aria-label', readyCount
+    ? `Otwórz questy — ${polishCount(readyCount, 'nagroda gotowa', 'nagrody gotowe', 'nagród gotowych')}`
+    : 'Otwórz questy');
+  $('#pointsQuestSummary').textContent = readyCount
+    ? `${completedCount}/${questDefinitions.length} · ${readyCount} do odebrania`
+    : `${completedCount}/${questDefinitions.length} ukończonych`;
 }
 
 function closeRewardChest() {
@@ -755,7 +767,6 @@ function updateProgress() {
   $('#totalCards').textContent = total;
   $('#starredCount').textContent = progress.starred.filter(id => subjectCardIds.has(id)).length;
   $('#heroConceptCount').textContent = data.concepts.length;
-  $('#homeConceptCount').textContent = data.concepts.length;
   $('#heroTopicCount').textContent = data.outline.reduce((sum, chapter) => sum + chapter.topics.length, 0);
   $('#heroFormulaCount').textContent = data.formulas.length;
   $('#masteryBar').style.width = `${masteryPercent}%`;
@@ -1219,7 +1230,7 @@ const subjectUiCopy = {
   micro: {
     title: 'Mikroekonomia · Mankiw i Taylor',
     eyebrow: 'MANKIW · TAYLOR · MIKROEKONOMIA',
-    hero: 'Fiszki, quizy, testy, streszczenia i wzory z mikroekonomii. Otwórz menu, wybierz rozdział i zacznij.',
+    hero: 'Najważniejsze pojęcia, quizy i powtórki z mikroekonomii w jednym miejscu.',
     overviewTitle: 'Mikroekonomia w jednym miejscu.',
     overview: 'Materiał jest uporządkowany zgodnie z 19 rozdziałami przesłanego wydania. Możesz uczyć się pojęć, sprawdzać wiedzę i szybko wracać do streszczeń.',
     answerPlaceholder: 'Np. dlaczego podatek tworzy stratę społeczną?',
@@ -1233,7 +1244,7 @@ const subjectUiCopy = {
   macro: {
     title: 'Makroekonomia · Mankiw i Taylor',
     eyebrow: 'MANKIW · TAYLOR · MAKROEKONOMIA',
-    hero: 'Fiszki, quizy, testy, streszczenia i wzory z makroekonomii — od PKB i inflacji po politykę fiskalną oraz pieniężną.',
+    hero: 'PKB, inflacja i polityka gospodarcza — ucz się krócej, ale bardziej świadomie.',
     overviewTitle: 'Makroekonomia w jednym miejscu.',
     overview: 'Materiał jest uporządkowany zgodnie z 18 rozdziałami i 6 częściami przesłanego wydania. Pojęcia ze słownika są przypisane do rozdziałów, w których zostały omówione.',
     answerPlaceholder: 'Np. czym CPI różni się od deflatora PKB?',
@@ -1263,12 +1274,6 @@ function applySubjectUi() {
   $('.brand').setAttribute('aria-label', `${data.label} – strona główna`);
   $('#heroEyebrow').textContent = copy.eyebrow;
   $('#heroCopy').textContent = copy.hero;
-  $('#homeOverviewTitle').textContent = copy.overviewTitle;
-  $('#homeOverviewCopy').textContent = copy.overview;
-  $('#homeChapterCount').textContent = `${data.chapters.length} rozdziałów`;
-  $('#homeChapterDescription').textContent = activeSubject === 'micro'
-    ? 'Zakres i streszczenia zachowują kolejność przesłanego wydania.'
-    : 'Zakres i streszczenia zachowują kolejność przesłanego wydania.';
   $('#flashcardsEyebrow').textContent = `ZAGADNIENIA · ${data.chapters.length} ROZDZIAŁÓW · ${data.label.toLocaleUpperCase('pl-PL')}`;
   $('#learnEyebrow').textContent = `UCZ SIĘ · ${data.label.toLocaleUpperCase('pl-PL')}`;
   $('#quizEyebrow').textContent = `QUIZ · ${data.label.toLocaleUpperCase('pl-PL')}`;
@@ -1339,6 +1344,7 @@ function switchMode(mode) {
     panel.classList.toggle('active', panel.dataset.panel === mode);
   });
   document.body.classList.toggle('home-active', mode === 'home');
+  document.body.dataset.mode = mode;
   setAppMenu(false, { returnFocus: false });
   if (mode === 'leaderboard') loadLeaderboard();
   if (mode === 'learn' && !learnSessionState) updateLearnPoolUi();
@@ -1351,6 +1357,7 @@ function enterFocusMode(panelId) {
   if (!panel) return;
   document.querySelectorAll('.study-panel').forEach(item => item.classList.toggle('focus-active', item === panel));
   document.body.classList.add('focus-mode');
+  $('#focusExitButton').hidden = false;
   document.querySelectorAll('[data-focus]').forEach(button => {
     const active = button.dataset.focus === panelId;
     button.textContent = active ? '×' : '⛶';
@@ -1361,6 +1368,7 @@ function enterFocusMode(panelId) {
 
 function exitFocusMode() {
   document.body.classList.remove('focus-mode');
+  $('#focusExitButton').hidden = true;
   document.querySelectorAll('.study-panel').forEach(item => item.classList.remove('focus-active'));
   document.querySelectorAll('[data-focus]').forEach(button => {
     button.textContent = '⛶';
@@ -2742,13 +2750,26 @@ function toggleNotificationCenter() {
   if (opening) window.setTimeout(() => $('#markNotificationsRead').focus(), 0);
 }
 
-function setPointsMenu(open) {
+function setPointsQuestsExpanded(expanded) {
+  $('#pointsQuestBody').hidden = !expanded;
+  $('#pointsQuestsToggle').setAttribute('aria-expanded', String(expanded));
+  $('#pointsQuestsSection').classList.toggle('expanded', expanded);
+}
+
+function setPointsMenu(open, { showQuests = false } = {}) {
   if (open) setAppMenu(false, { returnFocus: false });
   $('#pointsMenu').hidden = !open;
   $('#pointsBackdrop').hidden = !open;
   $('#pointsMenuButton').setAttribute('aria-expanded', String(open));
   document.body.classList.toggle('points-menu-open', open);
-  if (open) $('#pointsMenuClose').focus();
+  if (open) setPointsQuestsExpanded(showQuests);
+  if (open) {
+    window.setTimeout(() => {
+      const focusTarget = showQuests ? $('#pointsQuestsToggle') : $('#pointsMenuClose');
+      focusTarget.focus();
+      if (showQuests) focusTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  }
 }
 
 function setAuthMode(mode) {
@@ -2928,6 +2949,7 @@ async function handleDeleteAccount() {
 }
 
 $('#appMenuButton').addEventListener('click', () => setAppMenu($('#appMenu').hidden));
+$('#questQuickButton').addEventListener('click', () => setPointsMenu(true, { showQuests: true }));
 document.querySelectorAll('[data-subject]').forEach(button => {
   button.addEventListener('click', () => switchSubject(button.dataset.subject));
 });
@@ -2945,12 +2967,16 @@ $('.brand').addEventListener('click', event => {
 $('#pointsMenuButton').addEventListener('click', () => setPointsMenu(true));
 $('#pointsMenuClose').addEventListener('click', () => setPointsMenu(false));
 $('#pointsBackdrop').addEventListener('click', () => setPointsMenu(false));
+$('#pointsQuestsToggle').addEventListener('click', () => {
+  setPointsQuestsExpanded($('#pointsQuestsToggle').getAttribute('aria-expanded') !== 'true');
+});
 $('#activateBoost').addEventListener('click', activateDailyBoost);
 $('#accountButton').addEventListener('click', () => setAuthModal($('#authModal').hidden));
 $('#homeAccountCta').addEventListener('click', () => {
   if (currentUser) switchMode('leaderboard');
   else setAuthModal(true);
 });
+$('#homeMenuCta').addEventListener('click', () => setAppMenu(true));
 $('#authClose').addEventListener('click', () => setAuthModal(false));
 $('#authBackdrop').addEventListener('click', () => setAuthModal(false));
 $('#darkModeToggle').addEventListener('change', event => applyTheme(event.target.checked ? 'dark' : 'light'));
@@ -3008,6 +3034,7 @@ document.querySelectorAll('[data-focus]').forEach(button => {
     else enterFocusMode(button.dataset.focus);
   });
 });
+$('#focusExitButton').addEventListener('click', exitFocusMode);
 document.addEventListener('fullscreenchange', () => {
   if (!document.fullscreenElement && document.body.classList.contains('focus-mode')) exitFocusMode();
 });

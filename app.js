@@ -15,6 +15,13 @@ const oweQuestions = Array.isArray(window.OWE_QUESTIONS) ? window.OWE_QUESTIONS 
 
 const siteUpdateNotifications = [
   {
+    id: 'update-quests-and-owe-points-2026-09-01',
+    type: 'update',
+    title: 'Questy, skrzynki i punkty za OWE',
+    message: 'Ukończ cele, otwieraj skrzynki z nagrodami 50–200 pkt i zdobywaj punkty także w treningach z arkuszy OWE.',
+    createdAt: '2026-09-01T12:00:00+02:00'
+  },
+  {
     id: 'update-owe-archive-2026-08-31',
     type: 'update',
     title: 'Quiz z arkuszy Olimpiady Wiedzy Ekonomicznej',
@@ -59,6 +66,52 @@ const ranks = [
   { name: 'Strateg', threshold: 1200, emblem: 'V' },
   { name: 'Mistrz ekonomii', threshold: 2000, emblem: 'VI' },
   { name: 'Olimpijczyk', threshold: 3500, emblem: 'VII' }
+];
+
+const questDefinitions = [
+  {
+    id: 'quiz-marathon-5',
+    code: 'QZ',
+    title: 'Quizowy maraton',
+    description: 'Ukończ 5 quizów z mikro- lub makroekonomii.',
+    metric: 'completedQuizzes',
+    target: 5,
+    featured: true
+  },
+  {
+    id: 'owe-training-3',
+    code: 'OWE',
+    title: 'Trening olimpijczyka',
+    description: 'Ukończ 3 zestawy z oficjalnych arkuszy OWE.',
+    metric: 'completedOweQuizzes',
+    target: 3,
+    featured: true
+  },
+  {
+    id: 'focus-hour-4',
+    code: '60′',
+    title: 'Godzina skupienia',
+    description: 'Zbierz 4 premie za aktywne 15 minut nauki.',
+    metric: 'awardedStudyBlocks',
+    target: 4,
+    featured: true
+  },
+  {
+    id: 'learn-path-3',
+    code: '↗',
+    title: 'Regularna nauka',
+    description: 'Doprowadź do końca 3 sesje w trybie Ucz się.',
+    metric: 'completedLearnSessions',
+    target: 3
+  },
+  {
+    id: 'written-test-3',
+    code: 'ABC',
+    title: 'Próba bez podpowiedzi',
+    description: 'Ukończ 3 testy z samodzielnym wpisywaniem odpowiedzi.',
+    metric: 'completedTests',
+    target: 3
+  }
 ];
 
 const escapeHtml = value => String(value)
@@ -175,12 +228,14 @@ const blankProgress = () => ({
   points: 0,
   awardedFlashcards: [],
   completedQuizzes: 0,
+  completedOweQuizzes: 0,
   completedTests: 0,
   completedLearnSessions: 0,
   studySeconds: 0,
   awardedStudyBlocks: 0,
   boostActivatedOn: '',
-  boostEndsAt: ''
+  boostEndsAt: '',
+  questRewards: {}
 });
 
 const normalizeProgress = value => {
@@ -191,12 +246,18 @@ const normalizeProgress = value => {
     points: Number.isFinite(parsed.points) ? Math.max(0, Math.floor(parsed.points)) : 0,
     awardedFlashcards: Array.isArray(parsed.awardedFlashcards) ? parsed.awardedFlashcards.filter(item => typeof item === 'string') : [],
     completedQuizzes: Number.isFinite(parsed.completedQuizzes) ? Math.max(0, Math.floor(parsed.completedQuizzes)) : 0,
+    completedOweQuizzes: Number.isFinite(parsed.completedOweQuizzes) ? Math.max(0, Math.floor(parsed.completedOweQuizzes)) : 0,
     completedTests: Number.isFinite(parsed.completedTests) ? Math.max(0, Math.floor(parsed.completedTests)) : 0,
     completedLearnSessions: Number.isFinite(parsed.completedLearnSessions) ? Math.max(0, Math.floor(parsed.completedLearnSessions)) : 0,
     studySeconds: Number.isFinite(parsed.studySeconds) ? Math.max(0, parsed.studySeconds) : 0,
     awardedStudyBlocks: Number.isFinite(parsed.awardedStudyBlocks) ? Math.max(0, Math.floor(parsed.awardedStudyBlocks)) : 0,
     boostActivatedOn: typeof parsed.boostActivatedOn === 'string' ? parsed.boostActivatedOn : '',
-    boostEndsAt: typeof parsed.boostEndsAt === 'string' ? parsed.boostEndsAt : ''
+    boostEndsAt: typeof parsed.boostEndsAt === 'string' ? parsed.boostEndsAt : '',
+    questRewards: parsed.questRewards && typeof parsed.questRewards === 'object' && !Array.isArray(parsed.questRewards)
+      ? Object.fromEntries(Object.entries(parsed.questRewards)
+        .filter(([id, reward]) => typeof id === 'string' && Number.isFinite(reward) && reward >= 50 && reward <= 200)
+        .map(([id, reward]) => [id, Math.floor(reward)]))
+      : {}
   };
 };
 
@@ -209,12 +270,14 @@ const mergeProgress = (localValue, cloudValue) => {
     points: Math.max(local.points, cloud.points),
     awardedFlashcards: [...new Set([...local.awardedFlashcards, ...cloud.awardedFlashcards])],
     completedQuizzes: Math.max(local.completedQuizzes, cloud.completedQuizzes),
+    completedOweQuizzes: Math.max(local.completedOweQuizzes, cloud.completedOweQuizzes),
     completedTests: Math.max(local.completedTests, cloud.completedTests),
     completedLearnSessions: Math.max(local.completedLearnSessions, cloud.completedLearnSessions),
     studySeconds: Math.max(local.studySeconds, cloud.studySeconds),
     awardedStudyBlocks: Math.max(local.awardedStudyBlocks, cloud.awardedStudyBlocks),
     boostActivatedOn: local.boostActivatedOn > cloud.boostActivatedOn ? local.boostActivatedOn : cloud.boostActivatedOn,
-    boostEndsAt: new Date(local.boostEndsAt || 0) > new Date(cloud.boostEndsAt || 0) ? local.boostEndsAt : cloud.boostEndsAt
+    boostEndsAt: new Date(local.boostEndsAt || 0) > new Date(cloud.boostEndsAt || 0) ? local.boostEndsAt : cloud.boostEndsAt,
+    questRewards: { ...cloud.questRewards, ...local.questRewards }
   };
 };
 
@@ -253,6 +316,9 @@ let selectedQuizChapter = 'all';
 let selectedQuizLength = 20;
 let selectedOweQuizStage = 'all';
 let oweQuizState = null;
+let activeQuestOpening = '';
+let questRewardTimer = null;
+let lastQuestTrigger = null;
 let currentCard = 0;
 let flashcardDefinitionFirst = false;
 try {
@@ -560,18 +626,110 @@ function showRankCelebration(rank) {
   requestAnimationFrame(() => $('#rankCelebration').classList.add('visible'));
 }
 
-function awardPoints(amount, label, sourceElement) {
+function awardPoints(amount, label, sourceElement, { useBoost = true } = {}) {
   if (amount <= 0) return 0;
-  const awardedAmount = isBoostActive() ? amount * 2 : amount;
+  const boostApplied = useBoost && isBoostActive();
+  const awardedAmount = boostApplied ? amount * 2 : amount;
   const previousRankIndex = rankIndexForPoints(progress.points);
   progress.points += awardedAmount;
   const currentRankIndex = rankIndexForPoints(progress.points);
   saveProgress();
-  showPointsAnimation(awardedAmount, isBoostActive() ? `${label} · boost ×2` : label, sourceElement);
+  showPointsAnimation(awardedAmount, boostApplied ? `${label} · boost ×2` : label, sourceElement);
   if (currentRankIndex > previousRankIndex) {
     window.setTimeout(() => showRankCelebration(ranks[currentRankIndex]), 650);
   }
   return awardedAmount;
+}
+
+function questProgressValue(quest) {
+  const value = progress[quest.metric];
+  return Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+}
+
+function questCardMarkup(quest) {
+  const value = questProgressValue(quest);
+  const completed = value >= quest.target;
+  const reward = progress.questRewards[quest.id];
+  const claimed = Number.isFinite(reward);
+  const percent = Math.min(100, Math.round((value / quest.target) * 100));
+  const stateClass = claimed ? 'claimed' : completed ? 'ready' : 'in-progress';
+  const actionLabel = claimed
+    ? `Odebrano +${reward} pkt`
+    : completed
+      ? 'Otwórz skrzynkę'
+      : `${Math.min(value, quest.target)} / ${quest.target}`;
+  const actionHint = completed && !claimed ? `Otwórz skrzynkę za quest „${quest.title}”` : actionLabel;
+  return `
+    <article class="quest-card ${stateClass}" data-quest-id="${escapeHtml(quest.id)}">
+      <div class="quest-card-top">
+        <span class="quest-code" aria-hidden="true">${escapeHtml(quest.code)}</span>
+        <div><strong>${escapeHtml(quest.title)}</strong><p>${escapeHtml(quest.description)}</p></div>
+      </div>
+      <div class="quest-progress-row">
+        <div class="quest-progress-track" aria-hidden="true"><i style="width:${percent}%"></i></div>
+        <span>${Math.min(value, quest.target)} / ${quest.target}</span>
+      </div>
+      <button class="quest-chest-button" type="button" data-claim-quest="${escapeHtml(quest.id)}" aria-label="${escapeHtml(actionHint)}" ${completed && !claimed ? '' : 'disabled'}>
+        <span class="quest-chest-icon" aria-hidden="true">${claimed ? '✓' : '🎁'}</span>
+        <b>${escapeHtml(actionLabel)}</b>
+        ${completed && !claimed ? '<small>Losowo 50–200 pkt</small>' : ''}
+      </button>
+    </article>
+  `;
+}
+
+function renderQuests() {
+  const homeList = $('#homeQuestList');
+  const pointsList = $('#pointsQuestList');
+  if (homeList) homeList.innerHTML = questDefinitions.filter(quest => quest.featured).map(questCardMarkup).join('');
+  if (pointsList) pointsList.innerHTML = questDefinitions.map(questCardMarkup).join('');
+}
+
+function closeRewardChest() {
+  const modal = $('#questRewardModal');
+  if (!modal || modal.hidden || activeQuestOpening) return;
+  modal.classList.remove('opening', 'revealed');
+  modal.hidden = true;
+  $('#questRewardBackdrop').hidden = true;
+  document.body.classList.remove('quest-reward-open');
+  lastQuestTrigger?.focus?.();
+  lastQuestTrigger = null;
+}
+
+function openQuestChest(questId, sourceElement) {
+  const quest = questDefinitions.find(item => item.id === questId);
+  if (!quest || activeQuestOpening || progress.questRewards[quest.id] || questProgressValue(quest) < quest.target) return;
+  const modal = $('#questRewardModal');
+  if (!modal) return;
+  activeQuestOpening = quest.id;
+  lastQuestTrigger = sourceElement;
+  window.clearTimeout(questRewardTimer);
+  $('#questRewardTitle').textContent = quest.title;
+  $('#questRewardAmount').textContent = 'Losowanie 50–200 pkt…';
+  $('#questRewardCopy').textContent = 'Skrzynka otwiera się — za chwilę poznasz nagrodę.';
+  $('#questRewardClose').hidden = true;
+  $('#questRewardBackdrop').hidden = false;
+  modal.hidden = false;
+  modal.classList.remove('opening', 'revealed');
+  document.body.classList.add('quest-reward-open');
+  requestAnimationFrame(() => modal.classList.add('opening'));
+
+  const revealDelay = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 100 : 900;
+  questRewardTimer = window.setTimeout(() => {
+    const reward = Math.floor(Math.random() * 151) + 50;
+    progress.questRewards[quest.id] = reward;
+    activeQuestOpening = '';
+    const awarded = awardPoints(reward, `skrzynka za quest: ${quest.title}`, $('#questChestVisual'), { useBoost: false });
+    $('#questRewardAmount').textContent = `+${awarded} pkt`;
+    $('#questRewardCopy').textContent = 'Nagroda została dodana do Twojego salda punktów.';
+    $('#questRewardClose').hidden = false;
+    modal.classList.add('revealed');
+    addNotification({
+      type: 'reward',
+      title: `Quest ukończony: ${quest.title}`,
+      message: `Otwarta skrzynka przyniosła Ci ${awarded} pkt.`
+    });
+  }, revealDelay);
 }
 
 function updateProgress() {
@@ -616,6 +774,7 @@ function updateProgress() {
   $('#menuNextRank').textContent = nextRank ? `Następna ranga: ${nextRank.name}` : 'Zdobyto najwyższą rangę';
   $('#menuRankProgress').textContent = nextRank ? `${progress.points} / ${nextRank.threshold}` : `${progress.points} pkt`;
   updateBoostUi();
+  renderQuests();
 
   $('#rankLadder').innerHTML = ranks.map((item, index) => `
     <div class="rank-step ${index <= rankIndex ? 'reached' : ''} ${index === rankIndex ? 'current' : ''}">
@@ -634,11 +793,14 @@ function cloudRowToProgress(row) {
     points: row.points,
     awardedFlashcards: row.awarded_flashcards,
     completedQuizzes: row.completed_quizzes,
+    completedOweQuizzes: row.completed_owe_quizzes,
     completedTests: row.completed_tests,
+    completedLearnSessions: row.completed_learn_sessions,
     studySeconds: row.study_seconds,
     awardedStudyBlocks: row.awarded_study_blocks,
     boostActivatedOn: row.boost_activated_on,
-    boostEndsAt: row.boost_ends_at
+    boostEndsAt: row.boost_ends_at,
+    questRewards: row.quest_rewards
   });
 }
 
@@ -650,13 +812,28 @@ function progressToCloudRow() {
     points: progress.points,
     awarded_flashcards: progress.awardedFlashcards,
     completed_quizzes: progress.completedQuizzes,
+    completed_owe_quizzes: progress.completedOweQuizzes,
     completed_tests: progress.completedTests,
+    completed_learn_sessions: progress.completedLearnSessions,
     study_seconds: progress.studySeconds,
     awarded_study_blocks: progress.awardedStudyBlocks,
     boost_activated_on: progress.boostActivatedOn || null,
     boost_ends_at: progress.boostEndsAt || null,
+    quest_rewards: progress.questRewards,
     updated_at: new Date().toISOString()
   };
+}
+
+function progressToLegacyCloudRow() {
+  const row = progressToCloudRow();
+  delete row.completed_owe_quizzes;
+  delete row.completed_learn_sessions;
+  delete row.quest_rewards;
+  return row;
+}
+
+function isQuestSchemaMissing(error) {
+  return /completed_owe_quizzes|completed_learn_sessions|quest_rewards|schema cache/i.test(String(error?.message || error || ''));
 }
 
 function displayNameForUser(user = currentUser) {
@@ -773,7 +950,7 @@ async function syncProgressToCloud() {
   setCloudStatus('Synchronizowanie…', 'working');
   try {
     const displayName = displayNameForUser();
-    const [progressResult, profileResult] = await Promise.all([
+    let [progressResult, profileResult] = await Promise.all([
       cloudClient.from('study_progress').upsert(progressToCloudRow(), { onConflict: 'user_id' }),
       cloudClient.from('profiles').upsert({
         id: currentUser.id,
@@ -782,10 +959,18 @@ async function syncProgressToCloud() {
         updated_at: new Date().toISOString()
       }, { onConflict: 'id' })
     ]);
+    let questSchemaCurrent = true;
+    if (progressResult.error && isQuestSchemaMissing(progressResult.error)) {
+      questSchemaCurrent = false;
+      progressResult = await cloudClient.from('study_progress').upsert(progressToLegacyCloudRow(), { onConflict: 'user_id' });
+    }
     if (progressResult.error) throw progressResult.error;
     if (profileResult.error) throw profileResult.error;
     currentProfile = { ...(currentProfile || {}), display_name: displayName, points: progress.points };
-    setCloudStatus('Postęp zsynchronizowany', 'success');
+    setCloudStatus(
+      questSchemaCurrent ? 'Postęp zsynchronizowany' : 'Punkty zsynchronizowane · questy zapisane lokalnie do czasu aktualizacji bazy',
+      questSchemaCurrent ? 'success' : 'local'
+    );
   } catch (error) {
     console.error('Nie udało się zsynchronizować postępu:', error);
     setCloudStatus('Błąd synchronizacji · postęp zapisano lokalnie', 'error');
@@ -2249,7 +2434,9 @@ function startOweQuiz() {
     index: 0,
     score: 0,
     answered: false,
-    responses: []
+    responses: [],
+    points: 0,
+    rewardGranted: false
   };
   $('#oweQuizSetup').hidden = true;
   $('#oweQuizResult').hidden = true;
@@ -2287,7 +2474,10 @@ function answerOweQuizQuestion(selectedIndex) {
   const question = oweQuizState.questions[oweQuizState.index];
   const isCorrect = selectedIndex === question.correct;
   oweQuizState.answered = true;
-  if (isCorrect) oweQuizState.score += 1;
+  if (isCorrect) {
+    oweQuizState.score += 1;
+    oweQuizState.points += awardPoints(5, 'poprawna odpowiedź w arkuszu OWE', $('#oweQuizSession'));
+  }
   oweQuizState.responses.push({ question, selectedIndex, isCorrect });
   document.querySelectorAll('[data-owe-answer]').forEach(button => {
     const answerIndex = Number(button.dataset.oweAnswer);
@@ -2298,7 +2488,9 @@ function answerOweQuizQuestion(selectedIndex) {
   $('#oweQuizFeedback').hidden = false;
   $('#oweQuizFeedback').classList.toggle('is-correct', isCorrect);
   $('#oweQuizFeedback').classList.toggle('is-wrong', !isCorrect);
-  $('#oweQuizFeedbackTitle').textContent = isCorrect ? 'Dobra odpowiedź.' : 'Jeszcze nie tym razem.';
+  $('#oweQuizFeedbackTitle').textContent = isCorrect
+    ? `Dobra odpowiedź · +${isBoostActive() ? 10 : 5} pkt`
+    : 'Jeszcze nie tym razem.';
   $('#oweQuizFeedbackCopy').textContent = isCorrect
     ? `Poprawna odpowiedź: ${String.fromCharCode(65 + question.correct)}.`
     : `Poprawna odpowiedź to ${String.fromCharCode(65 + question.correct)}: ${question.options[question.correct]}`;
@@ -2312,6 +2504,20 @@ function showOweQuizResult() {
   const { score, questions, responses } = oweQuizState;
   const percent = Math.round((score / questions.length) * 100);
   const mistakes = responses.filter(response => !response.isCorrect);
+  if (!oweQuizState.rewardGranted && questions.length) {
+    oweQuizState.rewardGranted = true;
+    progress.completedOweQuizzes += 1;
+    const performanceBonus = percent === 100 ? 10 : percent >= 80 ? 5 : 0;
+    if (performanceBonus) {
+      oweQuizState.points += awardPoints(
+        performanceBonus,
+        percent === 100 ? 'premia za arkusz OWE bez błędu' : 'premia za wynik OWE 80%+',
+        $('#oweQuizResult')
+      );
+    } else {
+      saveProgress();
+    }
+  }
   $('#oweQuizSession').hidden = true;
   $('#oweQuizResult').hidden = false;
   $('#oweQuizScore').textContent = `${score}/${questions.length}`;
@@ -2326,6 +2532,9 @@ function showOweQuizResult() {
   $('#oweQuizResultCopy').textContent = mistakes.length
     ? `Masz ${polishCount(mistakes.length, 'pytanie', 'pytania', 'pytań')} do powtórki. Poniżej znajdziesz prawidłowe odpowiedzi i oficjalne źródła.`
     : 'Wszystkie odpowiedzi są poprawne. Spróbuj teraz innego etapu albo dłuższego zestawu.';
+  $('#oweQuizPointsEarned').textContent = oweQuizState.points
+    ? `+${oweQuizState.points} pkt za ten zestaw${percent >= 80 ? ' · premia za wynik wliczona' : ''}`
+    : 'Tym razem bez punktów — przejrzyj odpowiedzi i spróbuj ponownie.';
   $('#oweQuizReview').innerHTML = mistakes.length
     ? `<h4>Do powtórki</h4>${mistakes.map(({ question, selectedIndex }) => `
         <article>
@@ -2485,8 +2694,17 @@ $('#mathChapter').addEventListener('change', event => {
 });
 $('#mathSearch').addEventListener('input', renderMath);
 
+document.addEventListener('click', event => {
+  const trigger = event.target.closest('[data-claim-quest]');
+  if (!trigger) return;
+  openQuestChest(trigger.dataset.claimQuest, trigger);
+});
+
+$('#questRewardClose').addEventListener('click', closeRewardChest);
+$('#questRewardBackdrop').addEventListener('click', closeRewardChest);
+
 $('#resetProgress').addEventListener('click', () => {
-  if (!window.confirm('Wyzerować tryb Ucz się, fiszki, oznaczenia trudności, punkty, rangi, czas nauki oraz historię quizów i testów?')) return;
+  if (!window.confirm('Wyzerować tryb Ucz się, fiszki, oznaczenia trudności, punkty, rangi, questy, czas nauki oraz historię quizów, arkuszy OWE i testów?')) return;
   progress = blankProgress();
   learnKnowledge = {};
   try { localStorage.removeItem(learnKnowledgeStorageKey); } catch {}
@@ -2776,6 +2994,7 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     if (document.body.classList.contains('focus-mode')) exitFocusMode();
     else if (!$('#emailConfirmationPopup').hidden) closeEmailConfirmation();
+    else if (!$('#questRewardModal').hidden) closeRewardChest();
     else if (!$('#rankCelebration').hidden) $('#celebrationClose').click();
     else if (!$('#authModal').hidden) setAuthModal(false);
     else if (!$('#pointsMenu').hidden) setPointsMenu(false);

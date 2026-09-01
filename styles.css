@@ -238,6 +238,20 @@ footer { padding:35px 0 45px; color:#858b85; font-size:12px; border-top:1px soli
 .points-rules ul { padding:0; margin:0; list-style:none; }
 .points-rules li { display:flex; justify-content:space-between; gap:14px; padding:9px 0; border-bottom:1px solid #e8e4dc; color:#59645f; font-size:12px; }
 .points-rules li strong { color:var(--teal); font:500 11px "DM Mono",monospace; }
+.points-quests { padding:23px 0 21px; border-bottom:1px solid var(--line); }
+.points-quests-heading { display:flex; align-items:end; justify-content:space-between; gap:16px; }
+.points-quests-heading h3 { margin:2px 0 0; font:600 23px Fraunces,Georgia,serif; letter-spacing:-.7px; }
+.points-quests-heading > span { padding:5px 8px; border-radius:13px; color:#7a5618; background:#f6e2aa; font:700 9px "DM Mono",monospace; white-space:nowrap; }
+.points-quests > p { margin:9px 0 15px; color:var(--muted); font-size:11px; line-height:1.45; }
+.points-quest-grid { grid-template-columns:1fr; gap:9px; }
+.points-quest-grid .quest-card { padding:13px; border-radius:7px; }
+.points-quest-grid .quest-card-top { grid-template-columns:38px minmax(0,1fr); gap:10px; }
+.points-quest-grid .quest-code { width:38px; height:38px; border-radius:9px; font-size:9px; }
+.points-quest-grid .quest-card-top strong { font-size:13px; }
+.points-quest-grid .quest-card-top p { display:none; }
+.points-quest-grid .quest-progress-row { margin-top:11px; }
+.points-quest-grid .quest-chest-button { min-height:41px; margin-top:9px; padding:7px 10px; }
+.points-quest-grid .quest-chest-icon { width:27px; font-size:19px; }
 .rank-ladder { display:grid; gap:7px; padding-top:4px; }
 .rank-step { display:grid; grid-template-columns:33px 1fr auto; align-items:center; gap:11px; padding:10px 11px; border:1px solid var(--line); border-radius:4px; color:#8a908c; background:#f2efe9; }
 .rank-step > span { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:#e1ded7; font:500 9px "DM Mono",monospace; }
@@ -553,6 +567,9 @@ footer { padding:35px 0 45px; color:#858b85; font-size:12px; border-top:1px soli
 
 @media (prefers-reduced-motion:reduce) {
   .points-burst { animation-duration:.25s; }
+  .quest-card.ready::after,.quest-card.ready .quest-chest-icon,.quest-chest-closed,.quest-reward-modal.revealed .quest-chest-visual i { animation:none; }
+  .quest-reward-modal.opening { animation-duration:.01s; }
+  .quest-reward-modal.revealed .quest-chest-open { transition:none; }
 }
 
 @media (max-width:700px) {
@@ -699,6 +716,87 @@ footer { padding:35px 0 45px; color:#858b85; font-size:12px; border-top:1px soli
 .home-info-grid p { margin:0; color:var(--muted); font-size:12px; line-height:1.5; }
 .home-account-cta { min-width:145px; }
 
+.home-quests { margin-top:20px; padding:29px; border:1px solid var(--line); border-radius:14px; background:var(--card); box-shadow:0 12px 34px rgba(30,42,42,.035); }
+.home-quests-heading { display:flex; align-items:end; justify-content:space-between; gap:30px; margin-bottom:21px; }
+.home-quests-heading h2 { margin:4px 0 0; font:600 29px/1.12 Fraunces,Georgia,serif; letter-spacing:-1.1px; }
+.home-quests-heading > p { max-width:400px; margin:0; color:var(--muted); font-size:12px; line-height:1.55; }
+.quest-grid { display:grid; gap:12px; }
+.home-quest-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.quest-card { position:relative; min-width:0; overflow:hidden; padding:17px; border:1px solid #ddd9cf; border-radius:9px; background:#fbfaf6; transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease; }
+.quest-card-top { display:grid; grid-template-columns:43px minmax(0,1fr); gap:12px; align-items:start; }
+.quest-code { width:43px; height:43px; display:grid; place-items:center; border-radius:11px; color:var(--teal); background:#e5efec; font:700 10px "DM Mono",monospace; letter-spacing:-.2px; }
+.quest-card-top > div { min-width:0; }
+.quest-card-top strong { display:block; margin:1px 0 5px; font-size:14px; line-height:1.25; }
+.quest-card-top p { margin:0; color:var(--muted); font-size:11px; line-height:1.45; }
+.quest-progress-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:center; margin-top:15px; }
+.quest-progress-track { height:5px; overflow:hidden; border-radius:5px; background:#e4e1d9; }
+.quest-progress-track i { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--teal),#6db4a9); transition:width .7s cubic-bezier(.22,1,.36,1); }
+.quest-progress-row > span { color:#7a827d; font:600 9px "DM Mono",monospace; }
+.quest-chest-button { position:relative; width:100%; min-height:45px; display:grid; grid-template-columns:32px minmax(0,1fr) auto; align-items:center; gap:7px; margin-top:12px; padding:8px 11px; border:1px solid #d8d4ca; border-radius:6px; color:#737a76; background:#f0eee8; text-align:left; transition:.2s ease; }
+.quest-chest-button b { overflow:hidden; font-size:11px; text-overflow:ellipsis; white-space:nowrap; }
+.quest-chest-button small { color:#8d691e; font:600 8px "DM Mono",monospace; white-space:nowrap; }
+.quest-chest-icon { width:30px; display:grid; place-items:center; font-size:21px; line-height:1; transform-origin:50% 80%; }
+.quest-card.ready { border-color:#d2a645; background:#fffaf0; box-shadow:0 8px 24px rgba(150,105,28,.09); }
+.quest-card.ready::after { content:""; position:absolute; top:-80%; left:-35%; width:24%; height:260%; pointer-events:none; background:linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent); transform:rotate(22deg); animation:quest-shimmer 2.8s ease-in-out infinite; }
+.quest-card.ready .quest-chest-button { z-index:1; cursor:pointer; color:#67480d; border-color:#d6ac4c; background:#f8e4ab; }
+.quest-card.ready .quest-chest-button:hover { transform:translateY(-2px); color:#fff; border-color:#a97718; background:#ad7b1b; box-shadow:0 8px 18px rgba(132,88,12,.18); }
+.quest-card.ready .quest-chest-icon { animation:quest-chest-bounce 1.7s ease-in-out infinite; }
+.quest-card.claimed { border-color:#bcd2cb; background:#eff6f3; }
+.quest-card.claimed .quest-code,.quest-card.claimed .quest-chest-icon { color:#fff; background:var(--teal); }
+.quest-card.claimed .quest-chest-icon { width:27px; height:27px; border-radius:50%; font:700 12px "DM Mono",monospace; }
+.quest-card.claimed .quest-chest-button { color:#347169; border-color:#c7d9d4; background:#e2efeb; }
+.quest-chest-button:disabled { cursor:default; }
+
+.quest-reward-open { overflow:hidden; }
+.quest-reward-backdrop { position:fixed; z-index:330; inset:0; width:100%; height:100%; padding:0; border:0; background:rgba(17,26,24,.72); cursor:default; animation:fade-in .2s ease; }
+.quest-reward-modal { position:fixed; z-index:340; top:50%; left:50%; width:min(440px,calc(100vw - 30px)); padding:33px 31px 29px; border:1px solid #dfcfaa; border-radius:14px; background:#fffaf0; box-shadow:0 30px 90px rgba(12,21,19,.35); text-align:center; transform:translate(-50%,-50%) scale(.93); opacity:0; }
+.quest-reward-modal.opening { animation:quest-modal-in .35s cubic-bezier(.22,1,.36,1) forwards; }
+.quest-reward-modal h2 { margin:5px 0 0; font:600 30px/1.12 Fraunces,Georgia,serif; letter-spacing:-1.1px; }
+.quest-chest-visual { position:relative; width:118px; height:112px; display:grid; place-items:center; margin:15px auto 4px; }
+.quest-chest-closed,.quest-chest-open { grid-area:1/1; font-size:74px; line-height:1; filter:drop-shadow(0 10px 12px rgba(102,68,10,.2)); }
+.quest-chest-closed { animation:quest-chest-open .9s cubic-bezier(.36,.07,.19,.97) both; }
+.quest-chest-open { opacity:0; transform:scale(.55) rotate(-8deg); }
+.quest-reward-modal.revealed .quest-chest-closed { opacity:0; }
+.quest-reward-modal.revealed .quest-chest-open { opacity:1; transform:scale(1.12) rotate(0); transition:.35s cubic-bezier(.22,1,.36,1); }
+.quest-chest-visual i { position:absolute; width:7px; height:7px; border-radius:50%; background:#e4af36; opacity:0; }
+.quest-chest-visual i:nth-of-type(1) { top:19px; left:14px; }
+.quest-chest-visual i:nth-of-type(2) { top:5px; right:20px; background:var(--accent); }
+.quest-chest-visual i:nth-of-type(3) { top:48px; right:2px; background:var(--teal); }
+.quest-reward-modal.revealed .quest-chest-visual i { animation:quest-spark 1s ease-out both; }
+.quest-reward-modal.revealed .quest-chest-visual i:nth-of-type(2) { animation-delay:.08s; }
+.quest-reward-modal.revealed .quest-chest-visual i:nth-of-type(3) { animation-delay:.16s; }
+.quest-reward-amount { display:block; min-height:38px; color:#a36f12; font:700 29px Fraunces,Georgia,serif; letter-spacing:-.7px; }
+.quest-reward-modal > p:not(.eyebrow) { margin:6px auto 20px; color:#6e6451; font-size:12px; line-height:1.5; }
+.quest-reward-modal .primary-button { width:100%; }
+.owe-points-earned { margin:12px 0 0 !important; color:var(--teal) !important; font:600 12px "DM Mono",monospace !important; }
+
+@keyframes quest-shimmer {
+  0%,35% { left:-35%; opacity:0; }
+  48% { opacity:1; }
+  65%,100% { left:125%; opacity:0; }
+}
+@keyframes quest-chest-bounce {
+  0%,100% { transform:translateY(0) rotate(0); }
+  45% { transform:translateY(-3px) rotate(-4deg); }
+  58% { transform:translateY(-2px) rotate(4deg); }
+}
+@keyframes quest-modal-in {
+  to { opacity:1; transform:translate(-50%,-50%) scale(1); }
+}
+@keyframes quest-chest-open {
+  0% { transform:translateX(0) rotate(0) scale(.86); }
+  20% { transform:translateX(-5px) rotate(-5deg) scale(1); }
+  40% { transform:translateX(5px) rotate(5deg); }
+  60% { transform:translateX(-4px) rotate(-4deg); }
+  80% { transform:translateX(3px) rotate(3deg); }
+  100% { transform:translateX(0) rotate(0) scale(1); }
+}
+@keyframes quest-spark {
+  0% { opacity:0; transform:translateY(20px) scale(.2); }
+  45% { opacity:1; }
+  100% { opacity:0; transform:translateY(-24px) scale(1.7); }
+}
+
 .card-direction { position:absolute; z-index:8; top:20px; right:69px; width:39px; height:39px; display:grid; place-items:center; padding:0; border:1px solid #ded9cc; border-radius:50%; background:rgba(255,253,249,.9); color:#8f9993; box-shadow:0 4px 12px rgba(35,40,36,.06); font:600 18px/1 "DM Mono",monospace; transition:.22s ease; }
 .card-direction:hover { transform:scale(1.06); border-color:var(--teal); color:var(--teal); background:#f2f8f6; }
 .card-direction.active { border-color:var(--teal); color:#fff; background:var(--teal); }
@@ -722,9 +820,19 @@ footer { padding:35px 0 45px; color:#858b85; font-size:12px; border-top:1px soli
 @media (max-width:800px) {
   .home-overview { grid-template-columns:1fr; gap:27px; margin-top:39px; }
   .home-overview-heading h2 { max-width:none; }
+  .home-quest-grid { grid-template-columns:1fr; }
 }
 
 @media (max-width:700px) {
+  .home-quests { margin-top:14px; padding:21px 15px; }
+  .home-quests-heading { align-items:start; flex-direction:column; gap:9px; margin-bottom:16px; }
+  .home-quests-heading h2 { font-size:25px; }
+  .home-quests-heading > p { max-width:none; }
+  .quest-card { padding:15px; }
+  .quest-chest-button { grid-template-columns:30px minmax(0,1fr); }
+  .quest-chest-button small { grid-column:2; }
+  .quest-reward-modal { padding:29px 20px 22px; }
+  .quest-reward-modal h2 { font-size:27px; }
   .home-info-grid { grid-template-columns:1fr; }
   .home-info-grid article,.home-info-grid article:first-child { display:grid; grid-template-columns:28px minmax(0,1fr); gap:2px 10px; padding:14px 0; border-left:0; border-top:1px solid var(--line); }
   .home-info-grid article:first-child { border-top:0; }
@@ -1109,8 +1217,20 @@ html[data-theme="dark"] .owe-menu-button:not(.active) small { color:#bd8e7e; }
   .home-panel .hero h1 { font-size:clamp(43px,4.4vw,64px); }
   .home-panel .progress-strip { grid-template-columns:1fr; gap:22px; align-content:center; padding:31px; background:#e8efec; }
   .home-panel .progress-bars { align-self:end; }
+  .home-panel .home-quests { grid-column:1/-1; }
   .home-panel .home-overview { grid-column:1/-1; margin-top:5px; padding:31px; border:1px solid var(--line); border-radius:14px; background:var(--card); }
 }
+
+html[data-theme="dark"] .quest-card { border-color:var(--line); background:#17211f; }
+html[data-theme="dark"] .quest-code { background:#21322e; }
+html[data-theme="dark"] .quest-progress-track { background:#303a36; }
+html[data-theme="dark"] .quest-chest-button { border-color:#3b4742; color:#aeb9b4; background:#202b28; }
+html[data-theme="dark"] .quest-card.ready { border-color:#80682f; background:#2c281d; }
+html[data-theme="dark"] .quest-card.ready .quest-chest-button { color:#f2d484; border-color:#8d7130; background:#41371e; }
+html[data-theme="dark"] .quest-card.claimed { border-color:#315c53; background:#182c28; }
+html[data-theme="dark"] .quest-card.claimed .quest-chest-button { color:#acd6cd; border-color:#315c53; background:#203b35; }
+html[data-theme="dark"] .quest-reward-modal { border-color:#80682f; background:#28251d; }
+html[data-theme="dark"] .quest-reward-modal > p:not(.eyebrow) { color:#c0b8a5; }
 
 /* Interaktywny quiz z oficjalnych arkuszy OWE */
 .owe-panel { max-width:1080px; margin:0 auto; }

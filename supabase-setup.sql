@@ -15,17 +15,23 @@ create table if not exists public.study_progress (
   points integer not null default 0 check (points >= 0),
   awarded_flashcards jsonb not null default '[]'::jsonb,
   completed_quizzes integer not null default 0 check (completed_quizzes >= 0),
+  completed_owe_quizzes integer not null default 0 check (completed_owe_quizzes >= 0),
   completed_tests integer not null default 0 check (completed_tests >= 0),
+  completed_learn_sessions integer not null default 0 check (completed_learn_sessions >= 0),
   study_seconds double precision not null default 0 check (study_seconds >= 0),
   awarded_study_blocks integer not null default 0 check (awarded_study_blocks >= 0),
   boost_activated_on text,
   boost_ends_at timestamptz,
+  quest_rewards jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
 
--- Bezpieczna aktualizacja istniejącej tabeli po dodaniu dziennego boosta.
+-- Bezpieczna aktualizacja istniejącej tabeli po dodaniu boosta, arkuszy OWE i questów.
 alter table public.study_progress add column if not exists boost_activated_on text;
 alter table public.study_progress add column if not exists boost_ends_at timestamptz;
+alter table public.study_progress add column if not exists completed_owe_quizzes integer not null default 0 check (completed_owe_quizzes >= 0);
+alter table public.study_progress add column if not exists completed_learn_sessions integer not null default 0 check (completed_learn_sessions >= 0);
+alter table public.study_progress add column if not exists quest_rewards jsonb not null default '{}'::jsonb;
 
 create index if not exists profiles_points_idx on public.profiles (points desc, updated_at asc);
 

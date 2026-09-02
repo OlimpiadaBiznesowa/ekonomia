@@ -1216,36 +1216,191 @@ async function loadCloudProgress() {
   }
 }
 
+function formatLeaderboardPoints(value) {
+  const points = Math.max(0, Math.floor(Number(value) || 0));
+  if (points <= 1000) return String(points);
+  const thousands = Math.round((points / 1000) * 10) / 10;
+  const compact = Number.isInteger(thousands) ? thousands.toFixed(0) : thousands.toFixed(1);
+  return `${compact}K`;
+}
+
+function leaderboardRowMarkup(item, position, { current = false, privateRanking = false, personal = false } = {}) {
+  const points = Math.max(0, Math.floor(Number(item.points) || 0));
+  const rank = ranks[rankIndexForPoints(points)];
+  const name = String(item.display_name || 'Uczeń').slice(0, 30);
+  const numericPosition = Math.max(0, Math.floor(Number(position) || 0));
+  const isPodium = !personal && numericPosition >= 1 && numericPosition <= 3;
+  const positionCopy = personal
+    ? `<b>${numericPosition || '—'}</b><small>TY</small>`
+    : numericPosition === 1
+      ? '<i aria-hidden="true">♛</i><b>1</b>'
+      : numericPosition || '—';
+  return `
+    <article class="leaderboard-row ${current ? 'current-user' : ''} ${privateRanking ? 'private-ranking-row' : ''} ${isPodium ? `podium podium-${numericPosition}` : ''}">
+      <span class="leaderboard-position ${personal ? 'is-you' : ''}" ${numericPosition === 1 && !personal ? 'title="Lider rankingu"' : ''}>${positionCopy}</span>
+      <span class="leaderboard-avatar" aria-hidden="true">${escapeHtml(initialsForName(name))}</span>
+      <div><strong>${escapeHtml(name)}</strong><small>${escapeHtml(rank.name)}</small></div>
+      <b class="leaderboard-points ${points > 1000 ? 'is-high' : ''}" title="${points} punktów">${escapeHtml(formatLeaderboardPoints(points))} pkt</b>
+    </article>
+  `;
+}
+
 function renderLeaderboardRows(items = []) {
   const list = $('#leaderboardList');
-  if (!items.length) {
-    list.innerHTML = '<p class="leaderboard-empty">Ranking jest jeszcze pusty.</p>';
+  const me = $('#leaderboardMe');
+  const topFive = items.filter(item => Number(item.position) <= 5).slice(0, 5);
+  list.innerHTML = topFive.length
+    ? topFive.map((item, index) => leaderboardRowMarkup(item, item.position || index + 1, {
+        current: Boolean(item.is_current || item.id === currentUser?.id)
+      })).join('')
+    : '<p class="leaderboard-empty">Ranking jest jeszcze pusty.</p>';
+
+  if (!currentUser) {
+    me.innerHTML = '<p class="leaderboard-empty">Zaloguj się, aby zobaczyć swój wynik.</p>';
     return;
   }
-  list.innerHTML = items.map((item, index) => {
-    const points = Math.max(0, Number(item.points) || 0);
-    const rank = ranks[rankIndexForPoints(points)];
-    const name = String(item.display_name || 'Uczeń').slice(0, 30);
-    return `
-      <article class="leaderboard-row ${item.id === currentUser?.id ? 'current-user' : ''} ${index < 3 ? `podium podium-${index + 1}` : ''}">
-        <span class="leaderboard-position" ${index === 0 ? 'title="Lider rankingu"' : ''}>${index === 0 ? '<i aria-hidden="true">♛</i><b>1</b>' : index + 1}</span>
-        <span class="leaderboard-avatar" aria-hidden="true">${escapeHtml(initialsForName(name))}</span>
-        <div><strong>${escapeHtml(name)}</strong><small>${escapeHtml(rank.name)}</small></div>
-        <b>${points} pkt</b>
-      </article>
-    `;
-  }).join('');
+  const currentIndex = items.findIndex(item => item.id === currentUser.id);
+  const currentItem = currentIndex >= 0 ? items[currentIndex] : {
+    id: currentUser.id,
+    display_name: displayNameForUser(),
+    points: progress.points
+  };
+  me.innerHTML = leaderboardRowMarkup(currentItem, currentItem.position || 0, { current: true, personal: true });
+}
+
+function showPrivateLeaderboardGate(message = '', state = '') {
+  $('#privateLeaderboardGate').hidden = false;
+  $('#privateLeaderboardPanel').hidden = true;
+  $('#privateLeaderboardTitle').textContent = '';
+  $('#privateLeaderboardList').innerHTML = '';
+  $('#privateLeaderboardMe').innerHTML = '';
+  const disabled = !supabaseConfigured || !currentUser;
+  $('#privateLeaderboardPassword').disabled = disabled;
+  $('#privateLeaderboardJoin').disabled = disabled;
+  const feedback = $('#privateLeaderboardFeedback');
+  feedback.textContent = message || (disabled
+    ? supabaseConfigured ? 'Zaloguj się, aby dołączyć.' : 'Prywatne rankingi wymagają konfiguracji Supabase.'
+    : '');
+  feedback.dataset.state = state;
+}
+
+function renderPrivateLeaderboardRows(items = []) {
+  const rankingName = String(items[0]?.ranking_name || '').slice(0, 60);
+  const topTen = items.filter(item => Number(item.position) <= 10);
+  const currentItem = items.find(item => item.is_current);
+  const memberCount = Math.max(0, Number(items[0]?.member_count) || topTen.length);
+  $('#privateLeaderboardGate').hidden = true;
+  $('#privateLeaderboardPanel').hidden = false;
+  $('#privateLeaderboardTitle').textContent = rankingName;
+  $('#privateLeaderboardMeta').textContent = `${polishCount(memberCount, 'uczestnik', 'uczestników', 'uczestników')} · ranking widoczny tylko dla członków`;
+  $('#privateLeaderboardList').innerHTML = topTen.length
+    ? topTen.map(item => leaderboardRowMarkup(item, item.position, {
+        current: Boolean(item.is_current),
+        privateRanking: true
+      })).join('')
+    : '<p class="leaderboard-empty">W tej grupie nie ma jeszcze wyników.</p>';
+  const showCurrentBelowTopTen = currentItem && Number(currentItem.position) > 10;
+  $('#privateLeaderboardMeSection').hidden = !showCurrentBelowTopTen;
+  $('#privateLeaderboardMe').innerHTML = showCurrentBelowTopTen
+    ? leaderboardRowMarkup(currentItem, currentItem.position, {
+        current: true,
+        privateRanking: true,
+        personal: true
+      })
+    : '';
+}
+
+function isPrivateLeaderboardSchemaMissing(error) {
+  return /join_private_leaderboard|get_private_leaderboard|private ranking|schema cache|could not find the function/i.test(String(error?.message || error || ''));
+}
+
+async function loadPrivateLeaderboard({ silent = false } = {}) {
+  if (!supabaseConfigured || !currentUser || !cloudClient) {
+    showPrivateLeaderboardGate();
+    return;
+  }
+  if (!silent) {
+    $('#privateLeaderboardFeedback').textContent = 'Sprawdzanie dostępu…';
+    $('#privateLeaderboardFeedback').dataset.state = 'working';
+  }
+  try {
+    const { data, error } = await cloudClient.rpc('get_private_leaderboard');
+    if (error) throw error;
+    if (!Array.isArray(data) || !data.length) {
+      showPrivateLeaderboardGate();
+      return;
+    }
+    renderPrivateLeaderboardRows(data);
+  } catch (error) {
+    console.error('Nie udało się pobrać prywatnego rankingu:', error);
+    showPrivateLeaderboardGate(
+      isPrivateLeaderboardSchemaMissing(error)
+        ? 'Prywatny ranking będzie dostępny po aktualizacji bazy.'
+        : 'Nie udało się sprawdzić dostępu. Spróbuj ponownie.',
+      'error'
+    );
+  }
+}
+
+async function joinPrivateLeaderboard(event) {
+  event.preventDefault();
+  if (!cloudClient || !currentUser) {
+    showPrivateLeaderboardGate('Zaloguj się, aby dołączyć.', 'error');
+    return;
+  }
+  const input = $('#privateLeaderboardPassword');
+  const button = $('#privateLeaderboardJoin');
+  const accessCode = input.value;
+  if (!accessCode.trim()) return;
+  button.disabled = true;
+  input.disabled = true;
+  $('#privateLeaderboardFeedback').textContent = 'Sprawdzanie hasła…';
+  $('#privateLeaderboardFeedback').dataset.state = 'working';
+  try {
+    const { data, error } = await cloudClient.rpc('join_private_leaderboard', { access_code: accessCode });
+    if (error) throw error;
+    const resultCode = String(data?.[0]?.ranking_id || 'invalid_private_ranking_code');
+    if (resultCode === 'private_ranking_try_later') {
+      $('#privateLeaderboardFeedback').textContent = 'Za dużo prób. Spróbuj ponownie za 15 minut.';
+      $('#privateLeaderboardFeedback').dataset.state = 'error';
+      return;
+    }
+    if (resultCode === 'invalid_private_ranking_code' || resultCode === 'authentication_required') {
+      $('#privateLeaderboardFeedback').textContent = resultCode === 'authentication_required'
+        ? 'Zaloguj się, aby dołączyć.'
+        : 'Nieprawidłowe hasło.';
+      $('#privateLeaderboardFeedback').dataset.state = 'error';
+      return;
+    }
+    input.value = '';
+    await loadPrivateLeaderboard({ silent: true });
+  } catch (error) {
+    const invalidCode = /invalid_private_ranking_code|nieprawidłow/i.test(String(error?.message || error || ''));
+    const tryLater = /private_ranking_try_later/i.test(String(error?.message || error || ''));
+    $('#privateLeaderboardFeedback').textContent = tryLater
+      ? 'Za dużo prób. Spróbuj ponownie za 15 minut.'
+      : invalidCode
+        ? 'Nieprawidłowe hasło.'
+        : isPrivateLeaderboardSchemaMissing(error)
+          ? 'Najpierw uruchom najnowszy plik supabase-setup.sql.'
+          : 'Nie udało się dołączyć. Spróbuj ponownie.';
+    $('#privateLeaderboardFeedback').dataset.state = 'error';
+  } finally {
+    input.value = '';
+    input.disabled = false;
+    button.disabled = false;
+  }
 }
 
 function evaluateLeaderboardMovement(items = []) {
   if (!currentUser) return;
   const currentIndex = items.findIndex(item => item.id === currentUser.id);
   if (currentIndex < 0) return;
-  const currentPosition = currentIndex + 1;
+  const currentPosition = Number(items[currentIndex].position) || currentIndex + 1;
   const snapshotKey = `mankiw-taylor-rank-snapshot-v1:${currentUser.id}`;
   const previousPosition = Number(localStorage.getItem(snapshotKey));
   if (Number.isFinite(previousPosition) && previousPosition > 0 && currentPosition > previousPosition) {
-    const personAbove = items[currentIndex - 1];
+    const personAbove = items.find(item => Number(item.position) === currentPosition - 1);
     const name = String(personAbove?.display_name || '').trim();
     addNotification({
       type: 'ranking',
@@ -1264,12 +1419,14 @@ async function loadLeaderboard({ silent = false } = {}) {
     notice.textContent = 'Najpierw skonfiguruj Supabase według pliku SUPABASE_SETUP.md.';
     notice.dataset.state = 'local';
     renderLeaderboardRows([]);
+    showPrivateLeaderboardGate();
     return;
   }
   if (!currentUser) {
     notice.textContent = 'Zaloguj się, aby zobaczyć ranking klasy.';
     notice.dataset.state = 'local';
     renderLeaderboardRows([]);
+    showPrivateLeaderboardGate();
     return;
   }
   if (!silent) {
@@ -1277,22 +1434,21 @@ async function loadLeaderboard({ silent = false } = {}) {
     notice.dataset.state = 'working';
   }
   try {
-    const { data, error } = await cloudClient
-      .from('profiles')
-      .select('id, display_name, points, updated_at')
-      .order('points', { ascending: false })
-      .order('updated_at', { ascending: true })
-      .limit(100);
+    const { data, error } = await cloudClient.rpc('get_public_leaderboard');
     if (error) throw error;
-    notice.textContent = `${polishCount(data.length, 'uczestnik', 'uczestników', 'uczestników')} · aktualizacja na żywo po odświeżeniu`;
+    const rows = Array.isArray(data) ? data : [];
+    const participantCount = Math.max(0, Number(rows[0]?.participant_count) || rows.length);
+    notice.textContent = `${polishCount(participantCount, 'uczestnik', 'uczestników', 'uczestników')} · aktualizacja na żywo po odświeżeniu`;
     notice.dataset.state = 'success';
-    evaluateLeaderboardMovement(data);
-    renderLeaderboardRows(data);
+    evaluateLeaderboardMovement(rows);
+    renderLeaderboardRows(rows);
+    await loadPrivateLeaderboard({ silent });
   } catch (error) {
     console.error('Nie udało się pobrać rankingu:', error);
     notice.textContent = 'Nie udało się pobrać rankingu. Sprawdź konfigurację bazy.';
     notice.dataset.state = 'error';
     renderLeaderboardRows([]);
+    showPrivateLeaderboardGate('Nie udało się sprawdzić prywatnych rankingów.', 'error');
   }
 }
 
@@ -1302,11 +1458,13 @@ async function applyAuthSession(session, { initial = false } = {}) {
   const shouldLoadProgress = Boolean(currentUser && (!authInitialized || previousUserId !== currentUser.id));
   authInitialized = true;
   if (currentUser) {
+    if (shouldLoadProgress) showPrivateLeaderboardGate();
     updateAccountUi();
     if (shouldLoadProgress) await loadCloudProgress();
     if (shouldLoadProgress) await loadLeaderboard({ silent: true });
   } else {
     currentProfile = null;
+    showPrivateLeaderboardGate();
     if (previousUserId && !initial) {
       progress = blankProgress();
       persistLocalProgress();
@@ -3234,6 +3392,7 @@ $('#deleteAccountConfirmation').addEventListener('input', event => {
 });
 $('#deleteAccountButton').addEventListener('click', handleDeleteAccount);
 $('#refreshLeaderboard').addEventListener('click', loadLeaderboard);
+$('#privateLeaderboardJoinForm').addEventListener('submit', joinPrivateLeaderboard);
 $('#profileLeaderboard').addEventListener('click', () => {
   setAuthModal(false);
   switchMode('leaderboard');

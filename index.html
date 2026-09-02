@@ -10,10 +10,13 @@
         if (localStorage.getItem('ekonomia-theme-v1') === 'dark') document.documentElement.dataset.theme = 'dark';
       } catch {}
     </script>
+    <style>
+      .topbar-quick-actions{position:fixed;z-index:120;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:flex;align-items:center;gap:10px}
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260902-minimal-shapes" />
+    <link rel="stylesheet" href="styles.css?v=20260902-daily-quests" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
@@ -29,15 +32,15 @@
           <button type="button" data-menu-mode="flashcards"><span>▱</span><b>Fiszki</b></button>
           <button type="button" data-menu-mode="quiz"><span>?</span><b>Quiz</b></button>
           <p>OLIMPIADA</p>
-          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OWE</span><b>Arkusze OWE</b><i>150</i></button>
+          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OWE</span><b>Arkusze OWE</b><i id="oweQuestionCount">210</i></button>
           <p>POSTĘP</p>
           <button type="button" data-menu-mode="concepts"><span>≡</span><b>Zagadnienia</b></button>
           <button type="button" data-menu-mode="leaderboard"><span>♢</span><b>Ranking</b></button>
           <button type="button" data-menu-mode="more"><span>＋</span><b>Więcej</b></button>
         </nav>
         <div class="workspace-sidebar-foot">
-          <span class="workspace-streak">7</span>
-          <div><strong>Seria nauki</strong><small>Wracaj codziennie</small></div>
+          <span class="workspace-streak" id="workspaceStreak">0</span>
+          <div><strong>Seria nauki</strong><small id="workspaceStreakLabel">Rozpocznij serię dziś</small></div>
         </div>
       </aside>
       <header class="topbar">
@@ -45,6 +48,8 @@
           <span class="brand-mark" id="brandMark">μ</span>
           <span id="brandName">mikroekonomia<span class="muted-dot">.</span></span>
         </a>
+      </header>
+      <div class="topbar-quick-actions">
         <button class="quest-quick-button" id="questQuickButton" type="button" aria-label="Otwórz questy">
           <span aria-hidden="true">🎁</span>
           <b id="questReadyBadge" hidden>0</b>
@@ -54,7 +59,7 @@
           <span>Menu</span>
           <b class="menu-unread-badge" id="menuUnreadBadge" hidden>0</b>
         </button>
-      </header>
+      </div>
       <button class="focus-exit" id="focusExitButton" type="button" hidden><span aria-hidden="true">×</span> Zamknij powiększenie</button>
 
       <main id="start">
@@ -298,7 +303,7 @@
               <div>
                 <p class="eyebrow">TRENING OLIMPIJSKI</p>
                 <h3>Prawdziwe pytania. Natychmiastowy wynik.</h3>
-                <p>Bank obejmuje 150 pytań testowych z XXXVI–XXXVIII OWE. Po każdej odpowiedzi zobaczysz rozwiązanie z oficjalnego klucza i odnośnik do arkusza PTE.</p>
+                <p>Bank obejmuje <span id="oweQuestionBankCount">210</span> pytań testowych z XXXV–XXXVIII OWE, w tym etap centralny. Po każdej odpowiedzi zobaczysz rozwiązanie z oficjalnego klucza i odnośnik do arkusza PTE.</p>
               </div>
             </div>
             <div class="owe-setup-grid">
@@ -309,6 +314,7 @@
                   <option value="XXXVIII">XXXVIII OWE · 2024/2025</option>
                   <option value="XXXVII">XXXVII OWE · 2023/2024</option>
                   <option value="XXXVI">XXXVI OWE · 2022/2023</option>
+                  <option value="XXXV">XXXV OWE · 2021/2022</option>
                 </select>
               </label>
               <label>
@@ -325,11 +331,12 @@
                   <button class="active" type="button" data-owe-quiz-stage="all" aria-pressed="true">Wszystkie</button>
                   <button type="button" data-owe-quiz-stage="school" aria-pressed="false">Szkolny</button>
                   <button type="button" data-owe-quiz-stage="district" aria-pressed="false">Okręgowy</button>
+                  <button type="button" data-owe-quiz-stage="central" aria-pressed="false">Centralny</button>
                 </div>
               </div>
             </div>
             <div class="owe-setup-action">
-              <p><strong id="oweQuizPoolCount">150 pytań</strong><span id="oweQuizPoolMeta"> · 3 edycje · 2 etapy</span></p>
+              <p><strong id="oweQuizPoolCount">210 pytań</strong><span id="oweQuizPoolMeta"> · 4 edycje · 3 etapy</span></p>
               <button class="primary-button" id="oweQuizStart" type="button">Rozpocznij quiz <span>→</span></button>
             </div>
           </article>
@@ -346,6 +353,8 @@
             <div class="owe-question-card">
               <h3 id="oweQuizQuestion"></h3>
               <div class="owe-answer-list" id="oweQuizAnswers"></div>
+              <p class="owe-selection-hint" id="oweQuizSelectionHint" hidden>To pytanie może mieć kilka poprawnych odpowiedzi. Zaznacz wszystkie właściwe warianty.</p>
+              <button class="secondary-button owe-check" id="oweQuizCheck" type="button" hidden disabled>Sprawdź odpowiedź</button>
               <div class="owe-feedback" id="oweQuizFeedback" hidden>
                 <div><strong id="oweQuizFeedbackTitle"></strong><p id="oweQuizFeedbackCopy"></p></div>
                 <a id="oweQuizQuestionSource" href="#" target="_blank" rel="noopener noreferrer">Zobacz oficjalny klucz PTE ↗</a>
@@ -614,7 +623,7 @@
 
         <nav class="app-menu-nav" aria-label="Nawigacja strony">
           <button class="menu-nav-button learn-menu-button" type="button" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></button>
-          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OWE</span><div><strong>Quiz z arkuszy OWE</strong><small>150 oficjalnych pytań z kluczami</small></div></button>
+          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OWE</span><div><strong>Quiz z arkuszy OWE</strong><small>210 oficjalnych pytań z kluczami</small></div></button>
           <button class="menu-nav-button active" type="button" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></button>
           <p class="menu-section-label">NAUKA</p>
           <button class="menu-nav-button" type="button" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></button>
@@ -650,6 +659,7 @@
           <div>
             <p id="rankName">Początkujący</p>
             <strong><span id="menuPoints">0</span> punktów</strong>
+            <small id="rankDescription">Zaczynasz budować ekonomiczne podstawy.</small>
           </div>
         </section>
         <p class="cloud-status" id="cloudStatus">Postęp lokalny</p>
@@ -663,11 +673,11 @@
               <p class="eyebrow">QUESTY</p>
               <h3 id="pointsQuestsTitle">Twoje cele</h3>
             </div>
-            <span id="pointsQuestSummary">0/5 ukończonych</span>
+            <span id="pointsQuestSummary">0/3 ukończonych</span>
             <i aria-hidden="true">⌄</i>
           </button>
           <div class="points-quest-body" id="pointsQuestBody" hidden>
-            <p>Gotowa skrzynka pulsuje. Każda zawiera od 50 do 200 pkt.</p>
+            <p id="pointsQuestResetLabel">Codziennie losujemy 3 cele z puli 10. Gotowa skrzynka zawiera od 50 do 200 pkt.</p>
             <div class="quest-grid points-quest-grid" id="pointsQuestList"></div>
           </div>
         </section>
@@ -812,6 +822,7 @@
     <script src="curriculum-data.js?v=20260821-macro"></script>
     <script src="macro-data.js?v=20260821-book-map"></script>
     <script src="owe-quiz-data.js?v=20260831-150q"></script>
-    <script src="app.js?v=20260902-home-focus"></script>
+    <script src="owe-quiz-extra-data.js?v=20260902-central-60q"></script>
+    <script src="app.js?v=20260902-daily-quests"></script>
   </body>
 </html>

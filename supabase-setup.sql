@@ -22,15 +22,27 @@ create table if not exists public.study_progress (
   awarded_study_blocks integer not null default 0 check (awarded_study_blocks >= 0),
   boost_activated_on text,
   boost_ends_at timestamptz,
+  daily_streak integer not null default 0 check (daily_streak >= 0),
+  best_daily_streak integer not null default 0 check (best_daily_streak >= 0),
+  last_study_date text,
+  daily_quest_date text,
+  daily_quest_ids jsonb not null default '[]'::jsonb,
+  daily_quest_baseline jsonb not null default '{}'::jsonb,
   quest_rewards jsonb not null default '{}'::jsonb,
   updated_at timestamptz not null default now()
 );
 
--- Bezpieczna aktualizacja istniejącej tabeli po dodaniu boosta, arkuszy OWE i questów.
+-- Bezpieczna aktualizacja istniejącej tabeli po dodaniu boosta, arkuszy OWE, serii i dziennych questów.
 alter table public.study_progress add column if not exists boost_activated_on text;
 alter table public.study_progress add column if not exists boost_ends_at timestamptz;
 alter table public.study_progress add column if not exists completed_owe_quizzes integer not null default 0 check (completed_owe_quizzes >= 0);
 alter table public.study_progress add column if not exists completed_learn_sessions integer not null default 0 check (completed_learn_sessions >= 0);
+alter table public.study_progress add column if not exists daily_streak integer not null default 0 check (daily_streak >= 0);
+alter table public.study_progress add column if not exists best_daily_streak integer not null default 0 check (best_daily_streak >= 0);
+alter table public.study_progress add column if not exists last_study_date text;
+alter table public.study_progress add column if not exists daily_quest_date text;
+alter table public.study_progress add column if not exists daily_quest_ids jsonb not null default '[]'::jsonb;
+alter table public.study_progress add column if not exists daily_quest_baseline jsonb not null default '{}'::jsonb;
 alter table public.study_progress add column if not exists quest_rewards jsonb not null default '{}'::jsonb;
 
 create index if not exists profiles_points_idx on public.profiles (points desc, updated_at asc);

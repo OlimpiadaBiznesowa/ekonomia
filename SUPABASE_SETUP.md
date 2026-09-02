@@ -36,9 +36,9 @@ W **Authentication → URL Configuration** ustaw:
 
 W **Authentication → Providers → Email** pozostaw włączone logowanie e-mail/hasło. Domyślnie nowy uczeń potwierdza adres przez wiadomość e-mail; to bezpieczniejsza konfiguracja dla klasy.
 
-## 4. Po aktualizacji funkcji konta lub questów
+## 4. Po aktualizacji funkcji konta, serii lub questów
 
-Po dodaniu dziennego boosta, questów, punktów za arkusze OWE lub usuwania konta ponownie uruchom **cały** plik `supabase-setup.sql` w **SQL Editor → Run**. Skrypt jest przygotowany do bezpiecznego ponownego uruchomienia: zachowuje istniejące konta, punkty i postęp, a tylko dodaje brakujące kolumny oraz funkcję usuwania własnego konta.
+Po dodaniu dziennego boosta, serii nauki, dziennych questów, punktów za arkusze OWE lub usuwania konta ponownie uruchom **cały** plik `supabase-setup.sql` w **SQL Editor → Run**. Skrypt jest przygotowany do bezpiecznego ponownego uruchomienia: zachowuje istniejące konta, punkty i postęp, a tylko dodaje brakujące kolumny oraz funkcję usuwania własnego konta.
 
 ## 5. Opublikuj
 
@@ -51,7 +51,8 @@ Po zalogowaniu nazwę użytkownika można zmienić w oknie **Konto ucznia**. Zmi
 - punkty i ranga,
 - opanowane i oznaczone gwiazdką fiszki,
 - liczba ukończonych quizów, arkuszy OWE, sesji nauki i testów,
-- odebrane skrzynki questów wraz z wylosowaną nagrodą,
+- bieżąca i rekordowa seria nauki wraz z datą ostatniej aktywności,
+- trzy wylosowane questy dnia, ich stan początkowy i odebrane skrzynki,
 - naliczony aktywny czas nauki,
 - datę i czas aktywacji dziennego boosta punktów,
 - nazwę użytkownika widoczną w profilu i rankingu.

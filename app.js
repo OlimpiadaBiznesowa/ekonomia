@@ -1,7 +1,7 @@
 const $ = selector => document.querySelector(selector);
 
-const storageKey = 'mankiw-taylor-study-progress-v13';
-const legacyStorageKeys = ['mankiw-taylor-study-progress-v12', 'mankiw-taylor-study-progress-v11', 'mankiw-taylor-study-progress-v9', 'mankiw-taylor-study-progress-v7', 'mankiw-taylor-study-progress-v5'];
+const storageKey = 'mankiw-taylor-study-progress-v14';
+const legacyStorageKeys = ['mankiw-taylor-study-progress-v13', 'mankiw-taylor-study-progress-v12', 'mankiw-taylor-study-progress-v11', 'mankiw-taylor-study-progress-v9', 'mankiw-taylor-study-progress-v7', 'mankiw-taylor-study-progress-v5'];
 const studyRewardSeconds = 15 * 60;
 const studyRewardPoints = 20;
 const boostDurationMs = 30 * 60 * 1000;
@@ -11,7 +11,10 @@ const flashcardDirectionStorageKey = 'mankiw-taylor-flashcard-direction-v1';
 const subjectStorageKey = 'ekonomia-active-subject-v1';
 const themeStorageKey = 'ekonomia-theme-v1';
 const learnKnowledgeStorageKey = 'ekonomia-learn-knowledge-v1';
-const oweQuestions = Array.isArray(window.OWE_QUESTIONS) ? window.OWE_QUESTIONS : [];
+const oweQuestions = [
+  ...(Array.isArray(window.OWE_QUESTIONS) ? window.OWE_QUESTIONS : []),
+  ...(Array.isArray(window.OWE_EXTRA_QUESTIONS) ? window.OWE_EXTRA_QUESTIONS : [])
+];
 
 const siteUpdateNotifications = [
   {
@@ -20,13 +23,6 @@ const siteUpdateNotifications = [
     title: 'Questy, skrzynki i punkty za OWE',
     message: 'Ukończ cele, otwieraj skrzynki z nagrodami 50–200 pkt i zdobywaj punkty także w treningach z arkuszy OWE.',
     createdAt: '2026-09-01T12:00:00+02:00'
-  },
-  {
-    id: 'update-owe-archive-2026-08-31',
-    type: 'update',
-    title: 'Quiz z arkuszy Olimpiady Wiedzy Ekonomicznej',
-    message: 'Dodaliśmy 150 oficjalnych pytań testowych z XXXVI–XXXVIII OWE wraz z odpowiedziami i źródłami PTE.',
-    createdAt: '2026-08-31T12:00:00+02:00'
   },
   {
     id: 'update-reversed-flashcards-2026-08-17',
@@ -59,58 +55,95 @@ const siteUpdateNotifications = [
 ];
 
 const ranks = [
-  { name: 'Początkujący', threshold: 0, emblem: 'I' },
-  { name: 'Adept', threshold: 100, emblem: 'II' },
-  { name: 'Analityk', threshold: 300, emblem: 'III' },
-  { name: 'Ekonomista', threshold: 700, emblem: 'IV' },
-  { name: 'Strateg', threshold: 1200, emblem: 'V' },
-  { name: 'Mistrz ekonomii', threshold: 2000, emblem: 'VI' },
-  { name: 'Olimpijczyk', threshold: 3500, emblem: 'VII' }
+  { name: 'Początkujący', threshold: 0, emblem: 'I', description: 'Poznajesz podstawy i budujesz pierwszy rytm nauki.' },
+  { name: 'Adept', threshold: 100, emblem: 'II', description: 'Regularnie wracasz do pojęć, quizów i powtórek.' },
+  { name: 'Analityk', threshold: 300, emblem: 'III', description: 'Łączysz teorię z zadaniami i coraz trafniej analizujesz problemy.' },
+  { name: 'Ekonomista', threshold: 700, emblem: 'IV', description: 'Swobodnie poruszasz się między mikro- i makroekonomią.' },
+  { name: 'Strateg', threshold: 1200, emblem: 'V', description: 'Rozwiązujesz złożone zestawy i planujesz skuteczne powtórki.' },
+  { name: 'Mistrz ekonomii', threshold: 2000, emblem: 'VI', description: 'Masz szeroką, utrwaloną wiedzę i wysoką skuteczność.' },
+  { name: 'Olimpijczyk', threshold: 3500, emblem: 'VII', description: 'Osiągasz poziom przygotowania do najtrudniejszych etapów OWE.' }
 ];
 
-const questDefinitions = [
+const questPool = [
   {
-    id: 'quiz-marathon-5',
+    id: 'daily-quiz-sprint-2',
     code: 'QZ',
-    title: 'Quizowy maraton',
-    description: 'Ukończ 5 quizów z mikro- lub makroekonomii.',
+    title: 'Quizowy sprint',
+    description: 'Ukończ dziś 2 quizy z mikro- lub makroekonomii.',
     metric: 'completedQuizzes',
-    target: 5,
-    featured: true
+    target: 2
   },
   {
-    id: 'owe-training-3',
+    id: 'daily-owe-training-1',
     code: 'OWE',
     title: 'Trening olimpijczyka',
-    description: 'Ukończ 3 zestawy z oficjalnych arkuszy OWE.',
+    description: 'Ukończ dziś 1 zestaw z oficjalnych arkuszy OWE.',
     metric: 'completedOweQuizzes',
-    target: 3,
-    featured: true
+    target: 1
   },
   {
-    id: 'focus-hour-4',
-    code: '60′',
-    title: 'Godzina skupienia',
-    description: 'Zbierz 4 premie za aktywne 15 minut nauki.',
+    id: 'daily-focus-quarter-1',
+    code: '15′',
+    title: 'Kwadrans skupienia',
+    description: 'Zdobądź dziś premię za 15 minut aktywnej nauki.',
     metric: 'awardedStudyBlocks',
-    target: 4,
-    featured: true
+    target: 1
   },
   {
-    id: 'learn-path-3',
+    id: 'daily-learn-path-1',
     code: '↗',
     title: 'Regularna nauka',
-    description: 'Doprowadź do końca 3 sesje w trybie Ucz się.',
+    description: 'Doprowadź dziś do końca 1 sesję w trybie Ucz się.',
     metric: 'completedLearnSessions',
-    target: 3
+    target: 1
   },
   {
-    id: 'written-test-3',
+    id: 'daily-written-test-1',
     code: 'ABC',
     title: 'Próba bez podpowiedzi',
-    description: 'Ukończ 3 testy z samodzielnym wpisywaniem odpowiedzi.',
+    description: 'Ukończ dziś 1 test z samodzielnym wpisywaniem odpowiedzi.',
     metric: 'completedTests',
-    target: 3
+    target: 1
+  },
+  {
+    id: 'daily-flashcards-5',
+    code: '▱',
+    title: 'Piątka fiszek',
+    description: 'Opanuj dziś 5 nowych fiszek.',
+    metric: 'awardedFlashcards',
+    target: 5
+  },
+  {
+    id: 'daily-quiz-marathon-4',
+    code: '4×',
+    title: 'Quizowy maraton',
+    description: 'Ukończ dziś 4 quizy z dowolnych rozdziałów.',
+    metric: 'completedQuizzes',
+    target: 4
+  },
+  {
+    id: 'daily-owe-double-2',
+    code: 'II',
+    title: 'Podwójne OWE',
+    description: 'Ukończ dziś 2 treningi z arkuszy olimpijskich.',
+    metric: 'completedOweQuizzes',
+    target: 2
+  },
+  {
+    id: 'daily-learn-double-2',
+    code: '2×',
+    title: 'Dwie sesje nauki',
+    description: 'Ukończ dziś 2 sesje w adaptacyjnym trybie Ucz się.',
+    metric: 'completedLearnSessions',
+    target: 2
+  },
+  {
+    id: 'daily-test-double-2',
+    code: 'T2',
+    title: 'Podwójna próba',
+    description: 'Ukończ dziś 2 testy z wpisywaniem odpowiedzi.',
+    metric: 'completedTests',
+    target: 2
   }
 ];
 
@@ -235,6 +268,12 @@ const blankProgress = () => ({
   awardedStudyBlocks: 0,
   boostActivatedOn: '',
   boostEndsAt: '',
+  dailyStreak: 0,
+  bestDailyStreak: 0,
+  lastStudyDate: '',
+  dailyQuestDate: '',
+  dailyQuestIds: [],
+  dailyQuestBaseline: {},
   questRewards: {}
 });
 
@@ -253,6 +292,18 @@ const normalizeProgress = value => {
     awardedStudyBlocks: Number.isFinite(parsed.awardedStudyBlocks) ? Math.max(0, Math.floor(parsed.awardedStudyBlocks)) : 0,
     boostActivatedOn: typeof parsed.boostActivatedOn === 'string' ? parsed.boostActivatedOn : '',
     boostEndsAt: typeof parsed.boostEndsAt === 'string' ? parsed.boostEndsAt : '',
+    dailyStreak: Number.isFinite(parsed.dailyStreak) ? Math.max(0, Math.floor(parsed.dailyStreak)) : 0,
+    bestDailyStreak: Number.isFinite(parsed.bestDailyStreak) ? Math.max(0, Math.floor(parsed.bestDailyStreak)) : 0,
+    lastStudyDate: typeof parsed.lastStudyDate === 'string' ? parsed.lastStudyDate : '',
+    dailyQuestDate: typeof parsed.dailyQuestDate === 'string' ? parsed.dailyQuestDate : '',
+    dailyQuestIds: Array.isArray(parsed.dailyQuestIds)
+      ? [...new Set(parsed.dailyQuestIds.filter(item => typeof item === 'string'))].slice(0, 3)
+      : [],
+    dailyQuestBaseline: parsed.dailyQuestBaseline && typeof parsed.dailyQuestBaseline === 'object' && !Array.isArray(parsed.dailyQuestBaseline)
+      ? Object.fromEntries(Object.entries(parsed.dailyQuestBaseline)
+        .filter(([id, baseline]) => typeof id === 'string' && Number.isFinite(baseline) && baseline >= 0)
+        .map(([id, baseline]) => [id, Math.floor(baseline)]))
+      : {},
     questRewards: parsed.questRewards && typeof parsed.questRewards === 'object' && !Array.isArray(parsed.questRewards)
       ? Object.fromEntries(Object.entries(parsed.questRewards)
         .filter(([id, reward]) => typeof id === 'string' && Number.isFinite(reward) && reward >= 50 && reward <= 200)
@@ -264,20 +315,54 @@ const normalizeProgress = value => {
 const mergeProgress = (localValue, cloudValue) => {
   const local = normalizeProgress(localValue);
   const cloud = normalizeProgress(cloudValue);
+  const sameQuestDay = local.dailyQuestDate && local.dailyQuestDate === cloud.dailyQuestDate;
+  const localQuestDayIsNewer = local.dailyQuestDate > cloud.dailyQuestDate;
+  const questSource = localQuestDayIsNewer
+    ? local
+    : cloud.dailyQuestDate > local.dailyQuestDate
+      ? cloud
+      : cloud.dailyQuestIds.length === 3 ? cloud : local;
+  const newerStreakSource = local.lastStudyDate > cloud.lastStudyDate
+    ? local
+    : cloud.lastStudyDate > local.lastStudyDate ? cloud : null;
+  const mergedCounters = {
+    completedQuizzes: Math.max(local.completedQuizzes, cloud.completedQuizzes),
+    completedOweQuizzes: Math.max(local.completedOweQuizzes, cloud.completedOweQuizzes),
+    completedTests: Math.max(local.completedTests, cloud.completedTests),
+    completedLearnSessions: Math.max(local.completedLearnSessions, cloud.completedLearnSessions),
+    awardedStudyBlocks: Math.max(local.awardedStudyBlocks, cloud.awardedStudyBlocks)
+  };
+  const dailyQuestBaseline = { ...questSource.dailyQuestBaseline };
+  if (localQuestDayIsNewer) {
+    questSource.dailyQuestIds.forEach(id => {
+      const quest = questPool.find(item => item.id === id);
+      if (!quest) return;
+      const cloudValueForMetric = quest.metric === 'awardedFlashcards'
+        ? cloud.awardedFlashcards.length
+        : Number(cloud[quest.metric]) || 0;
+      dailyQuestBaseline[id] = Math.max(Number(dailyQuestBaseline[id]) || 0, cloudValueForMetric);
+    });
+  }
   return {
     mastered: [...new Set([...local.mastered, ...cloud.mastered])],
     starred: [...new Set([...local.starred, ...cloud.starred])],
     points: Math.max(local.points, cloud.points),
     awardedFlashcards: [...new Set([...local.awardedFlashcards, ...cloud.awardedFlashcards])],
-    completedQuizzes: Math.max(local.completedQuizzes, cloud.completedQuizzes),
-    completedOweQuizzes: Math.max(local.completedOweQuizzes, cloud.completedOweQuizzes),
-    completedTests: Math.max(local.completedTests, cloud.completedTests),
-    completedLearnSessions: Math.max(local.completedLearnSessions, cloud.completedLearnSessions),
+    completedQuizzes: mergedCounters.completedQuizzes,
+    completedOweQuizzes: mergedCounters.completedOweQuizzes,
+    completedTests: mergedCounters.completedTests,
+    completedLearnSessions: mergedCounters.completedLearnSessions,
     studySeconds: Math.max(local.studySeconds, cloud.studySeconds),
-    awardedStudyBlocks: Math.max(local.awardedStudyBlocks, cloud.awardedStudyBlocks),
+    awardedStudyBlocks: mergedCounters.awardedStudyBlocks,
     boostActivatedOn: local.boostActivatedOn > cloud.boostActivatedOn ? local.boostActivatedOn : cloud.boostActivatedOn,
     boostEndsAt: new Date(local.boostEndsAt || 0) > new Date(cloud.boostEndsAt || 0) ? local.boostEndsAt : cloud.boostEndsAt,
-    questRewards: { ...cloud.questRewards, ...local.questRewards }
+    dailyStreak: newerStreakSource?.dailyStreak ?? Math.max(local.dailyStreak, cloud.dailyStreak),
+    bestDailyStreak: Math.max(local.bestDailyStreak, cloud.bestDailyStreak, local.dailyStreak, cloud.dailyStreak),
+    lastStudyDate: newerStreakSource?.lastStudyDate || local.lastStudyDate || cloud.lastStudyDate,
+    dailyQuestDate: questSource.dailyQuestDate,
+    dailyQuestIds: [...questSource.dailyQuestIds],
+    dailyQuestBaseline,
+    questRewards: sameQuestDay ? { ...cloud.questRewards, ...local.questRewards } : { ...questSource.questRewards }
   };
 };
 
@@ -599,6 +684,75 @@ function localDateKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+function previousLocalDateKey() {
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return localDateKey(date);
+}
+
+function progressMetricValue(metric, source = progress) {
+  const value = source[metric];
+  if (Array.isArray(value)) return value.length;
+  return Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+}
+
+function pickDailyQuests() {
+  const selected = [];
+  const usedMetrics = new Set();
+  shuffle(questPool).forEach(quest => {
+    if (selected.length >= 3 || usedMetrics.has(quest.metric)) return;
+    selected.push(quest);
+    usedMetrics.add(quest.metric);
+  });
+  return selected;
+}
+
+function ensureDailyQuests({ persist = true } = {}) {
+  const today = localDateKey();
+  const validIds = new Set(questPool.map(quest => quest.id));
+  const activeIdsAreValid = progress.dailyQuestIds.length === 3
+    && progress.dailyQuestIds.every(id => validIds.has(id));
+  if (progress.dailyQuestDate === today && activeIdsAreValid) return false;
+
+  const selected = pickDailyQuests();
+  progress.dailyQuestDate = today;
+  progress.dailyQuestIds = selected.map(quest => quest.id);
+  progress.dailyQuestBaseline = Object.fromEntries(
+    selected.map(quest => [quest.id, progressMetricValue(quest.metric)])
+  );
+  progress.questRewards = {};
+  if (persist) {
+    persistLocalProgress();
+    scheduleCloudSync();
+  }
+  return true;
+}
+
+function activeQuestDefinitions() {
+  ensureDailyQuests();
+  return progress.dailyQuestIds
+    .map(id => questPool.find(quest => quest.id === id))
+    .filter(Boolean);
+}
+
+function recordStudyDay() {
+  const today = localDateKey();
+  if (progress.lastStudyDate === today) return false;
+  progress.dailyStreak = progress.lastStudyDate === previousLocalDateKey()
+    ? Math.max(1, progress.dailyStreak + 1)
+    : 1;
+  progress.bestDailyStreak = Math.max(progress.bestDailyStreak, progress.dailyStreak);
+  progress.lastStudyDate = today;
+  return true;
+}
+
+function visibleDailyStreak() {
+  if (!progress.lastStudyDate) return 0;
+  return [localDateKey(), previousLocalDateKey()].includes(progress.lastStudyDate)
+    ? progress.dailyStreak
+    : 0;
+}
+
 function isBoostActive() {
   return progress.boostActivatedOn === localDateKey() && new Date(progress.boostEndsAt).getTime() > Date.now();
 }
@@ -628,6 +782,7 @@ function showRankCelebration(rank) {
 
 function awardPoints(amount, label, sourceElement, { useBoost = true } = {}) {
   if (amount <= 0) return 0;
+  recordStudyDay();
   const boostApplied = useBoost && isBoostActive();
   const awardedAmount = boostApplied ? amount * 2 : amount;
   const previousRankIndex = rankIndexForPoints(progress.points);
@@ -642,8 +797,9 @@ function awardPoints(amount, label, sourceElement, { useBoost = true } = {}) {
 }
 
 function questProgressValue(quest) {
-  const value = progress[quest.metric];
-  return Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0;
+  const value = progressMetricValue(quest.metric);
+  const baseline = Number(progress.dailyQuestBaseline[quest.id]) || 0;
+  return Math.max(0, value - baseline);
 }
 
 function questCardMarkup(quest) {
@@ -679,6 +835,7 @@ function questCardMarkup(quest) {
 }
 
 function renderQuests() {
+  const questDefinitions = activeQuestDefinitions();
   const pointsList = $('#pointsQuestList');
   if (pointsList) pointsList.innerHTML = questDefinitions.map(questCardMarkup).join('');
   const completedCount = questDefinitions.filter(quest => questProgressValue(quest) >= quest.target).length;
@@ -695,6 +852,8 @@ function renderQuests() {
   $('#pointsQuestSummary').textContent = readyCount
     ? `${completedCount}/${questDefinitions.length} · ${readyCount} do odebrania`
     : `${completedCount}/${questDefinitions.length} ukończonych`;
+  const resetLabel = $('#pointsQuestResetLabel');
+  if (resetLabel) resetLabel.textContent = 'Codziennie losujemy 3 z 10 celów. Nowy zestaw pojawi się po północy.';
 }
 
 function closeRewardChest() {
@@ -709,7 +868,7 @@ function closeRewardChest() {
 }
 
 function openQuestChest(questId, sourceElement) {
-  const quest = questDefinitions.find(item => item.id === questId);
+  const quest = activeQuestDefinitions().find(item => item.id === questId);
   if (!quest || activeQuestOpening || progress.questRewards[quest.id] || questProgressValue(quest) < quest.target) return;
   const modal = $('#questRewardModal');
   if (!modal) return;
@@ -776,6 +935,8 @@ function updateProgress() {
   $('#progressRank').textContent = rank.name;
   $('#menuQuickRank').textContent = rank.name;
   $('#rankName').textContent = rank.name;
+  const rankDescription = $('#rankDescription');
+  if (rankDescription) rankDescription.textContent = rank.description;
   $('#rankEmblem').textContent = rank.emblem;
   $('#menuPoints').textContent = progress.points;
   $('#rankBar').style.width = `${rankPercent}%`;
@@ -784,13 +945,27 @@ function updateProgress() {
   $('#rankProgressText').textContent = nextRank ? `${progress.points} / ${nextRank.threshold}` : `${progress.points} pkt`;
   $('#menuNextRank').textContent = nextRank ? `Następna ranga: ${nextRank.name}` : 'Zdobyto najwyższą rangę';
   $('#menuRankProgress').textContent = nextRank ? `${progress.points} / ${nextRank.threshold}` : `${progress.points} pkt`;
+  const dailyStreak = visibleDailyStreak();
+  const streakBadge = $('#workspaceStreak');
+  const streakLabel = $('#workspaceStreakLabel');
+  if (streakBadge) {
+    streakBadge.textContent = String(dailyStreak);
+    streakBadge.title = dailyStreak
+      ? `${polishCount(dailyStreak, 'dzień', 'dni', 'dni')} serii · rekord ${progress.bestDailyStreak}`
+      : 'Rozpocznij serię nauki';
+  }
+  if (streakLabel) {
+    streakLabel.textContent = progress.lastStudyDate === localDateKey()
+      ? `Dziś zaliczone · rekord ${progress.bestDailyStreak}`
+      : dailyStreak ? 'Wróć dziś, aby utrzymać serię' : 'Rozpocznij serię dziś';
+  }
   updateBoostUi();
   renderQuests();
 
   $('#rankLadder').innerHTML = ranks.map((item, index) => `
     <div class="rank-step ${index <= rankIndex ? 'reached' : ''} ${index === rankIndex ? 'current' : ''}">
       <span>${escapeHtml(item.emblem)}</span>
-      <div><strong>${escapeHtml(item.name)}</strong><small>od ${item.threshold} pkt</small></div>
+      <div><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.description)}</small><em>od ${item.threshold} pkt</em></div>
       <b>${index < rankIndex ? '✓' : index === rankIndex ? 'TERAZ' : ''}</b>
     </div>
   `).join('');
@@ -811,6 +986,12 @@ function cloudRowToProgress(row) {
     awardedStudyBlocks: row.awarded_study_blocks,
     boostActivatedOn: row.boost_activated_on,
     boostEndsAt: row.boost_ends_at,
+    dailyStreak: row.daily_streak,
+    bestDailyStreak: row.best_daily_streak,
+    lastStudyDate: row.last_study_date,
+    dailyQuestDate: row.daily_quest_date,
+    dailyQuestIds: row.daily_quest_ids,
+    dailyQuestBaseline: row.daily_quest_baseline,
     questRewards: row.quest_rewards
   });
 }
@@ -830,6 +1011,12 @@ function progressToCloudRow() {
     awarded_study_blocks: progress.awardedStudyBlocks,
     boost_activated_on: progress.boostActivatedOn || null,
     boost_ends_at: progress.boostEndsAt || null,
+    daily_streak: progress.dailyStreak,
+    best_daily_streak: progress.bestDailyStreak,
+    last_study_date: progress.lastStudyDate || null,
+    daily_quest_date: progress.dailyQuestDate || null,
+    daily_quest_ids: progress.dailyQuestIds,
+    daily_quest_baseline: progress.dailyQuestBaseline,
     quest_rewards: progress.questRewards,
     updated_at: new Date().toISOString()
   };
@@ -839,12 +1026,18 @@ function progressToLegacyCloudRow() {
   const row = progressToCloudRow();
   delete row.completed_owe_quizzes;
   delete row.completed_learn_sessions;
+  delete row.daily_streak;
+  delete row.best_daily_streak;
+  delete row.last_study_date;
+  delete row.daily_quest_date;
+  delete row.daily_quest_ids;
+  delete row.daily_quest_baseline;
   delete row.quest_rewards;
   return row;
 }
 
 function isQuestSchemaMissing(error) {
-  return /completed_owe_quizzes|completed_learn_sessions|quest_rewards|schema cache/i.test(String(error?.message || error || ''));
+  return /completed_owe_quizzes|completed_learn_sessions|daily_streak|best_daily_streak|last_study_date|daily_quest_date|daily_quest_ids|daily_quest_baseline|quest_rewards|schema cache/i.test(String(error?.message || error || ''));
 }
 
 function displayNameForUser(user = currentUser) {
@@ -1841,6 +2034,7 @@ function completeLearnSession() {
   const accuracy = learnAccuracy() ?? 0;
   const bonus = accuracy === 100 ? 10 : accuracy >= 80 ? 5 : 0;
   if (bonus) session.points += awardPoints(bonus, accuracy === 100 ? 'premia za bezbłędną naukę' : 'premia za skuteczność 80%+', $('#learnResult'));
+  recordStudyDay();
   progress.completedLearnSessions += 1;
   saveProgress();
   $('#learnSession').hidden = true;
@@ -1973,6 +2167,7 @@ function showResult() {
     quizRewardGranted = true;
     const resultRatio = quizScore / quizSet.length;
     const performanceBonus = resultRatio === 1 ? 10 : resultRatio >= 0.8 ? 5 : 0;
+    recordStudyDay();
     progress.completedQuizzes += 1;
     const awardedBonus = performanceBonus
       ? awardPoints(performanceBonus, resultRatio === 1 ? 'premia za 100%' : 'premia za wynik 80%+', $('#quizResult'))
@@ -2101,6 +2296,7 @@ function showTestResult() {
   if (!testRewardGranted && testSet.length) {
     testRewardGranted = true;
     const performanceBonus = resultRatio === 1 ? 10 : resultRatio >= 0.8 ? 5 : 0;
+    recordStudyDay();
     progress.completedTests += 1;
     const awardedBonus = performanceBonus
       ? awardPoints(performanceBonus, resultRatio === 1 ? 'premia za test 100%' : 'premia za test 80%+', $('#testResult'))
@@ -2409,6 +2605,18 @@ function oweQuizPool() {
   ));
 }
 
+function correctOweAnswerIndices(question) {
+  const answers = Array.isArray(question.correct) ? question.correct : [question.correct];
+  return [...new Set(answers.map(Number).filter(Number.isInteger))].sort((a, b) => a - b);
+}
+
+function formatOweAnswers(question, indices, includeCopy = false) {
+  return indices.map(index => {
+    const letter = String.fromCharCode(65 + index);
+    return includeCopy ? `${letter} — ${question.options[index]}` : letter;
+  }).join(', ');
+}
+
 function updateOweQuizPool() {
   if (!$('#oweQuizPoolCount')) return;
   const pool = oweQuizPool();
@@ -2421,6 +2629,8 @@ function updateOweQuizPool() {
   }
   $('#oweQuizPoolCount').textContent = polishCount(pool.length, 'pytanie', 'pytania', 'pytań');
   $('#oweQuizPoolMeta').textContent = ` · ${polishCount(editions.size, 'edycja', 'edycje', 'edycji')} · ${polishCount(stages.size, 'etap', 'etapy', 'etapów')}`;
+  if ($('#oweQuestionCount')) $('#oweQuestionCount').textContent = oweQuestions.length;
+  if ($('#oweQuestionBankCount')) $('#oweQuestionBankCount').textContent = oweQuestions.length;
   $('#oweQuizStart').disabled = pool.length === 0;
 }
 
@@ -2442,6 +2652,7 @@ function startOweQuiz() {
     index: 0,
     score: 0,
     answered: false,
+    selectedAnswers: new Set(),
     responses: [],
     points: 0,
     rewardGranted: false
@@ -2457,13 +2668,19 @@ function renderOweQuizQuestion() {
   if (!oweQuizState) return;
   const { questions, index } = oweQuizState;
   const question = questions[index];
+  const correctIndices = correctOweAnswerIndices(question);
+  const isMultipleChoice = correctIndices.length > 1;
   oweQuizState.answered = false;
+  oweQuizState.selectedAnswers = new Set();
   $('#oweQuizQuestionMeta').textContent = `${question.edition} OWE · ${question.year} · ${question.stageLabel} · PYTANIE ${question.number}`;
   $('#oweQuizProgressText').textContent = `Pytanie ${index + 1} z ${questions.length}`;
   $('#oweQuizProgressBar').style.width = `${((index + 1) / questions.length) * 100}%`;
   $('#oweQuizQuestion').textContent = question.question;
   $('#oweQuizFeedback').hidden = true;
   $('#oweQuizNext').hidden = true;
+  $('#oweQuizSelectionHint').hidden = !isMultipleChoice;
+  $('#oweQuizCheck').hidden = !isMultipleChoice;
+  $('#oweQuizCheck').disabled = true;
   $('#oweQuizNext').innerHTML = index === questions.length - 1
     ? 'Zobacz wynik <span>→</span>'
     : 'Następne pytanie <span>→</span>';
@@ -2473,26 +2690,46 @@ function renderOweQuizQuestion() {
     </button>
   `).join('');
   document.querySelectorAll('[data-owe-answer]').forEach(button => {
-    button.addEventListener('click', () => answerOweQuizQuestion(Number(button.dataset.oweAnswer)));
+    button.setAttribute('aria-pressed', 'false');
+    button.addEventListener('click', () => {
+      const answerIndex = Number(button.dataset.oweAnswer);
+      if (!isMultipleChoice) {
+        answerOweQuizQuestion([answerIndex]);
+        return;
+      }
+      if (oweQuizState.selectedAnswers.has(answerIndex)) {
+        oweQuizState.selectedAnswers.delete(answerIndex);
+      } else {
+        oweQuizState.selectedAnswers.add(answerIndex);
+      }
+      const selected = oweQuizState.selectedAnswers.has(answerIndex);
+      button.classList.toggle('selected', selected);
+      button.setAttribute('aria-pressed', String(selected));
+      $('#oweQuizCheck').disabled = oweQuizState.selectedAnswers.size === 0;
+    });
   });
 }
 
-function answerOweQuizQuestion(selectedIndex) {
+function answerOweQuizQuestion(selection) {
   if (!oweQuizState || oweQuizState.answered) return;
   const question = oweQuizState.questions[oweQuizState.index];
-  const isCorrect = selectedIndex === question.correct;
+  const selectedIndices = [...new Set(Array.from(selection).map(Number))].sort((a, b) => a - b);
+  const correctIndices = correctOweAnswerIndices(question);
+  const isCorrect = selectedIndices.length === correctIndices.length
+    && selectedIndices.every((answer, index) => answer === correctIndices[index]);
   oweQuizState.answered = true;
   if (isCorrect) {
     oweQuizState.score += 1;
     oweQuizState.points += awardPoints(5, 'poprawna odpowiedź w arkuszu OWE', $('#oweQuizSession'));
   }
-  oweQuizState.responses.push({ question, selectedIndex, isCorrect });
+  oweQuizState.responses.push({ question, selectedIndices, isCorrect });
   document.querySelectorAll('[data-owe-answer]').forEach(button => {
     const answerIndex = Number(button.dataset.oweAnswer);
     button.disabled = true;
-    button.classList.toggle('correct', answerIndex === question.correct);
-    button.classList.toggle('wrong', answerIndex === selectedIndex && !isCorrect);
+    button.classList.toggle('correct', correctIndices.includes(answerIndex));
+    button.classList.toggle('wrong', selectedIndices.includes(answerIndex) && !correctIndices.includes(answerIndex));
   });
+  $('#oweQuizCheck').hidden = true;
   $('#oweQuizFeedback').hidden = false;
   $('#oweQuizFeedback').classList.toggle('is-correct', isCorrect);
   $('#oweQuizFeedback').classList.toggle('is-wrong', !isCorrect);
@@ -2500,8 +2737,8 @@ function answerOweQuizQuestion(selectedIndex) {
     ? `Dobra odpowiedź · +${isBoostActive() ? 10 : 5} pkt`
     : 'Jeszcze nie tym razem.';
   $('#oweQuizFeedbackCopy').textContent = isCorrect
-    ? `Poprawna odpowiedź: ${String.fromCharCode(65 + question.correct)}.`
-    : `Poprawna odpowiedź to ${String.fromCharCode(65 + question.correct)}: ${question.options[question.correct]}`;
+    ? `Poprawna odpowiedź: ${formatOweAnswers(question, correctIndices)}.`
+    : `${correctIndices.length > 1 ? 'Poprawne odpowiedzi to' : 'Poprawna odpowiedź to'} ${formatOweAnswers(question, correctIndices, true)}.`;
   $('#oweQuizQuestionSource').href = question.sourceUrl;
   $('#oweQuizNext').hidden = false;
   $('#oweQuizNext').focus({ preventScroll: true });
@@ -2514,6 +2751,7 @@ function showOweQuizResult() {
   const mistakes = responses.filter(response => !response.isCorrect);
   if (!oweQuizState.rewardGranted && questions.length) {
     oweQuizState.rewardGranted = true;
+    recordStudyDay();
     progress.completedOweQuizzes += 1;
     const performanceBonus = percent === 100 ? 10 : percent >= 80 ? 5 : 0;
     if (performanceBonus) {
@@ -2544,14 +2782,16 @@ function showOweQuizResult() {
     ? `+${oweQuizState.points} pkt za ten zestaw${percent >= 80 ? ' · premia za wynik wliczona' : ''}`
     : 'Tym razem bez punktów — przejrzyj odpowiedzi i spróbuj ponownie.';
   $('#oweQuizReview').innerHTML = mistakes.length
-    ? `<h4>Do powtórki</h4>${mistakes.map(({ question, selectedIndex }) => `
+    ? `<h4>Do powtórki</h4>${mistakes.map(({ question, selectedIndices }) => {
+        const correctIndices = correctOweAnswerIndices(question);
+        return `
         <article>
           <span>${escapeHtml(question.edition)} · ${escapeHtml(question.stageLabel)} · pyt. ${question.number}</span>
           <strong>${escapeHtml(question.question)}</strong>
-          <p>Twoja odpowiedź: ${String.fromCharCode(65 + selectedIndex)} · <b>Poprawna: ${String.fromCharCode(65 + question.correct)} — ${escapeHtml(question.options[question.correct])}</b></p>
+          <p>Twoja odpowiedź: ${escapeHtml(formatOweAnswers(question, selectedIndices, true) || 'brak')} · <b>${correctIndices.length > 1 ? 'Poprawne' : 'Poprawna'}: ${escapeHtml(formatOweAnswers(question, correctIndices, true))}</b></p>
           <a href="${escapeHtml(question.sourceUrl)}" target="_blank" rel="noopener noreferrer">Oficjalny klucz PTE ↗</a>
         </article>
-      `).join('')}`
+      `; }).join('')}`
     : '<p class="owe-perfect-result">Bez błędów — świetna robota.</p>';
   $('#oweQuizResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -2611,6 +2851,7 @@ document.querySelectorAll('[data-owe-quiz-stage]').forEach(button => {
   });
 });
 $('#oweQuizStart').addEventListener('click', startOweQuiz);
+$('#oweQuizCheck').addEventListener('click', () => answerOweQuizQuestion(oweQuizState?.selectedAnswers || []));
 $('#oweQuizNext').addEventListener('click', advanceOweQuiz);
 $('#oweQuizExit').addEventListener('click', showOweQuizSetup);
 $('#oweQuizAgain').addEventListener('click', startOweQuiz);
@@ -2727,6 +2968,7 @@ $('#resetProgress').addEventListener('click', () => {
 });
 
 function setAppMenu(open, { returnFocus = true } = {}) {
+  if (open && !$('#pointsMenu').hidden) setPointsMenu(false);
   $('#appMenu').hidden = !open;
   $('#appMenuBackdrop').hidden = !open;
   $('#appMenuButton').setAttribute('aria-expanded', String(open));
@@ -2949,7 +3191,7 @@ async function handleDeleteAccount() {
 }
 
 $('#appMenuButton').addEventListener('click', () => setAppMenu($('#appMenu').hidden));
-$('#questQuickButton').addEventListener('click', () => setPointsMenu(true, { showQuests: true }));
+$('#questQuickButton').addEventListener('click', () => setPointsMenu($('#pointsMenu').hidden, { showQuests: true }));
 document.querySelectorAll('[data-subject]').forEach(button => {
   button.addEventListener('click', () => switchSubject(button.dataset.subject));
 });
@@ -3063,10 +3305,16 @@ initializeCloud();
 
 window.setInterval(tickStudyTime, 1000);
 window.setInterval(() => {
+  if (ensureDailyQuests()) updateProgress();
+}, 60 * 1000);
+window.setInterval(() => {
   if (currentUser && document.visibilityState === 'visible') loadLeaderboard({ silent: true });
 }, 5 * 60 * 1000);
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') persistStudyTime();
-  else lastStudyTick = Date.now();
+  else {
+    lastStudyTick = Date.now();
+    if (ensureDailyQuests()) updateProgress();
+  }
 });
 window.addEventListener('pagehide', persistStudyTime);

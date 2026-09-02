@@ -1314,6 +1314,25 @@ function isPrivateLeaderboardSchemaMissing(error) {
   return /join_private_leaderboard|get_private_leaderboard|private ranking|schema cache|could not find the function/i.test(String(error?.message || error || ''));
 }
 
+function privateLeaderboardErrorMessage(error, action = 'load') {
+  const code = String(error?.code || '');
+  const message = [error?.message, error?.details, error?.hint].filter(Boolean).join(' ');
+  const diagnostic = `${code} ${message}`;
+  if (/401|403|42501|jwt|permission denied|not authenticated/i.test(diagnostic)) {
+    return 'Sesja lub uprawnienia wygasły. Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.';
+  }
+  if (/42883|crypt\(|pgcrypto/i.test(diagnostic)) {
+    return 'Brakuje funkcji pgcrypto w bazie. Uruchom ponownie najnowszy plik supabase-setup.sql.';
+  }
+  if (isPrivateLeaderboardSchemaMissing(error)) {
+    return 'Najpierw uruchom najnowszy plik supabase-setup.sql.';
+  }
+  const suffix = code ? ` (kod ${code})` : '';
+  return action === 'join'
+    ? `Nie udało się dołączyć${suffix}. Spróbuj ponownie.`
+    : `Nie udało się sprawdzić dostępu${suffix}. Spróbuj ponownie.`;
+}
+
 async function loadPrivateLeaderboard({ silent = false } = {}) {
   if (!supabaseConfigured || !currentUser || !cloudClient) {
     showPrivateLeaderboardGate();
@@ -1333,12 +1352,7 @@ async function loadPrivateLeaderboard({ silent = false } = {}) {
     renderPrivateLeaderboardRows(data);
   } catch (error) {
     console.error('Nie udało się pobrać prywatnego rankingu:', error);
-    showPrivateLeaderboardGate(
-      isPrivateLeaderboardSchemaMissing(error)
-        ? 'Prywatny ranking będzie dostępny po aktualizacji bazy.'
-        : 'Nie udało się sprawdzić dostępu. Spróbuj ponownie.',
-      'error'
-    );
+    showPrivateLeaderboardGate(privateLeaderboardErrorMessage(error), 'error');
   }
 }
 
@@ -1375,15 +1389,14 @@ async function joinPrivateLeaderboard(event) {
     input.value = '';
     await loadPrivateLeaderboard({ silent: true });
   } catch (error) {
-    const invalidCode = /invalid_private_ranking_code|nieprawidłow/i.test(String(error?.message || error || ''));
-    const tryLater = /private_ranking_try_later/i.test(String(error?.message || error || ''));
+    const diagnostic = [error?.code, error?.message, error?.details, error?.hint].filter(Boolean).join(' ');
+    const invalidCode = /invalid_private_ranking_code|nieprawidłow/i.test(diagnostic);
+    const tryLater = /private_ranking_try_later/i.test(diagnostic);
     $('#privateLeaderboardFeedback').textContent = tryLater
       ? 'Za dużo prób. Spróbuj ponownie za 15 minut.'
       : invalidCode
         ? 'Nieprawidłowe hasło.'
-        : isPrivateLeaderboardSchemaMissing(error)
-          ? 'Najpierw uruchom najnowszy plik supabase-setup.sql.'
-          : 'Nie udało się dołączyć. Spróbuj ponownie.';
+        : privateLeaderboardErrorMessage(error, 'join');
     $('#privateLeaderboardFeedback').dataset.state = 'error';
   } finally {
     input.value = '';

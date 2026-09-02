@@ -3,8 +3,7 @@
 
 create schema if not exists private;
 create schema if not exists extensions;
-revoke all on schema private from public;
-grant usage on schema private to authenticated;
+revoke all on schema private from public, anon, authenticated;
 
 create extension if not exists pgcrypto with schema extensions;
 
@@ -138,6 +137,14 @@ create policy "Users can update their own progress"
   using ((select auth.uid()) = user_id)
   with check ((select auth.uid()) = user_id);
 
+-- Funkcje rankingu można bezpiecznie odtworzyć po zmianie nazw zwracanych kolumn.
+-- Usuwane są wyłącznie definicje RPC; konta, punkty i członkostwa pozostają bez zmian.
+drop function if exists public.get_public_leaderboard();
+drop function if exists public.join_private_leaderboard(text);
+drop function if exists public.get_private_leaderboard();
+drop function if exists private.join_private_leaderboard(text);
+drop function if exists private.get_private_leaderboard();
+
 create or replace function public.get_public_leaderboard()
 returns table (
   id uuid,
@@ -259,7 +266,7 @@ $$;
 create or replace function public.join_private_leaderboard(access_code text)
 returns table (ranking_id text, ranking_name text)
 language sql
-security invoker
+security definer
 set search_path = ''
 as $$
   select * from private.join_private_leaderboard(access_code);
@@ -340,21 +347,19 @@ returns table (
   member_count bigint
 )
 language sql
-security invoker
+security definer
 set search_path = ''
 stable
 as $$
   select * from private.get_private_leaderboard();
 $$;
 
-revoke all on function private.join_private_leaderboard(text) from public;
-revoke all on function private.get_private_leaderboard() from public;
-revoke all on function public.get_public_leaderboard() from public;
-revoke all on function public.join_private_leaderboard(text) from public;
-revoke all on function public.get_private_leaderboard() from public;
+revoke all on function private.join_private_leaderboard(text) from public, anon, authenticated;
+revoke all on function private.get_private_leaderboard() from public, anon, authenticated;
+revoke all on function public.get_public_leaderboard() from public, anon, authenticated;
+revoke all on function public.join_private_leaderboard(text) from public, anon, authenticated;
+revoke all on function public.get_private_leaderboard() from public, anon, authenticated;
 grant execute on function public.get_public_leaderboard() to authenticated;
-grant execute on function private.join_private_leaderboard(text) to authenticated;
-grant execute on function private.get_private_leaderboard() to authenticated;
 grant execute on function public.join_private_leaderboard(text) to authenticated;
 grant execute on function public.get_private_leaderboard() to authenticated;
 

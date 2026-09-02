@@ -1626,7 +1626,7 @@ function applySubjectUi() {
   const data = subjectData();
   const copy = subjectUiCopy[activeSubject];
   const parts = new Set(data.chapters.map(chapter => `${chapter.part}:${chapter.partTitle}`)).size;
-  document.title = `NaukaEkonomii · ${data.label}`;
+  document.title = `NaukaEkonomii.pl · ${data.label}`;
   document.body.dataset.subject = activeSubject;
   document.body.classList.toggle('macro-active', activeSubject === 'macro');
   document.querySelectorAll('[data-subject]').forEach(button => {
@@ -3357,16 +3357,6 @@ async function handleDeleteAccount() {
     button.disabled = false;
   }
 }
-
-document.querySelectorAll('[data-brand-logo]').forEach(image => {
-  const fallback = image.parentElement?.querySelector('.brand-fallback');
-  const showFallback = () => {
-    image.hidden = true;
-    if (fallback) fallback.hidden = false;
-  };
-  image.addEventListener('error', showFallback, { once: true });
-  if (image.complete && image.naturalWidth === 0) showFallback();
-});
 
 $('#appMenuButton').addEventListener('click', () => setAppMenu($('#appMenu').hidden));
 $('#questQuickButton').addEventListener('click', () => setPointsMenu($('#pointsMenu').hidden, { showQuests: true }));

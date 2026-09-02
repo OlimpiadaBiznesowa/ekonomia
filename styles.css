@@ -1472,3 +1472,65 @@ html[data-theme="dark"] .hero-shape-panel { border-color:rgba(111,174,163,.14); 
   .quest-quick-button.has-ready > span,.points-quest-body { animation:none; }
   .home-shortcuts button,.quest-quick-button { transition:none; }
 }
+
+/* NaukaEkonomii — rebrand i przełączniki osadzone w narzędziach */
+.brand img,.workspace-brand img { display:block; width:100%; height:auto; object-fit:contain; }
+.brand { width:min(188px,calc(100vw - 132px)); min-width:0; }
+.workspace-brand img { max-width:188px; }
+
+.progress-subject-control { display:grid; justify-items:end; gap:7px; }
+.progress-subject-control > span,.mode-subject-control > span { color:var(--muted); font:600 8px "DM Mono",monospace; letter-spacing:.75px; text-transform:uppercase; }
+.mode-subject-control { min-width:max-content; display:grid; align-content:center; gap:5px; }
+.section-heading-tools,.concept-heading-tools { display:flex; align-items:flex-end; justify-content:flex-end; gap:14px; flex-wrap:wrap; }
+.section-heading-tools { flex-direction:column; }
+.section-heading-tools .subtle { margin:0; }
+.concept-heading-tools .concept-search { align-self:flex-end; }
+
+.quiz-settings { grid-template-columns:auto minmax(0,300px) minmax(0,190px) auto; }
+.learn-setup,.learn-session,.learn-result { max-width:900px; }
+.learn-setup { padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.learn-intro { padding:28px 30px; border:1px solid rgba(53,78,72,.1); border-radius:16px; background:linear-gradient(135deg,rgba(255,253,249,.95),rgba(229,240,236,.82)); }
+.learn-intro-mark { box-shadow:0 0 0 8px rgba(40,124,116,.08); }
+.learn-intro p { max-width:640px; }
+.learn-setup-grid { grid-template-columns:auto minmax(220px,1.4fr) minmax(170px,1fr); align-items:end; margin:14px 0; padding:18px; border:1px solid var(--line); border-radius:12px; background:var(--card); }
+.learn-path-preview { grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; padding:17px 2px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); border-radius:0; background:transparent; }
+.learn-path-preview > i { display:none; }
+.learn-path-preview span { color:var(--teal); background:#e5efec; }
+.learn-pool { margin:15px 0 12px; }
+
+html[data-theme="dark"] .learn-intro { border-color:rgba(123,173,162,.14); background:linear-gradient(135deg,rgba(26,37,35,.92),rgba(22,40,36,.82)); }
+html[data-theme="dark"] .learn-setup-grid { background:var(--card); }
+html[data-theme="dark"] .learn-path-preview span { color:#9ed4ca; background:#20332e; }
+
+@media (min-width:1100px) {
+  .workspace-brand { min-height:48px; margin-left:3px; margin-right:3px; }
+  .home-panel .progress-strip { grid-template-columns:260px minmax(280px,1fr) auto; }
+}
+
+@media (max-width:900px) {
+  .section-heading-tools,.concept-heading-tools { align-items:stretch; flex-direction:column; width:100%; }
+  .concept-heading-tools .concept-search { align-self:stretch; }
+  .concept-heading-tools .concept-search input { width:100%; }
+}
+
+@media (max-width:700px) {
+  .brand { width:min(158px,calc(100vw - 132px)); }
+  .progress-subject-control { justify-items:start; padding-top:2px; }
+  .progress-subject-control .context-subject-switch { width:100%; }
+  .progress-subject-control .context-subject-switch button { flex:1; }
+  .mode-subject-control { min-width:0; }
+  .study-filters .mode-subject-control { width:100%; }
+  .study-filters .mode-subject-control .context-subject-switch { width:100%; }
+  .study-filters .mode-subject-control .context-subject-switch button { flex:1; }
+  .quiz-settings { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .quiz-settings .mode-subject-control { grid-column:1/-1; }
+  .quiz-settings .mode-subject-control .context-subject-switch { width:100%; }
+  .quiz-settings .mode-subject-control .context-subject-switch button { flex:1; }
+  .learn-intro { padding:23px 18px; }
+  .learn-setup-grid { grid-template-columns:1fr; margin:10px 0; padding:15px; }
+  .learn-setup-grid .mode-subject-control .context-subject-switch { width:100%; }
+  .learn-setup-grid .mode-subject-control .context-subject-switch button { flex:1; }
+  .learn-path-preview { gap:10px; }
+  .learn-path-preview > div { grid-template-columns:26px minmax(0,1fr); }
+  .learn-path-preview small { white-space:normal; }
+}

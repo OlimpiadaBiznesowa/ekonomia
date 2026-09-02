@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f3ed" />
-    <title>Ekonomia · Mikroekonomia i makroekonomia</title>
+    <title>NaukaEkonomii · Mikroekonomia i makroekonomia</title>
     <script>
       try {
         if (localStorage.getItem('ekonomia-theme-v1') === 'dark') document.documentElement.dataset.theme = 'dark';
@@ -16,14 +16,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260902-private-ranking" />
+    <link rel="stylesheet" href="styles.css?v=20260903-nauka-ekonomii" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
       <aside class="workspace-sidebar" aria-label="Główna nawigacja">
-        <a class="workspace-brand" href="#start" data-menu-mode="home" aria-label="Ekonomia — strona główna">
-          <span>E.</span>
-          <strong>Ekonomia</strong>
+        <a class="workspace-brand" href="#start" data-menu-mode="home" aria-label="NaukaEkonomii — strona główna">
+          <img src="assets/nauka-ekonomii-logo.png" alt="NaukaEkonomii" />
         </a>
         <nav class="workspace-nav">
           <p>TWÓJ PANEL</p>
@@ -32,7 +31,7 @@
           <button type="button" data-menu-mode="flashcards"><span>▱</span><b>Fiszki</b></button>
           <button type="button" data-menu-mode="quiz"><span>?</span><b>Quiz</b></button>
           <p>OLIMPIADA</p>
-          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OWE</span><b>Arkusze OWE</b><i id="oweQuestionCount">210</i></button>
+          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OWE</span><b>Arkusze OWE</b><i id="oweQuestionCount">300</i></button>
           <p>POSTĘP</p>
           <button type="button" data-menu-mode="concepts"><span>≡</span><b>Zagadnienia</b></button>
           <button type="button" data-menu-mode="leaderboard"><span>♢</span><b>Ranking</b></button>
@@ -44,9 +43,8 @@
         </div>
       </aside>
       <header class="topbar">
-        <a class="brand" href="#start" aria-label="Mikroekonomia – strona główna">
-          <span class="brand-mark" id="brandMark">μ</span>
-          <span id="brandName">mikroekonomia<span class="muted-dot">.</span></span>
+        <a class="brand" href="#start" aria-label="NaukaEkonomii — strona główna">
+          <img src="assets/nauka-ekonomii-logo.png" alt="NaukaEkonomii" />
         </a>
       </header>
       <div class="topbar-quick-actions">
@@ -66,13 +64,8 @@
         <section class="study-panel home-panel active" id="home" data-panel="home">
           <section class="hero home-hero">
             <div class="home-hero-copy">
-              <nav class="context-subject-switch" aria-label="Wybierz część ekonomii na stronie głównej">
-                <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
-                <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
-              </nav>
               <p class="eyebrow" id="heroEyebrow">MANKIW · TAYLOR · MIKROEKONOMIA</p>
-              <h1>Ucz się.<br /><em>Rozumiej więcej.</em></h1>
-              <p class="hero-copy" id="heroCopy">Najważniejsze pojęcia, quizy i powtórki z mikroekonomii w jednym miejscu.</p>
+              <h1>Zostań mistrzem<br /><em>ekonomii już teraz.</em></h1>
               <div class="hero-actions home-hero-actions">
                 <button class="primary-button home-account-cta" id="homeAccountCta" type="button">Zaloguj się <span>→</span></button>
                 <button class="secondary-button home-menu-cta" id="homeMenuCta" type="button"><span aria-hidden="true">☰</span> Menu</button>
@@ -103,6 +96,13 @@
                 <div class="progress-track rank-track" aria-hidden="true"><i id="rankBar"></i></div>
               </div>
             </div>
+            <div class="progress-subject-control">
+              <span>WYBIERZ ZAKRES</span>
+              <nav class="context-subject-switch" aria-label="Wybierz część ekonomii na stronie głównej">
+                <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+              </nav>
+            </div>
           </section>
 
           <nav class="home-shortcuts" aria-label="Szybki start">
@@ -114,14 +114,6 @@
 
         <div class="learning-layout">
           <div class="learning-content">
-
-        <div class="learning-subject-bar" id="learningSubjectBar">
-          <span>Aktualny zakres</span>
-          <nav class="context-subject-switch" aria-label="Wybierz część ekonomii w aktualnym trybie">
-            <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikroekonomia</button>
-            <button type="button" data-subject="macro" aria-pressed="false">Makroekonomia</button>
-          </nav>
-        </div>
 
         <section class="study-panel" id="learn" data-panel="learn">
           <div class="section-heading compact learn-heading">
@@ -144,6 +136,13 @@
               </div>
             </div>
             <div class="learn-setup-grid">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę w trybie Ucz się">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
               <label class="compact-select">Zakres
                 <select id="learnChapter" aria-label="Wybierz rozdział trybu Ucz się"></select>
               </label>
@@ -213,6 +212,13 @@
               <h2>Fiszki</h2>
             </div>
             <div class="study-filters">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę fiszek">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
               <label class="compact-select">Rozdział
                 <select id="flashcardChapter" aria-label="Filtruj fiszki według rozdziału"></select>
               </label>
@@ -255,6 +261,13 @@
             </div>
           </div>
           <div class="quiz-settings">
+            <div class="mode-subject-control">
+              <span>Dziedzina</span>
+              <nav class="context-subject-switch" aria-label="Wybierz dziedzinę quizu">
+                <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+              </nav>
+            </div>
             <label class="compact-select">Rozdział
               <select id="quizChapter" aria-label="Wybierz rozdział quizu"></select>
             </label>
@@ -303,7 +316,7 @@
               <div>
                 <p class="eyebrow">TRENING OLIMPIJSKI</p>
                 <h3>Prawdziwe pytania. Natychmiastowy wynik.</h3>
-                <p>Bank obejmuje <span id="oweQuestionBankCount">210</span> pytań testowych z XXXV–XXXVIII OWE, w tym etap centralny. Po każdej odpowiedzi zobaczysz rozwiązanie z oficjalnego klucza i odnośnik do arkusza PTE.</p>
+                <p>Bank obejmuje <span id="oweQuestionBankCount">300</span> pytań testowych z XXXV–XXXVIII OWE — po 75 z każdej edycji i ze wszystkich trzech etapów. Po odpowiedzi zobaczysz rozwiązanie z oficjalnego klucza PTE.</p>
               </div>
             </div>
             <div class="owe-setup-grid">
@@ -336,7 +349,7 @@
               </div>
             </div>
             <div class="owe-setup-action">
-              <p><strong id="oweQuizPoolCount">210 pytań</strong><span id="oweQuizPoolMeta"> · 4 edycje · 3 etapy</span></p>
+              <p><strong id="oweQuizPoolCount">300 pytań</strong><span id="oweQuizPoolMeta"> · 4 edycje · 3 etapy</span></p>
               <button class="primary-button" id="oweQuizStart" type="button">Rozpocznij quiz <span>→</span></button>
             </div>
           </article>
@@ -478,6 +491,13 @@
             <button class="text-button" id="restartTest">Nowy zestaw</button>
           </div>
           <div class="quiz-settings test-settings">
+            <div class="mode-subject-control">
+              <span>Dziedzina</span>
+              <nav class="context-subject-switch" aria-label="Wybierz dziedzinę testu">
+                <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+              </nav>
+            </div>
             <label class="compact-select">Rozdział
               <select id="testChapter" aria-label="Wybierz rozdział testu"></select>
             </label>
@@ -519,9 +539,18 @@
               <p class="eyebrow">PYTANIE → ODPOWIEDŹ → ROZDZIAŁ</p>
               <h2>Szukaj odpowiedzi</h2>
             </div>
-            <label class="compact-select">Rozdział
-              <select id="answerChapter" aria-label="Filtruj odpowiedzi według rozdziału"></select>
-            </label>
+            <div class="study-filters">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę wyszukiwanych odpowiedzi">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <label class="compact-select">Rozdział
+                <select id="answerChapter" aria-label="Filtruj odpowiedzi według rozdziału"></select>
+              </label>
+            </div>
           </div>
           <label class="answer-search">
             <span class="sr-only" id="answerSearchLabel">Wpisz pytanie z mikroekonomii</span>
@@ -544,7 +573,16 @@
               <p class="eyebrow" id="scopeEyebrow">SPIS TREŚCI I OPRACOWANIA</p>
               <h2>Zakres i streszczenia</h2>
             </div>
-            <p class="subtle" id="scopeMeta"><span id="scopeTopicCount">0</span> tematów · 19 rozdziałów · 9 części</p>
+            <div class="section-heading-tools">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę zakresu">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <p class="subtle" id="scopeMeta"><span id="scopeTopicCount">0</span> tematów · 19 rozdziałów · 9 części</p>
+            </div>
           </div>
           <div class="scope-tools">
             <p class="panel-intro">Otwórz spis tematów lub wybierz „Streszczenie”, aby zobaczyć najważniejsze idee danego rozdziału.</p>
@@ -562,9 +600,18 @@
               <p class="eyebrow">WZORY · SYMBOLE · INTERPRETACJA</p>
               <h2>Matematyczne</h2>
             </div>
-            <label class="compact-select">Rozdział
-              <select id="mathChapter" aria-label="Filtruj matematykę według rozdziału"></select>
-            </label>
+            <div class="study-filters">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę wzorów">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <label class="compact-select">Rozdział
+                <select id="mathChapter" aria-label="Filtruj matematykę według rozdziału"></select>
+              </label>
+            </div>
           </div>
           <p class="panel-intro">Zweryfikowany indeks obliczeń używanych w całym zakresie książki. Każdy wzór zawiera wyjaśnienie zastosowania, wszystkich zmiennych oraz znaków matematycznych.</p>
           <div class="math-toolbar">
@@ -584,10 +631,19 @@
               <p class="eyebrow">SŁOWNIK POJĘĆ</p>
               <h2>Zagadnienia</h2>
             </div>
-            <label class="concept-search">
-              <span class="sr-only">Szukaj w zagadnieniach</span>
-              <input id="conceptSearch" type="search" placeholder="Szukaj pojęcia lub fragmentu definicji" autocomplete="off" />
-            </label>
+            <div class="concept-heading-tools">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę zagadnień">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <label class="concept-search">
+                <span class="sr-only">Szukaj w zagadnieniach</span>
+                <input id="conceptSearch" type="search" placeholder="Szukaj pojęcia lub fragmentu definicji" autocomplete="off" />
+              </label>
+            </div>
           </div>
           <p class="panel-intro" id="conceptsIntro">Hasła są uporządkowane według rozdziałów i służą jako materiał do powtórki. Skorzystaj z wyszukiwarki, aby szybko znaleźć pojęcie.</p>
           <p class="concept-count" id="conceptCount" aria-live="polite"></p>
@@ -668,7 +724,7 @@
 
         <nav class="app-menu-nav" aria-label="Nawigacja strony">
           <button class="menu-nav-button learn-menu-button" type="button" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></button>
-          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OWE</span><div><strong>Quiz z arkuszy OWE</strong><small>210 oficjalnych pytań z kluczami</small></div></button>
+          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OWE</span><div><strong>Quiz z arkuszy OWE</strong><small>300 oficjalnych pytań z kluczami</small></div></button>
           <button class="menu-nav-button active" type="button" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></button>
           <p class="menu-section-label">NAUKA</p>
           <button class="menu-nav-button" type="button" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></button>
@@ -868,6 +924,7 @@
     <script src="macro-data.js?v=20260821-book-map"></script>
     <script src="owe-quiz-data.js?v=20260831-150q"></script>
     <script src="owe-quiz-extra-data.js?v=20260902-central-60q"></script>
-    <script src="app.js?v=20260902-private-ranking-v3"></script>
+    <script src="owe-quiz-missing-data.js?v=20260903-complete-90q"></script>
+    <script src="app.js?v=20260903-nauka-ekonomii"></script>
   </body>
 </html>

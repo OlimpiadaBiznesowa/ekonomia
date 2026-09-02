@@ -13,7 +13,8 @@ const themeStorageKey = 'ekonomia-theme-v1';
 const learnKnowledgeStorageKey = 'ekonomia-learn-knowledge-v1';
 const oweQuestions = [
   ...(Array.isArray(window.OWE_QUESTIONS) ? window.OWE_QUESTIONS : []),
-  ...(Array.isArray(window.OWE_EXTRA_QUESTIONS) ? window.OWE_EXTRA_QUESTIONS : [])
+  ...(Array.isArray(window.OWE_EXTRA_QUESTIONS) ? window.OWE_EXTRA_QUESTIONS : []),
+  ...(Array.isArray(window.OWE_MISSING_QUESTIONS) ? window.OWE_MISSING_QUESTIONS : [])
 ];
 
 const siteUpdateNotifications = [
@@ -1625,7 +1626,7 @@ function applySubjectUi() {
   const data = subjectData();
   const copy = subjectUiCopy[activeSubject];
   const parts = new Set(data.chapters.map(chapter => `${chapter.part}:${chapter.partTitle}`)).size;
-  document.title = copy.title;
+  document.title = `NaukaEkonomii · ${data.label}`;
   document.body.dataset.subject = activeSubject;
   document.body.classList.toggle('macro-active', activeSubject === 'macro');
   document.querySelectorAll('[data-subject]').forEach(button => {
@@ -1633,11 +1634,7 @@ function applySubjectUi() {
     button.classList.toggle('active', selected);
     button.setAttribute('aria-pressed', String(selected));
   });
-  $('#brandMark').textContent = data.mark;
-  $('#brandName').innerHTML = `${activeSubject === 'micro' ? 'mikroekonomia' : 'makroekonomia'}<span class="muted-dot">.</span>`;
-  $('.brand').setAttribute('aria-label', `${data.label} – strona główna`);
   $('#heroEyebrow').textContent = copy.eyebrow;
-  $('#heroCopy').textContent = copy.hero;
   $('#flashcardsEyebrow').textContent = `ZAGADNIENIA · ${data.chapters.length} ROZDZIAŁÓW · ${data.label.toLocaleUpperCase('pl-PL')}`;
   $('#learnEyebrow').textContent = `UCZ SIĘ · ${data.label.toLocaleUpperCase('pl-PL')}`;
   $('#quizEyebrow').textContent = `QUIZ · ${data.label.toLocaleUpperCase('pl-PL')}`;

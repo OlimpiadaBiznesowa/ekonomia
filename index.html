@@ -16,13 +16,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260903-nauka-ekonomii" />
+    <link rel="stylesheet" href="styles.css?v=20260903-nauka-ekonomii-2" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
       <aside class="workspace-sidebar" aria-label="Główna nawigacja">
         <a class="workspace-brand" href="#start" data-menu-mode="home" aria-label="NaukaEkonomii — strona główna">
-          <img src="assets/nauka-ekonomii-logo.png" alt="NaukaEkonomii" />
+          <img data-brand-logo src="./assets/nauka-ekonomii-logo.png?v=20260903-2" alt="NaukaEkonomii" />
+          <span class="brand-fallback" hidden><b>Nauka</b>Ekonomii</span>
         </a>
         <nav class="workspace-nav">
           <p>TWÓJ PANEL</p>
@@ -44,7 +45,8 @@
       </aside>
       <header class="topbar">
         <a class="brand" href="#start" aria-label="NaukaEkonomii — strona główna">
-          <img src="assets/nauka-ekonomii-logo.png" alt="NaukaEkonomii" />
+          <img data-brand-logo src="./assets/nauka-ekonomii-logo.png?v=20260903-2" alt="NaukaEkonomii" />
+          <span class="brand-fallback" hidden><b>Nauka</b>Ekonomii</span>
         </a>
       </header>
       <div class="topbar-quick-actions">
@@ -66,6 +68,7 @@
             <div class="home-hero-copy">
               <p class="eyebrow" id="heroEyebrow">MANKIW · TAYLOR · MIKROEKONOMIA</p>
               <h1>Zostań mistrzem<br /><em>ekonomii już teraz.</em></h1>
+              <p class="home-hero-description">Ucz się mikro- i makroekonomii, rozwiązuj oficjalne arkusze OWE i obserwuj swój postęp w jednym miejscu.</p>
               <div class="hero-actions home-hero-actions">
                 <button class="primary-button home-account-cta" id="homeAccountCta" type="button">Zaloguj się <span>→</span></button>
                 <button class="secondary-button home-menu-cta" id="homeMenuCta" type="button"><span aria-hidden="true">☰</span> Menu</button>
@@ -128,33 +131,42 @@
           </div>
 
           <div class="learn-setup" id="learnSetup">
-            <div class="learn-intro">
-              <span class="learn-intro-mark" aria-hidden="true">↗</span>
-              <div>
-                <h3>Spersonalizowana ścieżka nauki</h3>
-                <p>Zaczniesz od rozpoznawania odpowiedzi, a następnie przejdziesz do samodzielnego wpisywania pojęć. Trudne zagadnienia wrócą automatycznie.</p>
+            <section class="learn-hero">
+              <div class="learn-hero-copy">
+                <p class="eyebrow">SPERSONALIZOWANA ŚCIEŻKA</p>
+                <h3>Ucz się mądrzej.<br /><em>Zapamiętuj na dłużej.</em></h3>
+                <p class="learn-hero-description">Najpierw rozpoznasz właściwe pojęcie, potem wpiszesz je samodzielnie. Trudniejsze zagadnienia wrócą w odpowiednim momencie.</p>
               </div>
-            </div>
-            <div class="learn-setup-grid">
-              <div class="mode-subject-control">
-                <span>Dziedzina</span>
-                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę w trybie Ucz się">
-                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
-                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
-                </nav>
+              <div class="learn-settings-card">
+                <div class="learn-setup-grid">
+                  <div class="mode-subject-control">
+                    <span>Dziedzina</span>
+                    <nav class="context-subject-switch" aria-label="Wybierz dziedzinę w trybie Ucz się">
+                      <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                      <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                    </nav>
+                  </div>
+                  <label class="compact-select">Zakres
+                    <select id="learnChapter" aria-label="Wybierz rozdział trybu Ucz się"></select>
+                  </label>
+                  <label class="compact-select">Cel sesji
+                    <select id="learnGoal" aria-label="Wybierz liczbę zagadnień w sesji">
+                      <option value="10" selected>10 zagadnień</option>
+                      <option value="20">20 zagadnień</option>
+                      <option value="30">30 zagadnień</option>
+                      <option value="all">Cały wybrany zakres</option>
+                    </select>
+                  </label>
+                </div>
+                <p class="learn-pool" id="learnPoolCount"></p>
+                <button class="primary-button learn-start" id="startLearn" type="button">Rozpocznij naukę <span>→</span></button>
               </div>
-              <label class="compact-select">Zakres
-                <select id="learnChapter" aria-label="Wybierz rozdział trybu Ucz się"></select>
-              </label>
-              <label class="compact-select">Cel sesji
-                <select id="learnGoal" aria-label="Wybierz liczbę zagadnień w sesji">
-                  <option value="10" selected>10 zagadnień</option>
-                  <option value="20">20 zagadnień</option>
-                  <option value="30">30 zagadnień</option>
-                  <option value="all">Cały wybrany zakres</option>
-                </select>
-              </label>
-            </div>
+              <div class="learn-hero-background" aria-hidden="true">
+                <span class="learn-hero-ring"></span>
+                <span class="learn-hero-dot"></span>
+                <span class="learn-hero-line"></span>
+              </div>
+            </section>
             <div class="learn-path-preview" aria-label="Etapy sesji">
               <div><span>1</span><strong>Rozpoznaj</strong><small>Wybierz właściwe pojęcie</small></div>
               <i aria-hidden="true">→</i>
@@ -162,8 +174,6 @@
               <i aria-hidden="true">→</i>
               <div><span>3</span><strong>Opanuj</strong><small>Utrwal postęp i zdobądź punkty</small></div>
             </div>
-            <p class="learn-pool" id="learnPoolCount"></p>
-            <button class="primary-button learn-start" id="startLearn" type="button">Rozpocznij naukę <span>→</span></button>
           </div>
 
           <div class="learn-session" id="learnSession" hidden>
@@ -925,6 +935,6 @@
     <script src="owe-quiz-data.js?v=20260831-150q"></script>
     <script src="owe-quiz-extra-data.js?v=20260902-central-60q"></script>
     <script src="owe-quiz-missing-data.js?v=20260903-complete-90q"></script>
-    <script src="app.js?v=20260903-nauka-ekonomii"></script>
+    <script src="app.js?v=20260903-nauka-ekonomii-3"></script>
   </body>
 </html>

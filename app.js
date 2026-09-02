@@ -1710,7 +1710,7 @@ function switchMode(mode) {
   if (mode === 'leaderboard') loadLeaderboard();
   if (mode === 'learn' && !learnSessionState) updateLearnPoolUi();
   if (mode === 'owe') updateOweQuizPool();
-  document.getElementById(mode)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function enterFocusMode(panelId) {
@@ -3357,6 +3357,16 @@ async function handleDeleteAccount() {
     button.disabled = false;
   }
 }
+
+document.querySelectorAll('[data-brand-logo]').forEach(image => {
+  const fallback = image.parentElement?.querySelector('.brand-fallback');
+  const showFallback = () => {
+    image.hidden = true;
+    if (fallback) fallback.hidden = false;
+  };
+  image.addEventListener('error', showFallback, { once: true });
+  if (image.complete && image.naturalWidth === 0) showFallback();
+});
 
 $('#appMenuButton').addEventListener('click', () => setAppMenu($('#appMenu').hidden));
 $('#questQuickButton').addEventListener('click', () => setPointsMenu($('#pointsMenu').hidden, { showQuests: true }));

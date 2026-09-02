@@ -254,7 +254,7 @@ begin
 
   insert into public.private_ranking_members (ranking_id, user_id)
   values (matched_ranking_id, requesting_user)
-  on conflict (ranking_id, user_id) do nothing;
+  on conflict do nothing;
 
   return query
   select ranking.id, ranking.display_name

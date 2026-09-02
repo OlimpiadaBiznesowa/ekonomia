@@ -1248,9 +1248,9 @@ function leaderboardRowMarkup(item, position, { current = false, privateRanking 
 function renderLeaderboardRows(items = []) {
   const list = $('#leaderboardList');
   const me = $('#leaderboardMe');
-  const topFive = items.filter(item => Number(item.position) <= 5).slice(0, 5);
+  const topFive = items.filter(item => Number(item.ranking_position) <= 5).slice(0, 5);
   list.innerHTML = topFive.length
-    ? topFive.map((item, index) => leaderboardRowMarkup(item, item.position || index + 1, {
+    ? topFive.map((item, index) => leaderboardRowMarkup(item, item.ranking_position || index + 1, {
         current: Boolean(item.is_current || item.id === currentUser?.id)
       })).join('')
     : '<p class="leaderboard-empty">Ranking jest jeszcze pusty.</p>';
@@ -1265,7 +1265,7 @@ function renderLeaderboardRows(items = []) {
     display_name: displayNameForUser(),
     points: progress.points
   };
-  me.innerHTML = leaderboardRowMarkup(currentItem, currentItem.position || 0, { current: true, personal: true });
+  me.innerHTML = leaderboardRowMarkup(currentItem, currentItem.ranking_position || 0, { current: true, personal: true });
 }
 
 function showPrivateLeaderboardGate(message = '', state = '') {
@@ -1286,7 +1286,7 @@ function showPrivateLeaderboardGate(message = '', state = '') {
 
 function renderPrivateLeaderboardRows(items = []) {
   const rankingName = String(items[0]?.ranking_name || '').slice(0, 60);
-  const topTen = items.filter(item => Number(item.position) <= 10);
+  const topTen = items.filter(item => Number(item.ranking_position) <= 10);
   const currentItem = items.find(item => item.is_current);
   const memberCount = Math.max(0, Number(items[0]?.member_count) || topTen.length);
   $('#privateLeaderboardGate').hidden = true;
@@ -1294,15 +1294,15 @@ function renderPrivateLeaderboardRows(items = []) {
   $('#privateLeaderboardTitle').textContent = rankingName;
   $('#privateLeaderboardMeta').textContent = `${polishCount(memberCount, 'uczestnik', 'uczestników', 'uczestników')} · ranking widoczny tylko dla członków`;
   $('#privateLeaderboardList').innerHTML = topTen.length
-    ? topTen.map(item => leaderboardRowMarkup(item, item.position, {
+    ? topTen.map(item => leaderboardRowMarkup(item, item.ranking_position, {
         current: Boolean(item.is_current),
         privateRanking: true
       })).join('')
     : '<p class="leaderboard-empty">W tej grupie nie ma jeszcze wyników.</p>';
-  const showCurrentBelowTopTen = currentItem && Number(currentItem.position) > 10;
+  const showCurrentBelowTopTen = currentItem && Number(currentItem.ranking_position) > 10;
   $('#privateLeaderboardMeSection').hidden = !showCurrentBelowTopTen;
   $('#privateLeaderboardMe').innerHTML = showCurrentBelowTopTen
-    ? leaderboardRowMarkup(currentItem, currentItem.position, {
+    ? leaderboardRowMarkup(currentItem, currentItem.ranking_position, {
         current: true,
         privateRanking: true,
         personal: true
@@ -1396,11 +1396,11 @@ function evaluateLeaderboardMovement(items = []) {
   if (!currentUser) return;
   const currentIndex = items.findIndex(item => item.id === currentUser.id);
   if (currentIndex < 0) return;
-  const currentPosition = Number(items[currentIndex].position) || currentIndex + 1;
+  const currentPosition = Number(items[currentIndex].ranking_position) || currentIndex + 1;
   const snapshotKey = `mankiw-taylor-rank-snapshot-v1:${currentUser.id}`;
   const previousPosition = Number(localStorage.getItem(snapshotKey));
   if (Number.isFinite(previousPosition) && previousPosition > 0 && currentPosition > previousPosition) {
-    const personAbove = items.find(item => Number(item.position) === currentPosition - 1);
+    const personAbove = items.find(item => Number(item.ranking_position) === currentPosition - 1);
     const name = String(personAbove?.display_name || '').trim();
     addNotification({
       type: 'ranking',

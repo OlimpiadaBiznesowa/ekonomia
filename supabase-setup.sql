@@ -144,7 +144,7 @@ returns table (
   display_name text,
   points integer,
   updated_at timestamptz,
-  position bigint,
+  ranking_position bigint,
   is_current boolean,
   participant_count bigint
 )
@@ -272,7 +272,7 @@ returns table (
   user_id uuid,
   display_name text,
   points integer,
-  position bigint,
+  ranking_position bigint,
   is_current boolean,
   member_count bigint
 )
@@ -335,7 +335,7 @@ returns table (
   user_id uuid,
   display_name text,
   points integer,
-  position bigint,
+  ranking_position bigint,
   is_current boolean,
   member_count bigint
 )

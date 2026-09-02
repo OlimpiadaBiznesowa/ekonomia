@@ -8,7 +8,7 @@ Strona wymaga zalogowania, dlatego przed udostępnieniem jej uczniom trzeba poł
 2. W panelu projektu otwórz **SQL Editor**.
 3. Skopiuj całą zawartość pliku `supabase-setup.sql`, wklej ją do edytora i wybierz **Run**.
 
-Skrypt tworzy profile, zapis postępu, ranking oraz zasady RLS. Każdy zalogowany użytkownik może zmieniać tylko własny rekord postępu. Ranking udostępnia zalogowanym osobom wyłącznie nazwę, liczbę punktów i identyfikator konta — bez adresów e-mail i haseł.
+Skrypt tworzy profile, zapis postępu, ranking publiczny, chroniony ranking prywatny oraz zasady RLS. Każdy zalogowany użytkownik może zmieniać tylko własny rekord postępu. Ranking publiczny udostępnia zalogowanym osobom wyłącznie nazwę, liczbę punktów i identyfikator konta — bez adresów e-mail i haseł. Nazwa, członkowie i wyniki prywatnego rankingu są zwracane dopiero użytkownikowi, który do niego dołączył.
 
 ## 2. Połącz stronę z projektem
 
@@ -36,9 +36,11 @@ W **Authentication → URL Configuration** ustaw:
 
 W **Authentication → Providers → Email** pozostaw włączone logowanie e-mail/hasło. Domyślnie nowy uczeń potwierdza adres przez wiadomość e-mail; to bezpieczniejsza konfiguracja dla klasy.
 
-## 4. Po aktualizacji funkcji konta, serii lub questów
+## 4. Po aktualizacji funkcji konta, rankingu, serii lub questów
 
-Po dodaniu dziennego boosta, serii nauki, dziennych questów, punktów za arkusze OWE lub usuwania konta ponownie uruchom **cały** plik `supabase-setup.sql` w **SQL Editor → Run**. Skrypt jest przygotowany do bezpiecznego ponownego uruchomienia: zachowuje istniejące konta, punkty i postęp, a tylko dodaje brakujące kolumny oraz funkcję usuwania własnego konta.
+Po dodaniu prywatnego rankingu, dziennego boosta, serii nauki, dziennych questów, punktów za arkusze OWE lub usuwania konta ponownie uruchom **cały** plik `supabase-setup.sql` w **SQL Editor → Run**. Skrypt jest przygotowany do bezpiecznego ponownego uruchomienia: zachowuje istniejące konta, punkty i postęp, a tylko dodaje brakujące tabele, kolumny oraz funkcje.
+
+Prywatny ranking używa kodu współdzielonego, ale w bazie znajduje się wyłącznie jego hash bcrypt. Po pięciu błędnych próbach konto otrzymuje 15-minutową blokadę kolejnych prób. Członkostwo jest zapamiętywane, więc po jednorazowym dołączeniu użytkownik nie musi wpisywać hasła ponownie.
 
 ## 5. Opublikuj
 
@@ -55,7 +57,8 @@ Po zalogowaniu nazwę użytkownika można zmienić w oknie **Konto ucznia**. Zmi
 - trzy wylosowane questy dnia, ich stan początkowy i odebrane skrzynki,
 - naliczony aktywny czas nauki,
 - datę i czas aktywacji dziennego boosta punktów,
-- nazwę użytkownika widoczną w profilu i rankingu.
+- nazwę użytkownika widoczną w profilu i rankingu,
+- członkostwo w prywatnym rankingu, bez zapisywania wpisanego hasła.
 
 Przy pierwszym logowaniu lokalny postęp z danego urządzenia jest łączony z kontem. Kolejne logowania pobierają go na innych urządzeniach. Wylogowanie usuwa lokalną kopię postępu z bieżącej przeglądarki, aby nie pokazać jej następnej osobie.
 

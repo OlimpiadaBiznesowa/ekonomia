@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260902-daily-quests" />
+    <link rel="stylesheet" href="styles.css?v=20260902-private-ranking" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
@@ -419,9 +419,54 @@
             </div>
             <button class="text-button" id="refreshLeaderboard">Odśwież</button>
           </div>
-          <p class="panel-intro">Ranking pokazuje punkty zapisane na kontach użytkowników. Twój wiersz jest wyróżniony.</p>
+          <p class="panel-intro">Porównaj wynik z najlepszą piątką wszystkich użytkowników albo dołącz hasłem do zamkniętej grupy.</p>
           <p class="cloud-notice" id="leaderboardNotice" aria-live="polite"></p>
-          <div class="leaderboard-list" id="leaderboardList"></div>
+          <div class="leaderboard-layout">
+            <section class="leaderboard-block" aria-labelledby="publicLeaderboardTitle">
+              <div class="leaderboard-block-head">
+                <div><span>RANKING PUBLICZNY</span><h3 id="publicLeaderboardTitle">Najlepsza piątka</h3></div>
+                <small>TOP 5</small>
+              </div>
+              <div class="leaderboard-list" id="leaderboardList"></div>
+            </section>
+
+            <section class="leaderboard-block leaderboard-you" aria-labelledby="leaderboardMeTitle">
+              <div class="leaderboard-block-head compact">
+                <div><span>TWOJA POZYCJA</span><h3 id="leaderboardMeTitle">Ty w rankingu</h3></div>
+              </div>
+              <div class="leaderboard-list" id="leaderboardMe"></div>
+            </section>
+
+            <section class="private-ranking-gate" id="privateLeaderboardGate" aria-labelledby="privateLeaderboardGateTitle">
+              <span class="private-ranking-lock" aria-hidden="true">◇</span>
+              <div class="private-ranking-gate-copy">
+                <p class="eyebrow">PRYWATNA GRUPA</p>
+                <h3 id="privateLeaderboardGateTitle">Dołącz do prywatnego rankingu</h3>
+                <p>Nazwa grupy pozostanie ukryta do momentu wpisania poprawnego hasła.</p>
+              </div>
+              <form class="private-ranking-form" id="privateLeaderboardJoinForm">
+                <label for="privateLeaderboardPassword">Hasło dostępu</label>
+                <div>
+                  <input id="privateLeaderboardPassword" type="password" maxlength="64" autocomplete="off" required placeholder="Wpisz hasło" aria-describedby="privateLeaderboardFeedback" />
+                  <button class="primary-button" id="privateLeaderboardJoin" type="submit">Dołącz <span>→</span></button>
+                </div>
+                <p id="privateLeaderboardFeedback" aria-live="polite"></p>
+              </form>
+            </section>
+
+            <section class="leaderboard-block private-leaderboard" id="privateLeaderboardPanel" hidden aria-labelledby="privateLeaderboardTitle">
+              <div class="leaderboard-block-head">
+                <div><span>RANKING PRYWATNY</span><h3 id="privateLeaderboardTitle"></h3></div>
+                <small>TOP 10</small>
+              </div>
+              <p class="private-leaderboard-meta" id="privateLeaderboardMeta"></p>
+              <div class="leaderboard-list" id="privateLeaderboardList"></div>
+              <div class="private-leaderboard-me" id="privateLeaderboardMeSection">
+                <span>TWOJA POZYCJA W GRUPIE</span>
+                <div class="leaderboard-list" id="privateLeaderboardMe"></div>
+              </div>
+            </section>
+          </div>
         </section>
 
         <section class="study-panel" id="test" data-panel="test">
@@ -823,6 +868,6 @@
     <script src="macro-data.js?v=20260821-book-map"></script>
     <script src="owe-quiz-data.js?v=20260831-150q"></script>
     <script src="owe-quiz-extra-data.js?v=20260902-central-60q"></script>
-    <script src="app.js?v=20260902-daily-quests"></script>
+    <script src="app.js?v=20260902-private-ranking"></script>
   </body>
 </html>

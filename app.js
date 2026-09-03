@@ -63,8 +63,8 @@ const publicModeRoutes = {
   },
   legal: {
     slug: 'zrodla-i-prawa/',
-    title: 'Źródła i prawa | NaukaEkonomii.pl',
-    description: 'Bibliografia, źródła materiałów, zasady opracowania treści i informacje prawne serwisu NaukaEkonomii.pl.'
+    title: 'Źródła, prawa i prywatność | NaukaEkonomii.pl',
+    description: 'Bibliografia, prawa autorskie, zasady opracowania treści oraz informacja o przetwarzaniu danych w serwisie NaukaEkonomii.pl.'
   }
 };
 const modeByRouteSlug = Object.fromEntries(
@@ -3565,6 +3565,15 @@ $('#celebrationClose').addEventListener('click', () => {
   $('#rankCelebration').classList.remove('visible');
   window.setTimeout(() => { $('#rankCelebration').hidden = true; }, 250);
 });
+
+const privacySettingsLink = $('#privacySettingsLink');
+if (privacySettingsLink) {
+  privacySettingsLink.addEventListener('click', event => {
+    if (!window.googlefc?.callbackQueue || typeof window.googlefc.showRevocationMessage !== 'function') return;
+    event.preventDefault();
+    window.googlefc.callbackQueue.push(window.googlefc.showRevocationMessage);
+  });
+}
 
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {

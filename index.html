@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f3ed" />
-    <meta name="description" content="Bezpłatna nauka mikro- i makroekonomii: tryb Ucz się, fiszki, quizy, testy i arkusze Olimpiady Wiedzy Ekonomicznej." />
+    <meta name="description" content="Bezpłatna nauka mikro- i makroekonomii: tryb Ucz się, fiszki, quizy, testy i arkusze olimpijskie." />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pl_PL" />
     <meta property="og:title" content="NaukaEkonomii.pl · Mikroekonomia i makroekonomia" />
-    <meta property="og:description" content="Ucz się ekonomii bez logowania. Korzystaj z adaptacyjnych powtórek, fiszek, quizów, testów i arkuszy OWE." />
+    <meta property="og:description" content="Ucz się ekonomii bez logowania. Korzystaj z adaptacyjnych powtórek, fiszek, quizów, testów i arkuszy olimpijskich." />
     <meta property="og:url" content="https://naukaekonomii.pl/" />
     <meta property="og:image" content="https://naukaekonomii.pl/assets/nauka-ekonomii-logo.png" />
     <meta name="twitter:card" content="summary" />
@@ -26,7 +26,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260903-guest-access-1" />
+    <link rel="stylesheet" href="styles.css?v=20260903-olympic-sheets-1" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
@@ -47,7 +47,7 @@
           <button type="button" data-menu-mode="flashcards"><span>▱</span><b>Fiszki</b></button>
           <button type="button" data-menu-mode="quiz"><span>?</span><b>Quiz</b></button>
           <p>OLIMPIADA</p>
-          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OWE</span><b>Arkusze OWE</b><i id="oweQuestionCount">300</i></button>
+          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OLI</span><b>Arkusze olimpijskie</b><i id="oweQuestionCount">300</i></button>
           <p>POSTĘP</p>
           <button type="button" data-menu-mode="concepts"><span>≡</span><b>Zagadnienia</b></button>
           <button type="button" data-menu-mode="leaderboard"><span>♢</span><b>Ranking</b></button>
@@ -88,7 +88,7 @@
             <div class="home-hero-copy">
               <p class="eyebrow" id="heroEyebrow">MANKIW · TAYLOR · MIKROEKONOMIA</p>
               <h1>Zostań mistrzem<br /><em>ekonomii już teraz.</em></h1>
-              <p class="home-hero-description">Ucz się mikro- i makroekonomii, rozwiązuj oficjalne arkusze OWE i obserwuj swój postęp w jednym miejscu.</p>
+              <p class="home-hero-description">Ucz się mikro- i makroekonomii, rozwiązuj arkusze olimpijskie i obserwuj swój postęp w jednym miejscu.</p>
               <div class="hero-actions home-hero-actions">
                 <button class="home-feature-button home-learn-button" type="button" data-go="learn">
                   <span class="home-feature-icon" aria-hidden="true">↗</span>
@@ -96,8 +96,8 @@
                   <b>Rozpocznij →</b>
                 </button>
                 <button class="home-feature-button home-owe-button" type="button" data-go="owe">
-                  <span class="home-feature-icon" aria-hidden="true">OWE</span>
-                  <span><strong>Arkusze OWE</strong><small>Pytania olimpijskie z kluczami odpowiedzi</small></span>
+                  <span class="home-feature-icon" aria-hidden="true">OLI</span>
+                  <span><strong>Arkusze olimpijskie</strong><small>Pytania z trzema poziomami trudności</small></span>
                   <b>Ćwicz →</b>
                 </button>
               </div>
@@ -346,32 +346,22 @@
         <section class="study-panel owe-panel" id="owe" data-panel="owe">
           <div class="section-heading owe-heading">
             <div>
-              <p class="eyebrow">OLIMPIADA WIEDZY EKONOMICZNEJ · OFICJALNE PYTANIA PTE</p>
-              <h2>Quiz z arkuszy OWE</h2>
+              <p class="eyebrow">ARKUSZE OLIMPIJSKIE · EKONOMIA</p>
+              <h2>Arkusze olimpijskie</h2>
             </div>
-            <a class="owe-source-link" href="https://owe.pte.pl/informacje/poprzednie-edycje/zestawy-pytan-z-poprzednich-edycji.html" target="_blank" rel="noopener noreferrer">Oficjalne archiwum PTE ↗</a>
+            <a class="owe-source-link" href="https://owe.pte.pl/informacje/poprzednie-edycje/zestawy-pytan-z-poprzednich-edycji.html" target="_blank" rel="noopener noreferrer">Materiały źródłowe PTE ↗</a>
           </div>
 
           <article class="owe-quiz-setup" id="oweQuizSetup">
             <div class="owe-setup-copy">
-              <span class="owe-intro-mark" aria-hidden="true">OWE</span>
+              <span class="owe-intro-mark" aria-hidden="true">OLI</span>
               <div>
                 <p class="eyebrow">TRENING OLIMPIJSKI</p>
-                <h3>Prawdziwe pytania. Natychmiastowy wynik.</h3>
-                <p>Bank obejmuje <span id="oweQuestionBankCount">300</span> pytań testowych z XXXV–XXXVIII OWE — po 75 z każdej edycji i ze wszystkich trzech etapów. Po odpowiedzi zobaczysz rozwiązanie z oficjalnego klucza PTE.</p>
+                <h3>Olimpijski poziom. Natychmiastowy wynik.</h3>
+                <p>Bank obejmuje <span id="oweQuestionBankCount">300</span> pytań opartych na archiwalnych zestawach OWE z czterech roczników, uporządkowanych w trzy poziomy trudności. Po odpowiedzi zobaczysz rozwiązanie zgodne z kluczem PTE.</p>
               </div>
             </div>
             <div class="owe-setup-grid">
-              <label>
-                <span>Edycja</span>
-                <select id="oweQuizEdition">
-                  <option value="all">Wszystkie edycje</option>
-                  <option value="XXXVIII">XXXVIII OWE · 2024/2025</option>
-                  <option value="XXXVII">XXXVII OWE · 2023/2024</option>
-                  <option value="XXXVI">XXXVI OWE · 2022/2023</option>
-                  <option value="XXXV">XXXV OWE · 2021/2022</option>
-                </select>
-              </label>
               <label>
                 <span>Liczba pytań</span>
                 <select id="oweQuizCount">
@@ -381,25 +371,25 @@
                 </select>
               </label>
               <div class="owe-setup-stage">
-                <span>Etap zawodów</span>
-                <div class="owe-stage-filter" role="group" aria-label="Wybierz etap zawodów">
-                  <button class="active" type="button" data-owe-quiz-stage="all" aria-pressed="true">Wszystkie</button>
-                  <button type="button" data-owe-quiz-stage="school" aria-pressed="false">Szkolny</button>
-                  <button type="button" data-owe-quiz-stage="district" aria-pressed="false">Okręgowy</button>
-                  <button type="button" data-owe-quiz-stage="central" aria-pressed="false">Centralny</button>
+                <span>Poziom trudności</span>
+                <div class="owe-stage-filter" role="group" aria-label="Wybierz poziom trudności">
+                  <button class="active" type="button" data-owe-quiz-difficulty="all" aria-pressed="true">Wszystkie</button>
+                  <button type="button" data-owe-quiz-difficulty="basic" aria-pressed="false">Podstawowy</button>
+                  <button type="button" data-owe-quiz-difficulty="intermediate" aria-pressed="false">Średni</button>
+                  <button type="button" data-owe-quiz-difficulty="advanced" aria-pressed="false">Zaawansowany</button>
                 </div>
               </div>
             </div>
             <div class="owe-setup-action">
-              <p><strong id="oweQuizPoolCount">300 pytań</strong><span id="oweQuizPoolMeta"> · 4 edycje · 3 etapy</span></p>
-              <button class="primary-button" id="oweQuizStart" type="button">Rozpocznij quiz <span>→</span></button>
+              <p><strong id="oweQuizPoolCount">300 pytań</strong><span id="oweQuizPoolMeta"> · 3 poziomy trudności</span></p>
+              <button class="primary-button" id="oweQuizStart" type="button">Rozpocznij arkusz <span>→</span></button>
             </div>
           </article>
 
           <article class="owe-quiz-session" id="oweQuizSession" hidden aria-live="polite">
             <div class="owe-session-head">
               <div>
-                <p class="eyebrow" id="oweQuizQuestionMeta">XXXVIII OWE · ETAP SZKOLNY</p>
+                <p class="eyebrow" id="oweQuizQuestionMeta">POZIOM PODSTAWOWY · PYTANIE 1</p>
                 <p id="oweQuizProgressText">Pytanie 1 z 10</p>
               </div>
               <button class="text-button" id="oweQuizExit" type="button">Zmień zestaw</button>
@@ -419,7 +409,7 @@
           </article>
 
           <article class="owe-quiz-result" id="oweQuizResult" hidden>
-            <p class="eyebrow">WYNIK TRENINGU OWE</p>
+            <p class="eyebrow">WYNIK ARKUSZA OLIMPIJSKIEGO</p>
             <div class="owe-result-score"><strong id="oweQuizScore">0/10</strong><span id="oweQuizPercent">0%</span></div>
             <h3 id="oweQuizResultTitle">Dobra rozgrzewka.</h3>
             <p id="oweQuizResultCopy"></p>
@@ -431,7 +421,7 @@
             </div>
           </article>
 
-          <p class="owe-attribution">Pytania i klucze odpowiedzi pochodzą z materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Zachowano numer pytania, edycję i etap. NaukaEkonomii.pl nie jest oficjalną stroną OWE ani serwisem powiązanym z PTE.</p>
+          <p class="owe-attribution">Arkusze opracowano na podstawie materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Wybrane polecenia sytuacyjne, obliczeniowe i rozbudowane zredagowano językowo bez zmiany danych, sensu ani kluczy odpowiedzi. Poziomy trudności porządkują bank od materiału podstawowego do zaawansowanego. NaukaEkonomii.pl nie jest oficjalną stroną OWE ani serwisem powiązanym z PTE.</p>
         </section>
 
         <section class="study-panel" id="more" data-panel="more">
@@ -701,7 +691,7 @@
           </div>
           <div class="legal-notice">
             <strong>Ta strona jest samodzielnym materiałem edukacyjnym.</strong>
-            <p>Poza wyraźnie oznaczonym modułem archiwalnych pytań OWE zawiera autorskie objaśnienia, pytania, streszczenia i parafrazy. Nie udostępnia skanów, pełnego tekstu ani rozbudowanych fragmentów podręcznika. Samo wymienienie źródła nie zastępuje licencji i nie pozwala kopiować cudzego sposobu wyrażenia.</p>
+            <p>Poza wyraźnie oznaczonym modułem arkuszy olimpijskich zawiera autorskie objaśnienia, pytania, streszczenia i parafrazy. Nie udostępnia skanów, pełnego tekstu ani rozbudowanych fragmentów podręcznika. Samo wymienienie źródła nie zastępuje licencji i nie pozwala kopiować cudzego sposobu wyrażenia.</p>
           </div>
           <div class="legal-grid">
             <article>
@@ -767,7 +757,7 @@
 
         <nav class="app-menu-nav" aria-label="Nawigacja strony">
           <button class="menu-nav-button learn-menu-button" type="button" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></button>
-          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OWE</span><div><strong>Quiz z arkuszy OWE</strong><small>300 oficjalnych pytań z kluczami</small></div></button>
+          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OLI</span><div><strong>Arkusze olimpijskie</strong><small>300 pytań · 3 poziomy trudności</small></div></button>
           <button class="menu-nav-button active" type="button" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></button>
           <p class="menu-section-label">NAUKA</p>
           <button class="menu-nav-button" type="button" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></button>
@@ -829,7 +819,7 @@
           <p class="eyebrow">JAK ZDOBYWASZ PUNKTY</p>
           <ul>
             <li><span>Opanowanie nowej fiszki</span><strong>+5 pkt</strong></li>
-            <li><span>Poprawna odpowiedź w Ucz się, quizie, teście lub OWE</span><strong>+5 pkt</strong></li>
+            <li><span>Poprawna odpowiedź w Ucz się, quizie, teście lub arkuszu olimpijskim</span><strong>+5 pkt</strong></li>
             <li><span>Wynik 80–99% w zestawie</span><strong>+5 pkt</strong></li>
             <li><span>Zestaw bez błędu</span><strong>+10 pkt</strong></li>
             <li><span>15 minut aktywnej nauki</span><strong>+20 pkt</strong></li>
@@ -965,9 +955,9 @@
     <script src="book-data.js?v=20260821-macro"></script>
     <script src="curriculum-data.js?v=20260821-macro"></script>
     <script src="macro-data.js?v=20260821-book-map"></script>
-    <script src="owe-quiz-data.js?v=20260831-150q"></script>
-    <script src="owe-quiz-extra-data.js?v=20260902-central-60q"></script>
-    <script src="owe-quiz-missing-data.js?v=20260903-complete-90q"></script>
-    <script src="app.js?v=20260903-guest-access-1"></script>
+    <script src="owe-quiz-data.js?v=20260903-reworded"></script>
+    <script src="owe-quiz-extra-data.js?v=20260903-reworded"></script>
+    <script src="owe-quiz-missing-data.js?v=20260903-reworded"></script>
+    <script src="app.js?v=20260903-olympic-sheets-1"></script>
   </body>
 </html>

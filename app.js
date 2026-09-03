@@ -21,8 +21,8 @@ const siteUpdateNotifications = [
   {
     id: 'update-quests-and-owe-points-2026-09-01',
     type: 'update',
-    title: 'Questy, skrzynki i punkty za OWE',
-    message: 'Ukończ cele, otwieraj skrzynki z nagrodami 50–200 pkt i zdobywaj punkty także w treningach z arkuszy OWE.',
+    title: 'Questy, skrzynki i arkusze olimpijskie',
+    message: 'Ukończ cele, otwieraj skrzynki z nagrodami 50–200 pkt i zdobywaj punkty także w arkuszach olimpijskich.',
     createdAt: '2026-09-01T12:00:00+02:00'
   },
   {
@@ -62,7 +62,7 @@ const ranks = [
   { name: 'Ekonomista', threshold: 700, emblem: 'IV', description: 'Swobodnie poruszasz się między mikro- i makroekonomią.' },
   { name: 'Strateg', threshold: 1200, emblem: 'V', description: 'Rozwiązujesz złożone zestawy i planujesz skuteczne powtórki.' },
   { name: 'Mistrz ekonomii', threshold: 2000, emblem: 'VI', description: 'Masz szeroką, utrwaloną wiedzę i wysoką skuteczność.' },
-  { name: 'Olimpijczyk', threshold: 3500, emblem: 'VII', description: 'Osiągasz poziom przygotowania do najtrudniejszych etapów OWE.' }
+  { name: 'Olimpijczyk', threshold: 3500, emblem: 'VII', description: 'Osiągasz poziom przygotowania do najtrudniejszych arkuszy olimpijskich.' }
 ];
 
 const questPool = [
@@ -76,9 +76,9 @@ const questPool = [
   },
   {
     id: 'daily-owe-training-1',
-    code: 'OWE',
+    code: 'OLI',
     title: 'Trening olimpijczyka',
-    description: 'Ukończ dziś 1 zestaw z oficjalnych arkuszy OWE.',
+    description: 'Ukończ dziś 1 arkusz olimpijski.',
     metric: 'completedOweQuizzes',
     target: 1
   },
@@ -125,7 +125,7 @@ const questPool = [
   {
     id: 'daily-owe-double-2',
     code: 'II',
-    title: 'Podwójne OWE',
+    title: 'Podwójny olimpijski',
     description: 'Ukończ dziś 2 treningi z arkuszy olimpijskich.',
     metric: 'completedOweQuizzes',
     target: 2
@@ -401,7 +401,7 @@ let showStarredOnly = false;
 let cardTransitioning = false;
 let selectedQuizChapter = 'all';
 let selectedQuizLength = 20;
-let selectedOweQuizStage = 'all';
+let selectedOweQuizDifficulty = 'all';
 let oweQuizState = null;
 let activeQuestOpening = '';
 let questRewardTimer = null;
@@ -2771,11 +2771,20 @@ function renderMath() {
   `).join('') : '<p class="concept-empty">Nie znaleziono wzoru dla tego filtra.</p>';
 }
 
+const oweDifficultyByStage = {
+  school: { value: 'basic', label: 'Podstawowy' },
+  district: { value: 'intermediate', label: 'Średni' },
+  central: { value: 'advanced', label: 'Zaawansowany' }
+};
+
+function oweQuestionDifficulty(question) {
+  return oweDifficultyByStage[question.stage] || { value: 'basic', label: 'Podstawowy' };
+}
+
 function oweQuizPool() {
-  const edition = $('#oweQuizEdition')?.value || 'all';
   return oweQuestions.filter(question => (
-    (edition === 'all' || question.edition === edition)
-    && (selectedOweQuizStage === 'all' || question.stage === selectedOweQuizStage)
+    selectedOweQuizDifficulty === 'all'
+    || oweQuestionDifficulty(question).value === selectedOweQuizDifficulty
   ));
 }
 
@@ -2794,15 +2803,14 @@ function formatOweAnswers(question, indices, includeCopy = false) {
 function updateOweQuizPool() {
   if (!$('#oweQuizPoolCount')) return;
   const pool = oweQuizPool();
-  const editions = new Set(pool.map(question => question.edition));
-  const stages = new Set(pool.map(question => question.stage));
+  const difficulties = new Set(pool.map(question => oweQuestionDifficulty(question).value));
   const requestedCount = Number($('#oweQuizCount').value);
   if (requestedCount > pool.length && pool.length) {
     const availableCount = [30, 20, 10].find(value => value <= pool.length) || pool.length;
     $('#oweQuizCount').value = String(availableCount);
   }
   $('#oweQuizPoolCount').textContent = polishCount(pool.length, 'pytanie', 'pytania', 'pytań');
-  $('#oweQuizPoolMeta').textContent = ` · ${polishCount(editions.size, 'edycja', 'edycje', 'edycji')} · ${polishCount(stages.size, 'etap', 'etapy', 'etapów')}`;
+  $('#oweQuizPoolMeta').textContent = ` · ${polishCount(difficulties.size, 'poziom trudności', 'poziomy trudności', 'poziomów trudności')}`;
   if ($('#oweQuestionCount')) $('#oweQuestionCount').textContent = oweQuestions.length;
   if ($('#oweQuestionBankCount')) $('#oweQuestionBankCount').textContent = oweQuestions.length;
   $('#oweQuizStart').disabled = pool.length === 0;
@@ -2844,9 +2852,10 @@ function renderOweQuizQuestion() {
   const question = questions[index];
   const correctIndices = correctOweAnswerIndices(question);
   const isMultipleChoice = correctIndices.length > 1;
+  const difficulty = oweQuestionDifficulty(question);
   oweQuizState.answered = false;
   oweQuizState.selectedAnswers = new Set();
-  $('#oweQuizQuestionMeta').textContent = `${question.edition} OWE · ${question.year} · ${question.stageLabel} · PYTANIE ${question.number}`;
+  $('#oweQuizQuestionMeta').textContent = `POZIOM ${difficulty.label.toLocaleUpperCase('pl-PL')} · ARCHIWUM ${question.year} · PYTANIE ${question.number}`;
   $('#oweQuizProgressText').textContent = `Pytanie ${index + 1} z ${questions.length}`;
   $('#oweQuizProgressBar').style.width = `${((index + 1) / questions.length) * 100}%`;
   $('#oweQuizQuestion').textContent = question.question;
@@ -2894,7 +2903,7 @@ function answerOweQuizQuestion(selection) {
   oweQuizState.answered = true;
   if (isCorrect) {
     oweQuizState.score += 1;
-    oweQuizState.points += awardPoints(5, 'poprawna odpowiedź w arkuszu OWE', $('#oweQuizSession'));
+    oweQuizState.points += awardPoints(5, 'poprawna odpowiedź w arkuszu olimpijskim', $('#oweQuizSession'));
   }
   oweQuizState.responses.push({ question, selectedIndices, isCorrect });
   document.querySelectorAll('[data-owe-answer]').forEach(button => {
@@ -2931,7 +2940,7 @@ function showOweQuizResult() {
     if (performanceBonus) {
       oweQuizState.points += awardPoints(
         performanceBonus,
-        percent === 100 ? 'premia za arkusz OWE bez błędu' : 'premia za wynik OWE 80%+',
+        percent === 100 ? 'premia za arkusz olimpijski bez błędu' : 'premia za wynik olimpijski 80%+',
         $('#oweQuizResult')
       );
     } else {
@@ -2951,7 +2960,7 @@ function showOweQuizResult() {
         : 'Ten zestaw warto powtórzyć.';
   $('#oweQuizResultCopy').textContent = mistakes.length
     ? `Masz ${polishCount(mistakes.length, 'pytanie', 'pytania', 'pytań')} do powtórki. Poniżej znajdziesz prawidłowe odpowiedzi i oficjalne źródła.`
-    : 'Wszystkie odpowiedzi są poprawne. Spróbuj teraz innego etapu albo dłuższego zestawu.';
+    : 'Wszystkie odpowiedzi są poprawne. Spróbuj teraz innego poziomu trudności albo dłuższego zestawu.';
   $('#oweQuizPointsEarned').textContent = oweQuizState.points
     ? `+${oweQuizState.points} pkt za ten zestaw${percent >= 80 ? ' · premia za wynik wliczona' : ''}`
     : 'Tym razem bez punktów — przejrzyj odpowiedzi i spróbuj ponownie.';
@@ -2960,7 +2969,7 @@ function showOweQuizResult() {
         const correctIndices = correctOweAnswerIndices(question);
         return `
         <article>
-          <span>${escapeHtml(question.edition)} · ${escapeHtml(question.stageLabel)} · pyt. ${question.number}</span>
+          <span>Poziom ${escapeHtml(oweQuestionDifficulty(question).label)} · archiwum ${escapeHtml(question.year)} · pyt. ${question.number}</span>
           <strong>${escapeHtml(question.question)}</strong>
           <p>Twoja odpowiedź: ${escapeHtml(formatOweAnswers(question, selectedIndices, true) || 'brak')} · <b>${correctIndices.length > 1 ? 'Poprawne' : 'Poprawna'}: ${escapeHtml(formatOweAnswers(question, correctIndices, true))}</b></p>
           <a href="${escapeHtml(question.sourceUrl)}" target="_blank" rel="noopener noreferrer">Oficjalny klucz PTE ↗</a>
@@ -3011,12 +3020,11 @@ document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.addEventListener('click', () => switchMode(tab.dataset.mode));
 });
 
-$('#oweQuizEdition').addEventListener('change', updateOweQuizPool);
 $('#oweQuizCount').addEventListener('change', updateOweQuizPool);
-document.querySelectorAll('[data-owe-quiz-stage]').forEach(button => {
+document.querySelectorAll('[data-owe-quiz-difficulty]').forEach(button => {
   button.addEventListener('click', () => {
-    selectedOweQuizStage = button.dataset.oweQuizStage;
-    document.querySelectorAll('[data-owe-quiz-stage]').forEach(item => {
+    selectedOweQuizDifficulty = button.dataset.oweQuizDifficulty;
+    document.querySelectorAll('[data-owe-quiz-difficulty]').forEach(item => {
       const active = item === button;
       item.classList.toggle('active', active);
       item.setAttribute('aria-pressed', String(active));
@@ -3127,7 +3135,7 @@ $('#questRewardClose').addEventListener('click', closeRewardChest);
 $('#questRewardBackdrop').addEventListener('click', closeRewardChest);
 
 $('#resetProgress').addEventListener('click', () => {
-  if (!window.confirm('Wyzerować tryb Ucz się, fiszki, oznaczenia trudności, punkty, rangi, questy, czas nauki oraz historię quizów, arkuszy OWE i testów?')) return;
+  if (!window.confirm('Wyzerować tryb Ucz się, fiszki, oznaczenia trudności, punkty, rangi, questy, czas nauki oraz historię quizów, arkuszy olimpijskich i testów?')) return;
   progress = blankProgress();
   learnKnowledge = {};
   try { localStorage.removeItem(learnKnowledgeStorageKey); } catch {}

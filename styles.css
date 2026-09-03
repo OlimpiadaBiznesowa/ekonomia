@@ -1242,14 +1242,14 @@ html[data-theme="dark"] .quest-card.claimed .quest-chest-button { color:#acd6cd;
 html[data-theme="dark"] .quest-reward-modal { border-color:#80682f; background:#28251d; }
 html[data-theme="dark"] .quest-reward-modal > p:not(.eyebrow) { color:#c0b8a5; }
 
-/* Interaktywny quiz z oficjalnych arkuszy OWE */
+/* Interaktywne arkusze olimpijskie */
 .owe-panel { max-width:1080px; margin:0 auto; }
 .owe-quiz-setup,.owe-quiz-session,.owe-quiz-result { border:1px solid var(--line); border-radius:14px; background:var(--card); box-shadow:0 14px 38px rgba(30,42,42,.045); }
 .owe-quiz-setup { overflow:hidden; }
 .owe-setup-copy { display:grid; grid-template-columns:68px minmax(0,1fr); gap:21px; align-items:start; padding:31px 33px 28px; border-bottom:1px solid var(--line); }
 .owe-setup-copy h3 { margin:0 0 9px; font:600 29px/1.14 Fraunces,Georgia,serif; letter-spacing:-1px; }
 .owe-setup-copy > div > p:last-child { max-width:720px; margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
-.owe-setup-grid { display:grid; grid-template-columns:minmax(230px,.8fr) minmax(170px,.55fr) minmax(330px,1.1fr); gap:16px; padding:25px 33px; background:#f2f0e9; }
+.owe-setup-grid { display:grid; grid-template-columns:minmax(180px,.45fr) minmax(520px,1.55fr); gap:16px; padding:25px 33px; background:#f2f0e9; }
 .owe-setup-grid > label,.owe-setup-stage { min-width:0; display:grid; align-content:start; gap:8px; }
 .owe-setup-grid label > span,.owe-setup-stage > span { color:#727a75; font:600 9px "DM Mono",monospace; letter-spacing:.65px; text-transform:uppercase; }
 .owe-setup-grid select { width:100%; min-height:43px; padding:9px 34px 9px 12px; border:1px solid #cfcdc5; border-radius:6px; outline:0; color:var(--ink); background:var(--card); font:600 12px "DM Sans",Arial,sans-serif; }

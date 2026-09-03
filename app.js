@@ -30,6 +30,41 @@ const publicModeRoutes = {
     slug: 'zagadnienia/',
     title: 'Zagadnienia z mikro- i makroekonomii | NaukaEkonomii.pl',
     description: 'Przeglądaj uporządkowany słownik zagadnień z mikro- i makroekonomii oraz szybko odnajduj potrzebne definicje.'
+  },
+  leaderboard: {
+    slug: 'ranking/',
+    title: 'Ranking uczniów | NaukaEkonomii.pl',
+    description: 'Ranking użytkowników NaukaEkonomii.pl. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.'
+  },
+  more: {
+    slug: 'wiecej/',
+    title: 'Więcej narzędzi do nauki ekonomii | NaukaEkonomii.pl',
+    description: 'Testy, wyszukiwarka odpowiedzi, streszczenia, wzory matematyczne oraz informacje o źródłach w jednym miejscu.'
+  },
+  test: {
+    slug: 'test/',
+    title: 'Test pojęć ekonomicznych | NaukaEkonomii.pl',
+    description: 'Sprawdź pamięć, samodzielnie wpisując nazwy zagadnień z mikro- i makroekonomii.'
+  },
+  answers: {
+    slug: 'odpowiedzi/',
+    title: 'Odpowiedzi z ekonomii | NaukaEkonomii.pl',
+    description: 'Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów.'
+  },
+  scope: {
+    slug: 'zakres-i-streszczenia/',
+    title: 'Zakres i streszczenia z ekonomii | NaukaEkonomii.pl',
+    description: 'Przeglądaj zakres materiału i najważniejsze wnioski z rozdziałów mikro- i makroekonomii.'
+  },
+  math: {
+    slug: 'wzory-matematyczne/',
+    title: 'Wzory matematyczne z ekonomii | NaukaEkonomii.pl',
+    description: 'Najważniejsze wzory ekonomiczne, zmienne, symbole i warunki ich prawidłowego stosowania.'
+  },
+  legal: {
+    slug: 'zrodla-i-prawa/',
+    title: 'Źródła i prawa | NaukaEkonomii.pl',
+    description: 'Bibliografia, źródła materiałów, zasady opracowania treści i informacje prawne serwisu NaukaEkonomii.pl.'
   }
 };
 const modeByRouteSlug = Object.fromEntries(
@@ -1778,7 +1813,7 @@ function switchMode(mode) {
     return;
   }
   if (document.body.classList.contains('focus-mode')) exitFocusMode();
-  const secondaryModes = ['test', 'answers', 'scope', 'math'];
+  const secondaryModes = ['test', 'answers', 'scope', 'math', 'legal'];
   const menuMode = secondaryModes.includes(mode) ? 'more' : mode;
   document.querySelectorAll('[data-menu-mode]').forEach(button => {
     button.classList.toggle('active', button.dataset.menuMode === menuMode);

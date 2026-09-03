@@ -53,7 +53,7 @@ Przed publikacją po każdej zmianie głównego pliku `index.html` uruchom:
 node scripts/generate-seo-routes.cjs
 ```
 
-Polecenie odświeża statyczne adresy `/ucz-sie/`, `/fiszki/`, `/quizy/`, `/arkusze-olimpijskie/` i `/zagadnienia/`, wymagane do bezpośredniego otwierania modułów i lepszego indeksowania.
+Polecenie odświeża wszystkie statyczne adresy z głównego menu oraz sekcji „Więcej”, wymagane do bezpośredniego otwierania modułów i lepszego indeksowania.
 
 Dodaj do repozytorium wszystkie pliki strony, w tym `supabase-config.js`, `supabase-setup.sql` i `SUPABASE_SETUP.md`, a następnie opublikuj stronę. Goście mogą korzystać z całej nauki bez konta; próba wejścia do rankingu otwiera logowanie. Po zalogowaniu lokalny postęp jest łączony z kontem.
 

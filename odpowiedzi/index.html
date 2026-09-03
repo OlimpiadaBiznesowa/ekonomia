@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <base id="siteBase" href="./" />
+    <script>
+      (() => {
+        const routeSlugs = new Set(['ucz-sie', 'fiszki', 'quizy', 'arkusze-olimpijskie', 'zagadnienia', 'ranking', 'wiecej', 'test', 'odpowiedzi', 'zakres-i-streszczenia', 'wzory-matematyczne', 'zrodla-i-prawa']);
+        const pathParts = window.location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+        if (routeSlugs.has(pathParts.at(-1))) document.querySelector('#siteBase').href = '../';
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f3ed" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="google-adsense-account" content="ca-pub-8851383447848259" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8851383447848259" crossorigin="anonymous"></script>
+    <meta name="description" content="Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:title" content="Odpowiedzi z ekonomii | NaukaEkonomii.pl" />
+    <meta property="og:description" content="Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów." />
+    <meta property="og:url" content="https://naukaekonomii.pl/odpowiedzi/" />
+    <meta property="og:image" content="https://naukaekonomii.pl/assets/nauka-ekonomii-logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="canonical" href="https://naukaekonomii.pl/odpowiedzi/" />
+    <link rel="icon" type="image/png" href="assets/nauka-ekonomii-logo.png" />
+    <title>Odpowiedzi z ekonomii | NaukaEkonomii.pl</title>
+    <script>
+      try {
+        if (localStorage.getItem('ekonomia-theme-v1') === 'dark') document.documentElement.dataset.theme = 'dark';
+      } catch {}
+    </script>
+    <style>
+      .topbar-quick-actions{position:fixed;z-index:120;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:flex;align-items:center;gap:10px}
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260903-route-base-1" />
+  </head>
+  <body class="home-active" data-mode="home">
+    <div class="page-shell">
+      <aside class="workspace-sidebar" aria-label="Główna nawigacja">
+        <a class="workspace-brand" href="#start" data-menu-mode="home" aria-label="NaukaEkonomii.pl — strona główna">
+          <span class="brand-book" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H9a3 3 0 0 1 3 3v17a3 3 0 0 0-3-3H4.5A2.5 2.5 0 0 0 2 21.5z"></path>
+              <path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H15a3 3 0 0 0-3 3v17a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.5 2.5z"></path>
+            </svg>
+          </span>
+          <span class="brand-wordmark"><b>NaukaEkonomii</b><em>.pl</em></span>
+        </a>
+        <nav class="workspace-nav">
+          <p>TWÓJ PANEL</p>
+          <button class="active" type="button" data-menu-mode="home"><span>⌂</span><b>Plan na dziś</b></button>
+          <button type="button" data-menu-mode="learn"><span>↗</span><b>Ucz się</b></button>
+          <button type="button" data-menu-mode="flashcards"><span>▱</span><b>Fiszki</b></button>
+          <button type="button" data-menu-mode="quiz"><span>?</span><b>Quiz</b></button>
+          <p>OLIMPIADA</p>
+          <button class="workspace-owe-link" type="button" data-menu-mode="owe"><span>OLI</span><b>Arkusze olimpijskie</b><i id="oweQuestionCount">300</i></button>
+          <p>POSTĘP</p>
+          <button type="button" data-menu-mode="concepts"><span>≡</span><b>Zagadnienia</b></button>
+          <button type="button" data-menu-mode="leaderboard"><span>♢</span><b>Ranking</b></button>
+          <button type="button" data-menu-mode="more"><span>＋</span><b>Więcej</b></button>
+        </nav>
+        <div class="workspace-sidebar-foot">
+          <span class="workspace-streak" id="workspaceStreak">0</span>
+          <div><strong>Seria nauki</strong><small id="workspaceStreakLabel">Rozpocznij serię dziś</small></div>
+        </div>
+      </aside>
+      <header class="topbar">
+        <a class="brand" href="#start" aria-label="NaukaEkonomii.pl — strona główna">
+          <span class="brand-book" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H9a3 3 0 0 1 3 3v17a3 3 0 0 0-3-3H4.5A2.5 2.5 0 0 0 2 21.5z"></path>
+              <path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H15a3 3 0 0 0-3 3v17a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.5 2.5z"></path>
+            </svg>
+          </span>
+          <span class="brand-wordmark"><b>NaukaEkonomii</b><em>.pl</em></span>
+        </a>
+      </header>
+      <div class="topbar-quick-actions">
+        <button class="quest-quick-button" id="questQuickButton" type="button" aria-label="Otwórz questy">
+          <span aria-hidden="true">🎁</span>
+          <b id="questReadyBadge" hidden>0</b>
+        </button>
+        <button class="app-menu-trigger" id="appMenuButton" type="button" aria-expanded="false" aria-controls="appMenu" aria-label="Otwórz menu">
+          <span class="menu-lines" aria-hidden="true"><i></i><i></i></span>
+          <span>Menu</span>
+          <b class="menu-unread-badge" id="menuUnreadBadge" hidden>0</b>
+        </button>
+      </div>
+      <button class="focus-exit" id="focusExitButton" type="button" hidden><span aria-hidden="true">×</span> Zamknij powiększenie</button>
+
+      <main id="start">
+        <section class="study-panel home-panel active" id="home" data-panel="home">
+          <section class="hero home-hero">
+            <div class="home-hero-copy">
+              <p class="eyebrow" id="heroEyebrow">MANKIW · TAYLOR · MIKROEKONOMIA</p>
+              <h1>Zostań mistrzem<br /><em>ekonomii już teraz.</em></h1>
+              <p class="home-hero-description">Ucz się mikro- i makroekonomii, rozwiązuj arkusze olimpijskie i obserwuj swój postęp w jednym miejscu.</p>
+              <div class="hero-actions home-hero-actions">
+                <a class="home-feature-button home-learn-button" href="ucz-sie/" data-go="learn">
+                  <span class="home-feature-icon" aria-hidden="true">↗</span>
+                  <span><strong>Tryb Ucz się</strong><small>Adaptacyjna sesja dopasowana do postępu</small></span>
+                  <b>Rozpocznij →</b>
+                </a>
+                <a class="home-feature-button home-owe-button" href="arkusze-olimpijskie/" data-go="owe">
+                  <span class="home-feature-icon" aria-hidden="true">OLI</span>
+                  <span><strong>Arkusze olimpijskie</strong><small>Pytania z trzema poziomami trudności</small></span>
+                  <b>Ćwicz →</b>
+                </a>
+              </div>
+              <div class="home-account-row">
+                <small>Materiały i postęp lokalny działają bez konta.</small>
+                <button class="text-button home-account-cta" id="homeAccountCta" type="button">Ranking: zaloguj się →</button>
+              </div>
+              <span class="sr-only"><span id="heroTopicCount">0</span> tematów, <span id="heroFormulaCount">0</span> wzorów, <span id="heroConceptCount">0</span> zagadnień.</span>
+            </div>
+            <div class="home-hero-background" aria-hidden="true">
+              <span class="hero-shape hero-shape-ring"></span>
+              <span class="hero-shape hero-shape-panel"></span>
+              <span class="hero-shape hero-shape-accent"></span>
+              <span class="hero-shape hero-shape-line"></span>
+            </div>
+          </section>
+
+          <section class="progress-strip" aria-label="Postęp nauki">
+            <div class="progress-copy">
+              <p class="eyebrow">TWÓJ POSTĘP</p>
+              <p><strong id="masteredCount">0</strong> z <span id="totalCards">0</span> fiszek opanowanych</p>
+              <p class="rank-line"><span id="progressRank">Początkujący</span> · <strong id="progressPoints">0 pkt</strong></p>
+            </div>
+            <div class="progress-bars">
+              <div>
+                <span>FISZKI</span><span id="masteryPercent">0%</span>
+                <div class="progress-track" aria-hidden="true"><i id="masteryBar"></i></div>
+              </div>
+              <div>
+                <span id="nextRankLabel">DO RANGI: ADEPT</span><span id="rankProgressText">0 / 100</span>
+                <div class="progress-track rank-track" aria-hidden="true"><i id="rankBar"></i></div>
+              </div>
+            </div>
+            <div class="progress-subject-control">
+              <span>WYBIERZ ZAKRES</span>
+              <nav class="context-subject-switch" aria-label="Wybierz część ekonomii na stronie głównej">
+                <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+              </nav>
+            </div>
+          </section>
+
+          <nav class="home-shortcuts" aria-label="Szybki start">
+            <a href="fiszki/" data-go="flashcards"><span aria-hidden="true">▱</span><strong>Fiszki</strong><small>Szybka powtórka pojęć</small></a>
+            <a href="quizy/" data-go="quiz"><span aria-hidden="true">?</span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></a>
+            <a href="zagadnienia/" data-go="concepts"><span aria-hidden="true">≡</span><strong>Zagadnienia</strong><small>Słownik mikro- i makroekonomii</small></a>
+          </nav>
+          <section class="home-contact" aria-labelledby="homeContactTitle">
+            <div>
+              <p class="eyebrow">KONTAKT I PRYWATNOŚĆ</p>
+              <h2 id="homeContactTitle">Masz pytanie lub zauważyłeś błąd?</h2>
+              <p>Napisz na <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a>.</p>
+            </div>
+            <div class="home-data-summary">
+              <strong>Jak zapisujemy dane?</strong>
+              <p>Bez konta postęp i preferencje pozostają w pamięci Twojej przeglądarki. Po zalogowaniu dane konta i postęp są synchronizowane przez Supabase. Google AdSense może przetwarzać dane na potrzeby reklam zgodnie z wyborem dokonanym w komunikacie o prywatności.</p>
+              <a href="polityka-prywatnosci/">Pełna polityka prywatności i cookies →</a>
+            </div>
+          </section>
+        </section>
+
+        <div class="learning-layout">
+          <div class="learning-content">
+
+        <section class="study-panel" id="learn" data-panel="learn">
+          <div class="section-heading compact learn-heading">
+            <div>
+              <p class="eyebrow" id="learnEyebrow">UCZ SIĘ · MIKROEKONOMIA</p>
+              <h2>Ucz się</h2>
+            </div>
+            <div class="heading-actions">
+              <button class="text-button" id="leaveLearnSession" type="button" hidden>Zakończ sesję</button>
+              <button class="focus-toggle" type="button" data-focus="learn" aria-label="Włącz tryb skupienia nauki" title="Tryb skupienia">⛶</button>
+            </div>
+          </div>
+
+          <div class="learn-setup" id="learnSetup">
+            <section class="learn-hero">
+              <div class="learn-hero-copy">
+                <p class="eyebrow">SPERSONALIZOWANA ŚCIEŻKA</p>
+                <h3>Ucz się mądrzej.<br /><em>Zapamiętuj na dłużej.</em></h3>
+                <p class="learn-hero-description">Najpierw rozpoznasz właściwe pojęcie, potem wpiszesz je samodzielnie. Trudniejsze zagadnienia wrócą w odpowiednim momencie.</p>
+              </div>
+              <div class="learn-settings-card">
+                <div class="learn-setup-grid">
+                  <div class="mode-subject-control">
+                    <span>Dziedzina</span>
+                    <nav class="context-subject-switch" aria-label="Wybierz dziedzinę w trybie Ucz się">
+                      <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                      <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                    </nav>
+                  </div>
+                  <label class="compact-select">Zakres
+                    <select id="learnChapter" aria-label="Wybierz rozdział trybu Ucz się"></select>
+                  </label>
+                  <label class="compact-select">Cel sesji
+                    <select id="learnGoal" aria-label="Wybierz liczbę zagadnień w sesji">
+                      <option value="10" selected>10 zagadnień</option>
+                      <option value="20">20 zagadnień</option>
+                      <option value="30">30 zagadnień</option>
+                      <option value="all">Cały wybrany zakres</option>
+                    </select>
+                  </label>
+                </div>
+                <p class="learn-pool" id="learnPoolCount"></p>
+                <button class="primary-button learn-start" id="startLearn" type="button">Rozpocznij naukę <span>→</span></button>
+              </div>
+              <div class="learn-hero-background" aria-hidden="true">
+                <span class="learn-hero-ring"></span>
+                <span class="learn-hero-dot"></span>
+                <span class="learn-hero-line"></span>
+              </div>
+            </section>
+            <div class="learn-path-preview" aria-label="Etapy sesji">
+              <div><span>1</span><strong>Rozpoznaj</strong><small>Wybierz właściwe pojęcie</small></div>
+              <i aria-hidden="true">→</i>
+              <div><span>2</span><strong>Przypomnij</strong><small>Wpisz odpowiedź samodzielnie</small></div>
+              <i aria-hidden="true">→</i>
+              <div><span>3</span><strong>Opanuj</strong><small>Utrwal postęp i zdobądź punkty</small></div>
+            </div>
+          </div>
+
+          <div class="learn-session" id="learnSession" hidden>
+            <div class="learn-session-stats">
+              <div><small>OPANOWANO</small><strong id="learnMasteredStat">0 / 10</strong></div>
+              <div><small>SKUTECZNOŚĆ</small><strong id="learnAccuracyStat">—</strong></div>
+              <div><small>PASSA</small><strong id="learnStreakStat">0</strong></div>
+              <div><small>PUNKTY</small><strong id="learnPointsStat">+0</strong></div>
+            </div>
+            <div class="learn-progress" aria-hidden="true"><i id="learnProgressBar"></i></div>
+            <article class="learn-card" id="learnCard">
+              <div class="learn-question-meta">
+                <span id="learnQuestionType">WYBÓR ODPOWIEDZI</span>
+                <span id="learnQuestionChapter">ROZDZIAŁ 1</span>
+              </div>
+              <p class="learn-question-label" id="learnQuestionLabel">Którego pojęcia dotyczy ta definicja?</p>
+              <h3 id="learnQuestion"></h3>
+              <div class="learn-answer-area" id="learnAnswerArea"></div>
+              <p class="learn-feedback" id="learnFeedback" aria-live="polite"></p>
+              <div class="learn-card-actions">
+                <button class="text-button learn-dont-know" id="learnDontKnow" type="button">Nie wiem</button>
+                <button class="primary-button" id="nextLearnQuestion" type="button" hidden>Dalej <span>→</span></button>
+              </div>
+            </article>
+          </div>
+
+          <article class="learn-result" id="learnResult" hidden>
+            <span class="learn-result-emblem" aria-hidden="true">✓</span>
+            <p class="eyebrow">CEL OSIĄGNIĘTY</p>
+            <h3>Sesja ukończona</h3>
+            <p id="learnResultCopy"></p>
+            <div class="learn-result-grid">
+              <div><small>OPANOWANE</small><strong id="learnResultMastered">0</strong></div>
+              <div><small>SKUTECZNOŚĆ</small><strong id="learnResultAccuracy">0%</strong></div>
+              <div><small>ZDOBYTE PUNKTY</small><strong id="learnResultPoints">+0</strong></div>
+            </div>
+            <button class="primary-button" id="learnAgain" type="button">Ucz się dalej <span>↻</span></button>
+            <button class="text-button" id="learnChangeSettings" type="button">Zmień zakres</button>
+          </article>
+        </section>
+
+        <section class="study-panel" id="flashcards" data-panel="flashcards">
+          <div class="section-heading study-heading">
+            <div>
+              <p class="eyebrow" id="flashcardsEyebrow">ZAGADNIENIA · 19 ROZDZIAŁÓW · MIKROEKONOMIA</p>
+              <h2>Fiszki</h2>
+            </div>
+            <div class="study-filters">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę fiszek">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <label class="compact-select">Rozdział
+                <select id="flashcardChapter" aria-label="Filtruj fiszki według rozdziału"></select>
+              </label>
+              <button class="starred-filter" id="starredFilter" aria-pressed="false"><span aria-hidden="true">★</span> Tylko trudne <b id="starredCount">0</b></button>
+            </div>
+          </div>
+          <p class="study-pool" id="flashcardPoolCount"></p>
+          <div class="card-counter"><span id="cardPosition">1 / 1</span><span id="cardPage">ROZDZIAŁ</span></div>
+          <div class="flashcard-stage">
+            <button class="card-star" id="starCard" aria-label="Oznacz fiszkę jako trudną" aria-pressed="false">☆</button>
+            <button class="card-direction" id="reverseFlashcards" type="button" aria-label="Najpierw pokazuj wyjaśnienie" aria-pressed="false" title="Odwróć kolejność wszystkich fiszek">⇄</button>
+            <button class="flashcard" id="flashcard" aria-label="Odwróć fiszkę">
+              <span class="card-hint" id="cardHint">POJĘCIE</span>
+              <span class="flashcard-inner">
+                <span class="card-face card-front" id="cardFront" aria-hidden="false"></span>
+                <span class="card-face card-back" id="cardBack" aria-hidden="true"></span>
+              </span>
+              <span class="flip-instruction" id="flipInstruction">Kliknij, aby zobaczyć definicję <b>↻</b></span>
+            </button>
+            <button class="focus-toggle focus-corner" type="button" data-focus="flashcards" aria-label="Włącz tryb skupienia fiszek" title="Tryb skupienia">⛶</button>
+          </div>
+          <div class="card-actions">
+            <button class="secondary-button" id="prevCard">← Poprzednia</button>
+            <div class="recall-actions" id="recallActions" hidden>
+              <button class="recall-button hard" data-recall="again">Jeszcze raz</button>
+              <button class="recall-button good" data-recall="good">Umiem</button>
+            </div>
+            <button class="secondary-button" id="nextCard">Następna →</button>
+          </div>
+        </section>
+
+        <section class="study-panel" id="quiz" data-panel="quiz">
+          <div class="section-heading compact study-heading">
+            <div>
+              <p class="eyebrow" id="quizEyebrow">QUIZ · MIKROEKONOMIA</p>
+              <h2>Quiz</h2>
+            </div>
+            <div class="heading-actions">
+              <button class="text-button" id="restartQuiz">Nowy zestaw</button>
+            </div>
+          </div>
+          <div class="quiz-settings">
+            <div class="mode-subject-control">
+              <span>Dziedzina</span>
+              <nav class="context-subject-switch" aria-label="Wybierz dziedzinę quizu">
+                <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+              </nav>
+            </div>
+            <label class="compact-select">Rozdział
+              <select id="quizChapter" aria-label="Wybierz rozdział quizu"></select>
+            </label>
+            <label class="compact-select">Liczba pytań
+              <select id="quizLength" aria-label="Wybierz liczbę pytań w quizie">
+                <option value="10">10 pytań</option>
+                <option value="20" selected>20 pytań</option>
+                <option value="30">30 pytań</option>
+                <option value="50">50 pytań</option>
+                <option value="all">Cała dostępna pula</option>
+              </select>
+            </label>
+            <p class="study-pool" id="quizPoolCount"></p>
+          </div>
+          <div class="quiz-progress"><span id="quizProgressLabel">Pytanie 1 z 10</span><div><i id="quizProgressBar"></i></div></div>
+          <article class="quiz-card" id="quizCard">
+            <p class="question-topic" id="quizPage"></p>
+            <h3 id="quizQuestion"></h3>
+            <div class="answers" id="quizAnswers"></div>
+            <p class="quiz-feedback" id="quizFeedback" aria-live="polite"></p>
+            <button class="primary-button next-question" id="nextQuestion" hidden>Dalej <span>→</span></button>
+            <button class="focus-toggle focus-corner" type="button" data-focus="quiz" aria-label="Włącz tryb skupienia quizu" title="Tryb skupienia">⛶</button>
+          </article>
+          <article class="quiz-result" id="quizResult" hidden>
+            <p class="eyebrow">WYNIK SESJI</p>
+            <p class="result-number"><span id="quizScore">0</span>/<span id="quizTotal">0</span></p>
+            <h3 id="quizResultText"></h3>
+            <p class="quiz-points-earned" id="quizPointsEarned"></p>
+            <button class="primary-button" id="quizAgain">Spróbuj ponownie <span>↻</span></button>
+            <button class="focus-toggle focus-corner" type="button" data-focus="quiz" aria-label="Włącz tryb skupienia quizu" title="Tryb skupienia">⛶</button>
+          </article>
+        </section>
+
+        <section class="study-panel owe-panel" id="owe" data-panel="owe">
+          <div class="section-heading owe-heading">
+            <div>
+              <p class="eyebrow">ARKUSZE OLIMPIJSKIE · EKONOMIA</p>
+              <h2>Arkusze olimpijskie</h2>
+            </div>
+            <a class="owe-source-link" href="https://owe.pte.pl/informacje/poprzednie-edycje/zestawy-pytan-z-poprzednich-edycji.html" target="_blank" rel="noopener noreferrer">Materiały źródłowe PTE ↗</a>
+          </div>
+
+          <article class="owe-quiz-setup" id="oweQuizSetup">
+            <div class="owe-setup-copy">
+              <span class="owe-intro-mark" aria-hidden="true">OLI</span>
+              <div>
+                <p class="eyebrow">TRENING OLIMPIJSKI</p>
+                <h3>Olimpijski poziom. Natychmiastowy wynik.</h3>
+                <p>Bank obejmuje <span id="oweQuestionBankCount">300</span> pytań opartych na archiwalnych zestawach OWE z czterech roczników, uporządkowanych w trzy poziomy trudności. Po odpowiedzi zobaczysz rozwiązanie zgodne z kluczem PTE.</p>
+              </div>
+            </div>
+            <div class="owe-setup-grid">
+              <label>
+                <span>Liczba pytań</span>
+                <select id="oweQuizCount">
+                  <option value="10">10 pytań</option>
+                  <option value="20">20 pytań</option>
+                  <option value="30">30 pytań</option>
+                </select>
+              </label>
+              <div class="owe-setup-stage">
+                <span>Poziom trudności</span>
+                <div class="owe-stage-filter" role="group" aria-label="Wybierz poziom trudności">
+                  <button class="active" type="button" data-owe-quiz-difficulty="all" aria-pressed="true">Wszystkie</button>
+                  <button type="button" data-owe-quiz-difficulty="basic" aria-pressed="false">Podstawowy</button>
+                  <button type="button" data-owe-quiz-difficulty="intermediate" aria-pressed="false">Średni</button>
+                  <button type="button" data-owe-quiz-difficulty="advanced" aria-pressed="false">Zaawansowany</button>
+                </div>
+              </div>
+            </div>
+            <div class="owe-setup-action">
+              <p><strong id="oweQuizPoolCount">300 pytań</strong><span id="oweQuizPoolMeta"> · 3 poziomy trudności</span></p>
+              <button class="primary-button" id="oweQuizStart" type="button">Rozpocznij arkusz <span>→</span></button>
+            </div>
+          </article>
+
+          <article class="owe-quiz-session" id="oweQuizSession" hidden aria-live="polite">
+            <div class="owe-session-head">
+              <div>
+                <p class="eyebrow" id="oweQuizQuestionMeta">POZIOM PODSTAWOWY · PYTANIE 1</p>
+                <p id="oweQuizProgressText">Pytanie 1 z 10</p>
+              </div>
+              <button class="text-button" id="oweQuizExit" type="button">Zmień zestaw</button>
+            </div>
+            <div class="owe-progress" aria-hidden="true"><i id="oweQuizProgressBar"></i></div>
+            <div class="owe-question-card">
+              <h3 id="oweQuizQuestion"></h3>
+              <div class="owe-answer-list" id="oweQuizAnswers"></div>
+              <p class="owe-selection-hint" id="oweQuizSelectionHint" hidden>To pytanie może mieć kilka poprawnych odpowiedzi. Zaznacz wszystkie właściwe warianty.</p>
+              <button class="secondary-button owe-check" id="oweQuizCheck" type="button" hidden disabled>Sprawdź odpowiedź</button>
+              <div class="owe-feedback" id="oweQuizFeedback" hidden>
+                <div><strong id="oweQuizFeedbackTitle"></strong><p id="oweQuizFeedbackCopy"></p></div>
+                <a id="oweQuizQuestionSource" href="#" target="_blank" rel="noopener noreferrer">Zobacz oficjalny klucz PTE ↗</a>
+              </div>
+              <button class="primary-button owe-next" id="oweQuizNext" type="button" hidden>Następne pytanie <span>→</span></button>
+            </div>
+          </article>
+
+          <article class="owe-quiz-result" id="oweQuizResult" hidden>
+            <p class="eyebrow">WYNIK ARKUSZA OLIMPIJSKIEGO</p>
+            <div class="owe-result-score"><strong id="oweQuizScore">0/10</strong><span id="oweQuizPercent">0%</span></div>
+            <h3 id="oweQuizResultTitle">Dobra rozgrzewka.</h3>
+            <p id="oweQuizResultCopy"></p>
+            <p class="owe-points-earned" id="oweQuizPointsEarned" aria-live="polite"></p>
+            <div class="owe-review" id="oweQuizReview"></div>
+            <div class="owe-result-actions">
+              <button class="primary-button" id="oweQuizAgain" type="button">Nowy zestaw <span>↻</span></button>
+              <button class="secondary-button" id="oweQuizChange" type="button">Zmień ustawienia</button>
+            </div>
+          </article>
+
+          <p class="owe-attribution">Arkusze opracowano na podstawie materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Wybrane polecenia sytuacyjne, obliczeniowe i rozbudowane zredagowano językowo bez zmiany danych, sensu ani kluczy odpowiedzi. Poziomy trudności porządkują bank od materiału podstawowego do zaawansowanego. NaukaEkonomii.pl nie jest oficjalną stroną OWE ani serwisem powiązanym z PTE.</p>
+        </section>
+
+        <section class="study-panel" id="more" data-panel="more">
+          <div class="section-heading more-heading">
+            <div>
+              <p class="eyebrow">POZOSTAŁE MATERIAŁY</p>
+              <h2>Więcej narzędzi</h2>
+            </div>
+          </div>
+          <p class="panel-intro">Dodatkowe części serwisu są zebrane w jednym miejscu, aby główne tryby nauki pozostały proste i czytelne.</p>
+          <div class="more-grid">
+            <button class="more-card" data-go="test">
+              <span>01</span><strong>Test</strong>
+              <p>Wpisuj samodzielnie nazwy zagadnień i sprawdzaj pamięć.</p><b>Rozpocznij →</b>
+            </button>
+            <button class="more-card" data-go="answers">
+              <span>02</span><strong>Odpowiedzi</strong>
+              <p>Wyszukaj odpowiedź na pytanie i przejdź do właściwego rozdziału.</p><b>Otwórz →</b>
+            </button>
+            <button class="more-card" data-go="scope">
+              <span>03</span><strong>Zakres i streszczenia</strong>
+              <p>Przejrzyj tematy i najważniejsze wnioski z każdego rozdziału.</p><b>Otwórz →</b>
+            </button>
+            <button class="more-card" data-go="math">
+              <span>04</span><strong>Matematyczne</strong>
+              <p>Znajdź wzory, zmienne, symbole oraz warunki ich stosowania.</p><b>Otwórz →</b>
+            </button>
+            <button class="more-card" data-go="legal">
+              <span>05</span><strong>Źródła, prawa i prywatność</strong>
+              <p>Bibliografia, zasady opracowania treści oraz informacja o danych.</p><b>Otwórz →</b>
+            </button>
+          </div>
+        </section>
+
+        <section class="study-panel" id="leaderboard" data-panel="leaderboard">
+          <div class="section-heading leaderboard-heading">
+            <div>
+              <p class="eyebrow">KLASYFIKACJA UCZNIÓW</p>
+              <h2>Ranking</h2>
+            </div>
+            <button class="text-button" id="refreshLeaderboard">Odśwież</button>
+          </div>
+          <p class="panel-intro">Porównaj wynik z najlepszą piątką wszystkich użytkowników albo dołącz hasłem do zamkniętej grupy.</p>
+          <p class="cloud-notice" id="leaderboardNotice" aria-live="polite"></p>
+          <div class="leaderboard-layout">
+            <section class="leaderboard-block" aria-labelledby="publicLeaderboardTitle">
+              <div class="leaderboard-block-head">
+                <div><span>RANKING PUBLICZNY</span><h3 id="publicLeaderboardTitle">Najlepsza piątka</h3></div>
+                <small>TOP 5</small>
+              </div>
+              <div class="leaderboard-list" id="leaderboardList"></div>
+            </section>
+
+            <section class="leaderboard-block leaderboard-you" aria-labelledby="leaderboardMeTitle">
+              <div class="leaderboard-block-head compact">
+                <div><span>TWOJA POZYCJA</span><h3 id="leaderboardMeTitle">Ty w rankingu</h3></div>
+              </div>
+              <div class="leaderboard-list" id="leaderboardMe"></div>
+            </section>
+
+            <section class="private-ranking-gate" id="privateLeaderboardGate" aria-labelledby="privateLeaderboardGateTitle">
+              <span class="private-ranking-lock" aria-hidden="true">◇</span>
+              <div class="private-ranking-gate-copy">
+                <p class="eyebrow">PRYWATNA GRUPA</p>
+                <h3 id="privateLeaderboardGateTitle">Dołącz do prywatnego rankingu</h3>
+                <p>Nazwa grupy pozostanie ukryta do momentu wpisania poprawnego hasła.</p>
+              </div>
+              <form class="private-ranking-form" id="privateLeaderboardJoinForm">
+                <label for="privateLeaderboardPassword">Hasło dostępu</label>
+                <div>
+                  <input id="privateLeaderboardPassword" type="password" maxlength="64" autocomplete="off" required placeholder="Wpisz hasło" aria-describedby="privateLeaderboardFeedback" />
+                  <button class="primary-button" id="privateLeaderboardJoin" type="submit">Dołącz <span>→</span></button>
+                </div>
+                <p id="privateLeaderboardFeedback" aria-live="polite"></p>
+              </form>
+            </section>
+
+            <section class="leaderboard-block private-leaderboard" id="privateLeaderboardPanel" hidden aria-labelledby="privateLeaderboardTitle">
+              <div class="leaderboard-block-head">
+                <div><span>RANKING PRYWATNY</span><h3 id="privateLeaderboardTitle"></h3></div>
+                <small>TOP 10</small>
+              </div>
+              <p class="private-leaderboard-meta" id="privateLeaderboardMeta"></p>
+              <div class="leaderboard-list" id="privateLeaderboardList"></div>
+              <div class="private-leaderboard-me" id="privateLeaderboardMeSection">
+                <span>TWOJA POZYCJA W GRUPIE</span>
+                <div class="leaderboard-list" id="privateLeaderboardMe"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="study-panel" id="test" data-panel="test">
+          <div class="section-heading compact study-heading">
+            <div>
+              <p class="eyebrow" id="testEyebrow">TEST PISEMNY · MIKROEKONOMIA</p>
+              <h2>Test</h2>
+            </div>
+            <button class="text-button" id="restartTest">Nowy zestaw</button>
+          </div>
+          <div class="quiz-settings test-settings">
+            <div class="mode-subject-control">
+              <span>Dziedzina</span>
+              <nav class="context-subject-switch" aria-label="Wybierz dziedzinę testu">
+                <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+              </nav>
+            </div>
+            <label class="compact-select">Rozdział
+              <select id="testChapter" aria-label="Wybierz rozdział testu"></select>
+            </label>
+            <label class="compact-select">Liczba pytań
+              <select id="testLength" aria-label="Wybierz liczbę pytań w teście">
+                <option value="5">5 pytań</option>
+                <option value="10" selected>10 pytań</option>
+                <option value="20">20 pytań</option>
+                <option value="30">30 pytań</option>
+                <option value="all">Cała dostępna pula</option>
+              </select>
+            </label>
+            <p class="study-pool" id="testPoolCount"></p>
+          </div>
+          <div class="quiz-progress"><span id="testProgressLabel">Pytanie 1 z 10</span><div><i id="testProgressBar"></i></div></div>
+          <article class="quiz-card test-card" id="testCard">
+            <p class="question-topic" id="testPage"></p>
+            <h3 id="testQuestion"></h3>
+            <form class="test-answer-form" id="testAnswerForm">
+              <label for="testAnswer">Nazwa zagadnienia</label>
+              <div><input id="testAnswer" type="text" autocomplete="off" spellcheck="false" placeholder="Wpisz odpowiedź…" /><button class="primary-button" id="testAnswerSubmit" type="submit">Sprawdź</button></div>
+              <button class="text-button reveal-test-answer" id="showTestAnswer" type="button">Pokaż odpowiedź</button>
+            </form>
+            <p class="quiz-feedback" id="testFeedback" aria-live="polite"></p>
+            <button class="primary-button next-question" id="nextTestQuestion" hidden>Dalej <span>→</span></button>
+          </article>
+          <article class="quiz-result" id="testResult" hidden>
+            <p class="eyebrow">WYNIK TESTU</p>
+            <p class="result-number"><span id="testScore">0</span>/<span id="testTotal">0</span></p>
+            <h3 id="testResultText"></h3>
+            <p class="quiz-points-earned" id="testPointsEarned"></p>
+            <button class="primary-button" id="testAgain">Spróbuj ponownie <span>↻</span></button>
+          </article>
+        </section>
+
+        <section class="study-panel" id="answers" data-panel="answers">
+          <div class="section-heading answers-heading">
+            <div>
+              <p class="eyebrow">PYTANIE → ODPOWIEDŹ → ROZDZIAŁ</p>
+              <h2>Szukaj odpowiedzi</h2>
+            </div>
+            <div class="study-filters">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę wyszukiwanych odpowiedzi">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <label class="compact-select">Rozdział
+                <select id="answerChapter" aria-label="Filtruj odpowiedzi według rozdziału"></select>
+              </label>
+            </div>
+          </div>
+          <label class="answer-search">
+            <span class="sr-only" id="answerSearchLabel">Wpisz pytanie z mikroekonomii</span>
+            <input id="answerSearch" type="search" placeholder="Np. dlaczego podatek tworzy stratę społeczną?" autocomplete="off" />
+            <span class="search-key">ENTER</span>
+          </label>
+          <div class="answer-prompts" aria-label="Przykładowe pytania">
+            <button data-question="Jak znaleźć równowagę rynkową?">Równowaga rynkowa</button>
+            <button data-question="Kto ponosi ciężar podatku?">Ciężar podatku</button>
+            <button data-question="Jak monopol wybiera cenę i ilość?">Monopol</button>
+            <button data-question="Dlaczego handel przynosi korzyści?">Handel</button>
+          </div>
+          <p class="answer-count" id="answerCount" aria-live="polite"></p>
+          <div class="answer-results" id="answerResults"></div>
+        </section>
+
+        <section class="study-panel" id="scope" data-panel="scope">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow" id="scopeEyebrow">SPIS TREŚCI I OPRACOWANIA</p>
+              <h2>Zakres i streszczenia</h2>
+            </div>
+            <div class="section-heading-tools">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę zakresu">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <p class="subtle" id="scopeMeta"><span id="scopeTopicCount">0</span> tematów · 19 rozdziałów · 9 części</p>
+            </div>
+          </div>
+          <div class="scope-tools">
+            <p class="panel-intro">Otwórz spis tematów lub wybierz „Streszczenie”, aby zobaczyć najważniejsze idee danego rozdziału.</p>
+            <label class="concept-search scope-search">
+              <span class="sr-only">Szukaj w zakresie</span>
+              <input id="scopeSearch" type="search" placeholder="Szukaj tematu w całej książce" autocomplete="off" />
+            </label>
+          </div>
+          <div class="scope-list" id="scopeList"></div>
+        </section>
+
+        <section class="study-panel" id="math" data-panel="math">
+          <div class="section-heading math-heading">
+            <div>
+              <p class="eyebrow">WZORY · SYMBOLE · INTERPRETACJA</p>
+              <h2>Matematyczne</h2>
+            </div>
+            <div class="study-filters">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę wzorów">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <label class="compact-select">Rozdział
+                <select id="mathChapter" aria-label="Filtruj matematykę według rozdziału"></select>
+              </label>
+            </div>
+          </div>
+          <p class="panel-intro">Zweryfikowany indeks obliczeń używanych w całym zakresie książki. Każdy wzór zawiera wyjaśnienie zastosowania, wszystkich zmiennych oraz znaków matematycznych.</p>
+          <div class="math-toolbar">
+            <p class="formula-total">Wzory <strong id="formulaCount">0</strong></p>
+            <label class="concept-search math-search">
+              <span class="sr-only">Szukaj wzoru</span>
+              <input id="mathSearch" type="search" placeholder="Szukaj: elastyczność, koszt, podatek…" autocomplete="off" />
+            </label>
+          </div>
+          <p class="math-count" id="mathCount" aria-live="polite"></p>
+          <div class="formula-grid" id="formulaGrid"></div>
+        </section>
+
+        <section class="study-panel" id="concepts" data-panel="concepts">
+          <div class="section-heading concepts-heading">
+            <div>
+              <p class="eyebrow">SŁOWNIK POJĘĆ</p>
+              <h2>Zagadnienia</h2>
+            </div>
+            <div class="concept-heading-tools">
+              <div class="mode-subject-control">
+                <span>Dziedzina</span>
+                <nav class="context-subject-switch" aria-label="Wybierz dziedzinę zagadnień">
+                  <button class="active" type="button" data-subject="micro" aria-pressed="true">Mikro</button>
+                  <button type="button" data-subject="macro" aria-pressed="false">Makro</button>
+                </nav>
+              </div>
+              <label class="concept-search">
+                <span class="sr-only">Szukaj w zagadnieniach</span>
+                <input id="conceptSearch" type="search" placeholder="Szukaj pojęcia lub fragmentu definicji" autocomplete="off" />
+              </label>
+            </div>
+          </div>
+          <p class="panel-intro" id="conceptsIntro">Hasła są uporządkowane według rozdziałów i służą jako materiał do powtórki. Skorzystaj z wyszukiwarki, aby szybko znaleźć pojęcie.</p>
+          <p class="concept-count" id="conceptCount" aria-live="polite"></p>
+          <div class="concept-grid" id="conceptGrid"></div>
+        </section>
+
+        <section class="study-panel" id="legal" data-panel="legal">
+          <div class="section-heading legal-heading">
+            <div>
+              <p class="eyebrow">BIBLIOGRAFIA · PRAWA AUTORSKIE · PRYWATNOŚĆ</p>
+              <h2>Źródła, prawa i prywatność</h2>
+            </div>
+          </div>
+          <div class="legal-notice">
+            <strong>Ta strona jest samodzielnym materiałem edukacyjnym.</strong>
+            <p>Poza wyraźnie oznaczonym modułem arkuszy olimpijskich zawiera autorskie objaśnienia, pytania, streszczenia i parafrazy. Nie udostępnia skanów, pełnego tekstu ani rozbudowanych fragmentów podręcznika. Samo wymienienie źródła nie zastępuje licencji i nie pozwala kopiować cudzego sposobu wyrażenia.</p>
+          </div>
+          <div class="legal-grid">
+            <article>
+              <span>01</span>
+              <h3>Źródło mikroekonomii</h3>
+              <p>N. Gregory Mankiw, Mark P. Taylor, <cite>Mikroekonomia</cite>, wydanie II zmienione, tłum. Jarosław Sawicki, Polskie Wydawnictwo Ekonomiczne, Warszawa 2015, ISBN 978-83-208-2203-8.</p>
+              <small>Zakres modułu mikroekonomii zachowuje układ rozdziałów wskazanego wydania.</small>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>Źródło makroekonomii</h3>
+              <p>N. Gregory Mankiw, Mark P. Taylor, <cite>Makroekonomia</cite>, wydanie II zmienione, tłum. Jarosław Sawicki, Polskie Wydawnictwo Ekonomiczne, Warszawa 2016, ISBN 978-83-208-2208-3.</p>
+              <small>Układ 18 rozdziałów oraz przypisanie pojęć odtworzono na podstawie przesłanego egzemplarza. Autorzy i wydawca nie są związani z witryną.</small>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>Podstawa prawna</h3>
+              <p>Art. 1 ust. 2¹ ustawy odróżnia chroniony sposób wyrażenia od idei, metod i zasad. Art. 29 określa prawo cytatu, art. 34 wymaga oznaczenia twórcy i źródła, a art. 35 chroni normalne korzystanie z utworu i słuszne interesy twórcy.</p>
+              <a href="https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20250000024" target="_blank" rel="noopener noreferrer">Tekst jednolity ustawy — Dz.U. 2025 poz. 24 ↗</a>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>Zasady publikacji</h3>
+              <ul>
+                <li>brak reprodukcji stron i skanów książki,</li>
+                <li>brak długich cytatów i kopiowania definicji z podręczników,</li>
+                <li>wyraźne oznaczenie każdego ewentualnego krótkiego cytatu,</li>
+                <li>odrębne oznaczenie materiałów OWE i publikowanie ich po potwierdzeniu prawa do ponownego wykorzystania,</li>
+                <li>bibliografia i odsyłacz do oficjalnego aktu prawnego,</li>
+                <li>możliwość zgłoszenia uzasadnionej uwagi dotyczącej praw.</li>
+              </ul>
+              <a href="https://github.com/OlimpiadaBiznesowa/ekonomia/issues" target="_blank" rel="noopener noreferrer">Zgłoś uwagę w repozytorium ↗</a>
+            </article>
+          </div>
+          <p class="legal-disclaimer">Informacja ma charakter organizacyjny i nie jest poradą prawną. W razie planowania komercyjnego wykorzystania lub publikacji cudzych fragmentów warto uzyskać zgodę uprawnionego albo indywidualną poradę prawną.</p>
+
+          <section class="privacy-section" aria-labelledby="privacyTitle">
+            <div class="privacy-heading">
+              <p class="eyebrow">INFORMACJA O PRZETWARZANIU DANYCH</p>
+              <h3 id="privacyTitle">Prywatność użytkowników</h3>
+              <p>Wersja obowiązująca od 3 września 2026 r.</p>
+            </div>
+            <div class="privacy-grid">
+              <article>
+                <h4>Administrator i kontakt</h4>
+                <p>Pełne dane administratora, zasady przetwarzania oraz informacje o plikach cookie znajdują się w <a href="polityka-prywatnosci/">polityce prywatności</a>. W sprawach dotyczących danych napisz na <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a>.</p>
+              </article>
+              <article>
+                <h4>Korzystanie bez konta</h4>
+                <p>Postęp nauki, punkty, opanowane i oznaczone fiszki, historia ćwiczeń, wybrany dział, preferencje wyglądu i stan powiadomień są zapisywane w <code>localStorage</code> na Twoim urządzeniu. Nie są synchronizowane z kontem, dopóki się nie zalogujesz. Możesz je usunąć przez „Wyzeruj postęp” oraz ustawienia danych witryny w przeglądarce.</p>
+              </article>
+              <article>
+                <h4>Dane konta i rankingu</h4>
+                <p>Po dobrowolnej rejestracji przetwarzane są: adres e-mail, identyfikator konta, podana nazwa w rankingu, punkty, szczegóły postępu, daty aktualizacji, członkostwo w prywatnym rankingu oraz dane służące ograniczaniu nieudanych prób dołączenia. Nazwa i punkty mogą być widoczne zalogowanym użytkownikom rankingu. Użyj pseudonimu zamiast imienia i nazwiska. Hasło obsługuje bezpośrednio Supabase Auth; jego jawna treść nie trafia do kodu strony.</p>
+              </article>
+              <article>
+                <h4>Cele i podstawy</h4>
+                <p>Dane konta i postępu są używane do utworzenia konta, logowania, synchronizacji i prowadzenia rankingu — na podstawie art. 6 ust. 1 lit. b RODO. Dane techniczne oraz zabezpieczenia serwisu przetwarzane są w prawnie uzasadnionym interesie zapewnienia działania i bezpieczeństwa strony — art. 6 ust. 1 lit. f RODO. Dane wykorzystywane do reklam spersonalizowanych są przetwarzane po uzyskaniu wymaganej zgody; szczegóły i dostępne podstawy określa komunikat Google CMP oraz pełna polityka prywatności.</p>
+              </article>
+              <article>
+                <h4>Dostawcy i dane techniczne</h4>
+                <p>Strona korzysta z Cloudflare Pages i Web Analytics, Supabase, Google Fonts, jsDelivr oraz Google AdSense i platformy Google CMP. Dostawcy mogą otrzymywać dane techniczne połączenia, a dostawcy reklam — zależnie od wyboru użytkownika — identyfikatory, dane urządzenia i informacje o korzystaniu ze strony. Szczegółowy opis odbiorców, cookies i możliwości zmiany wyboru znajduje się w <a href="polityka-prywatnosci/">polityce prywatności</a>.</p>
+              </article>
+              <article>
+                <h4>Okres przechowywania</h4>
+                <p>Dane lokalne pozostają na urządzeniu do ich wyczyszczenia. Dane konta i zsynchronizowany postęp są przechowywane do usunięcia konta przez użytkownika, a następnie mogą pozostać tylko w kopiach bezpieczeństwa przez technicznie niezbędny okres. Dane reklamowe i wybór zgody są przechowywane przez okresy wskazane przez Google i właściwych partnerów w panelu „Zarządzaj opcjami”.</p>
+              </article>
+              <article>
+                <h4>Twoje prawa</h4>
+                <p>Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia, przeniesienia oraz wnieść sprzeciw wobec przetwarzania opartego na uzasadnionym interesie. Zgodę możesz wycofać w dowolnym momencie przez ustawienia prywatności i cookies. Konto wraz z postępem można usunąć w ustawieniach konta. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych.</p>
+                <a href="https://uodo.gov.pl/pl/p/skargi" target="_blank" rel="noopener noreferrer">Informacje o skargach do UODO ↗</a>
+              </article>
+              <article>
+                <h4>Dobrowolność i automatyzacja</h4>
+                <p>Podanie danych konta jest dobrowolne. Bez nich nadal skorzystasz z materiałów i lokalnego zapisu postępu, ale nie z rankingu ani synchronizacji między urządzeniami. Punkty i rangi są wyliczane automatycznie na podstawie aktywności edukacyjnej; nie wywołuje to skutków prawnych ani podobnie istotnych skutków. Dane nie są sprzedawane.</p>
+              </article>
+            </div>
+          </section>
+        </section>
+          </div>
+        </div>
+      </main>
+
+      <aside class="app-menu" id="appMenu" hidden aria-label="Menu główne">
+        <div class="app-menu-head">
+          <div>
+            <p class="eyebrow" id="appMenuSubject">MIKROEKONOMIA</p>
+            <h2>Menu</h2>
+          </div>
+          <div class="app-menu-head-actions">
+            <button class="notification-trigger" id="notificationButton" type="button" aria-expanded="false" aria-controls="notificationCenter" aria-label="Powiadomienia">
+              <span aria-hidden="true">♢</span><span class="sr-only">Centrum powiadomień</span>
+              <b id="notificationUnreadBadge" hidden>0</b>
+            </button>
+            <button class="points-close" id="appMenuClose" aria-label="Zamknij menu">×</button>
+          </div>
+        </div>
+
+        <section class="notification-center" id="notificationCenter" hidden aria-label="Centrum powiadomień">
+          <div class="notification-center-head">
+            <div><strong>Powiadomienia</strong><small>Aktualizacje strony i zmiany w rankingu</small></div>
+            <button class="text-button" id="markNotificationsRead" type="button">Oznacz jako przeczytane</button>
+          </div>
+          <div class="notification-list" id="notificationList"></div>
+        </section>
+
+        <nav class="app-menu-nav" aria-label="Nawigacja strony">
+          <button class="menu-nav-button learn-menu-button" type="button" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></button>
+          <button class="menu-nav-button owe-menu-button" type="button" data-menu-mode="owe"><span>OLI</span><div><strong>Arkusze olimpijskie</strong><small>300 pytań · 3 poziomy trudności</small></div></button>
+          <button class="menu-nav-button active" type="button" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></button>
+          <p class="menu-section-label">NAUKA</p>
+          <button class="menu-nav-button" type="button" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></button>
+          <button class="menu-nav-button" type="button" data-menu-mode="quiz"><span>02</span><div><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></div></button>
+          <button class="menu-nav-button" type="button" data-menu-mode="concepts"><span>03</span><div><strong>Zagadnienia</strong><small>Słownik pojęć z książki</small></div></button>
+          <button class="menu-nav-button" type="button" data-menu-mode="leaderboard"><span>04</span><div><strong>Ranking</strong><small>Punkty i rangi uczniów</small></div></button>
+          <button class="menu-nav-button" type="button" data-menu-mode="more"><span>05</span><div><strong>Więcej</strong><small>Test, odpowiedzi, streszczenia i wzory</small></div></button>
+        </nav>
+
+        <div class="app-menu-profile">
+          <button class="menu-profile-button" id="pointsMenuButton" type="button" aria-expanded="false" aria-controls="pointsMenu">
+            <span class="menu-profile-icon points-star" aria-hidden="true">✦</span>
+            <div><strong>Punkty i rangi</strong><small><b id="topPoints">0</b> pkt · <span id="menuQuickRank">Początkujący</span></small></div><i aria-hidden="true">›</i>
+          </button>
+          <button class="menu-profile-button account-trigger" id="accountButton" type="button" aria-expanded="false" aria-controls="authModal">
+            <span class="account-avatar" id="accountAvatar" aria-hidden="true">?</span>
+            <div><strong id="accountLabel">Zaloguj się</strong><small id="accountMenuStatus">Synchronizuj postęp</small></div><i aria-hidden="true">›</i>
+          </button>
+        </div>
+      </aside>
+      <button class="app-menu-backdrop" id="appMenuBackdrop" hidden aria-label="Zamknij menu"></button>
+
+      <aside class="points-menu" id="pointsMenu" hidden aria-label="Punkty i rangi">
+        <div class="points-menu-head">
+          <div>
+            <p class="eyebrow">TWÓJ PROFIL NAUKI</p>
+            <h2>Punkty i rangi</h2>
+          </div>
+          <button class="points-close" id="pointsMenuClose" aria-label="Zamknij menu punktów">×</button>
+        </div>
+        <section class="current-rank-card">
+          <span class="rank-emblem" id="rankEmblem" aria-hidden="true">I</span>
+          <div>
+            <p id="rankName">Początkujący</p>
+            <strong><span id="menuPoints">0</span> punktów</strong>
+            <small id="rankDescription">Zaczynasz budować ekonomiczne podstawy.</small>
+          </div>
+        </section>
+        <p class="cloud-status" id="cloudStatus">Postęp lokalny</p>
+        <div class="menu-rank-progress">
+          <div><span id="menuNextRank">Następna ranga: Adept</span><span id="menuRankProgress">0 / 100</span></div>
+          <div class="progress-track"><i id="menuRankBar"></i></div>
+        </div>
+        <section class="points-quests" id="pointsQuestsSection" aria-labelledby="pointsQuestsTitle">
+          <button class="points-quests-toggle" id="pointsQuestsToggle" type="button" aria-expanded="false" aria-controls="pointsQuestBody">
+            <div>
+              <p class="eyebrow">QUESTY</p>
+              <h3 id="pointsQuestsTitle">Twoje cele</h3>
+            </div>
+            <span id="pointsQuestSummary">0/3 ukończonych</span>
+            <i aria-hidden="true">⌄</i>
+          </button>
+          <div class="points-quest-body" id="pointsQuestBody" hidden>
+            <p id="pointsQuestResetLabel">Codziennie losujemy 3 cele z puli 10. Gotowa skrzynka zawiera od 50 do 200 pkt.</p>
+            <div class="quest-grid points-quest-grid" id="pointsQuestList"></div>
+          </div>
+        </section>
+        <div class="points-rules">
+          <p class="eyebrow">JAK ZDOBYWASZ PUNKTY</p>
+          <ul>
+            <li><span>Opanowanie nowej fiszki</span><strong>+5 pkt</strong></li>
+            <li><span>Poprawna odpowiedź w Ucz się, quizie, teście lub arkuszu olimpijskim</span><strong>+5 pkt</strong></li>
+            <li><span>Wynik 80–99% w zestawie</span><strong>+5 pkt</strong></li>
+            <li><span>Zestaw bez błędu</span><strong>+10 pkt</strong></li>
+            <li><span>15 minut aktywnej nauki</span><strong>+20 pkt</strong></li>
+            <li><span>Skrzynka za ukończony quest</span><strong>50–200 pkt</strong></li>
+          </ul>
+        </div>
+        <section class="study-timer-card" aria-label="Premia za czas nauki">
+          <div><span>DO KOLEJNEJ PREMII</span><strong id="studyTimerLabel">15:00</strong></div>
+          <div class="progress-track" aria-hidden="true"><i id="studyTimerBar"></i></div>
+          <small>+20 pkt co 15 minut na widocznej karcie strony</small>
+        </section>
+        <section class="boost-card" aria-label="Dzienny boost punktów">
+          <div>
+            <span class="boost-icon" aria-hidden="true">×2</span>
+            <div><strong>Dzienny boost</strong><small id="boostStatus">Dostępny raz dziennie przez 30 minut</small></div>
+          </div>
+          <button class="boost-button" id="activateBoost" type="button">Aktywuj ×2</button>
+        </section>
+        <div class="rank-ladder" id="rankLadder"></div>
+      </aside>
+      <button class="points-backdrop" id="pointsBackdrop" hidden aria-label="Zamknij menu punktów"></button>
+
+      <button class="auth-backdrop" id="authBackdrop" hidden aria-label="Zamknij okno konta"></button>
+      <section class="auth-modal" id="authModal" hidden role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <div class="auth-modal-head">
+          <div>
+            <p class="eyebrow">KONTO UCZNIA</p>
+            <h2 id="authTitle">Zaloguj się</h2>
+          </div>
+          <button class="points-close" id="authClose" aria-label="Zamknij okno konta">×</button>
+        </div>
+        <div id="authUnavailable" hidden>
+          <p class="auth-copy">Logowanie wymaga jednorazowego połączenia strony z projektem Supabase. Instrukcja znajduje się w pliku <strong>SUPABASE_SETUP.md</strong>.</p>
+        </div>
+        <div id="authSignedOut">
+          <p class="auth-copy auth-gate-copy">Konto jest opcjonalne. Zaloguj się lub je utwórz, aby wejść do rankingu i synchronizować postęp między urządzeniami. Wszystkie materiały edukacyjne działają bez logowania.</p>
+          <div class="auth-tabs" role="tablist" aria-label="Logowanie lub rejestracja">
+            <button class="active" id="loginTab" type="button" role="tab" aria-selected="true">Logowanie</button>
+            <button id="registerTab" type="button" role="tab" aria-selected="false">Rejestracja</button>
+          </div>
+          <form class="auth-form" id="loginForm">
+            <label>E-mail<input id="loginEmail" type="email" autocomplete="email" required /></label>
+            <label>Hasło<input id="loginPassword" type="password" autocomplete="current-password" minlength="8" required /></label>
+            <button class="primary-button" type="submit">Zaloguj się</button>
+          </form>
+          <form class="auth-form" id="registerForm" hidden>
+            <label>Nazwa w rankingu<input id="registerName" type="text" autocomplete="nickname" minlength="2" maxlength="30" required /></label>
+            <label>E-mail<input id="registerEmail" type="email" autocomplete="email" required /></label>
+            <label>Hasło<input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required /></label>
+            <small>Minimum 8 znaków. Hasło jest obsługiwane przez Supabase i nie trafia do kodu strony.</small>
+            <small>Tworząc konto, przekazujesz dane potrzebne do logowania, synchronizacji i rankingu. <a href="polityka-prywatnosci/">Sprawdź politykę prywatności</a>.</small>
+            <button class="primary-button" type="submit">Utwórz konto</button>
+          </form>
+          <p class="auth-feedback" id="authFeedback" aria-live="polite"></p>
+        </div>
+        <div class="auth-profile" id="authSignedIn" hidden>
+          <span class="profile-avatar" id="profileAvatar" aria-hidden="true">U</span>
+          <div><strong id="profileName">Uczeń</strong><small id="profileEmail"></small></div>
+          <p id="profileSyncStatus">Postęp jest synchronizowany.</p>
+          <form class="profile-name-form" id="profileNameForm">
+            <label for="profileNameInput">Nazwa użytkownika</label>
+            <div>
+              <input id="profileNameInput" type="text" autocomplete="nickname" minlength="2" maxlength="30" required />
+              <button class="secondary-button" id="profileNameSave" type="submit">Zapisz</button>
+            </div>
+            <small class="profile-name-feedback" id="profileNameFeedback" aria-live="polite"></small>
+          </form>
+          <button class="primary-button" id="profileLeaderboard" type="button">Zobacz ranking</button>
+          <button class="text-button" id="logoutButton" type="button">Wyloguj się</button>
+          <section class="danger-zone">
+            <strong>Usuń konto</strong>
+            <p>Ta operacja trwale usunie konto, punkty i cały zapisany postęp.</p>
+            <label>Wpisz <b>USUŃ</b>, aby potwierdzić<input id="deleteAccountConfirmation" type="text" autocomplete="off" /></label>
+            <button class="delete-account-button" id="deleteAccountButton" type="button" disabled>Usuń konto na stałe</button>
+          </section>
+        </div>
+        <section class="account-settings" aria-labelledby="accountSettingsTitle">
+          <div class="account-settings-heading">
+            <p class="eyebrow">PREFERENCJE</p>
+            <h3 id="accountSettingsTitle">Ustawienia</h3>
+          </div>
+          <label class="setting-row" for="darkModeToggle">
+            <span><strong>Tryb ciemny</strong><small>Przyciemnij interfejs i ogranicz jasne tło.</small></span>
+            <span class="toggle-switch"><input id="darkModeToggle" type="checkbox" role="switch" /><i aria-hidden="true"></i></span>
+          </label>
+          <div class="setting-row reset-setting">
+            <span><strong>Wyzeruj postęp</strong><small>Usuń punkty, rangi, opanowane i trudne fiszki oraz historię sesji.</small></span>
+            <button class="settings-reset-button" id="resetProgress" type="button">Wyzeruj</button>
+          </div>
+        </section>
+      </section>
+
+      <button class="email-confirmation-backdrop" id="emailConfirmationBackdrop" hidden aria-label="Zamknij komunikat"></button>
+      <section class="email-confirmation-popup" id="emailConfirmationPopup" hidden role="alertdialog" aria-modal="true" aria-labelledby="emailConfirmationTitle">
+        <span class="confirmation-icon" aria-hidden="true">✉</span>
+        <p class="eyebrow">OSTATNI KROK</p>
+        <h2 id="emailConfirmationTitle">Potwierdź swój e-mail</h2>
+        <p>Wysłaliśmy link aktywacyjny na <strong id="confirmationEmail"></strong>. Otwórz wiadomość i kliknij przycisk potwierdzenia, a następnie wróć do logowania.</p>
+        <small>Jeśli wiadomości nie ma w skrzynce odbiorczej, sprawdź folder Spam lub Oferty.</small>
+        <button class="primary-button" id="emailConfirmationClose" type="button">Rozumiem</button>
+      </section>
+
+      <div class="points-announcer sr-only" id="pointsAnnouncer" aria-live="polite"></div>
+
+      <button class="quest-reward-backdrop" id="questRewardBackdrop" hidden aria-label="Zamknij nagrodę za quest"></button>
+      <section class="quest-reward-modal" id="questRewardModal" hidden role="dialog" aria-modal="true" aria-labelledby="questRewardTitle">
+        <p class="eyebrow">QUEST UKOŃCZONY</p>
+        <h2 id="questRewardTitle">Nagroda za regularność</h2>
+        <div class="quest-chest-visual" id="questChestVisual" aria-hidden="true">
+          <span class="quest-chest-closed">🎁</span>
+          <span class="quest-chest-open">✨</span>
+          <i></i><i></i><i></i>
+        </div>
+        <strong class="quest-reward-amount" id="questRewardAmount" aria-live="polite">Losowanie 50–200 pkt…</strong>
+        <p id="questRewardCopy">Skrzynka otwiera się — za chwilę poznasz nagrodę.</p>
+        <button class="primary-button" id="questRewardClose" type="button" hidden>Odbierz nagrodę <span>→</span></button>
+      </section>
+
+      <div class="rank-celebration" id="rankCelebration" hidden role="status" aria-live="polite">
+        <div class="celebration-burst" aria-hidden="true"></div>
+        <div class="celebration-card">
+          <p class="eyebrow">NOWA RANGA</p>
+          <span class="rank-emblem" id="celebrationEmblem">II</span>
+          <h2 id="celebrationRank">Adept</h2>
+          <p>Twoja regularna nauka przynosi efekty.</p>
+          <button class="primary-button" id="celebrationClose">Kontynuuj naukę <span>→</span></button>
+        </div>
+      </div>
+
+      <footer>
+        <p>Samodzielny materiał edukacyjny z mikro- i makroekonomii · konto jest opcjonalne, a logowanie jest wymagane wyłącznie do rankingu i synchronizacji postępu.</p>
+        <p><strong>Kontakt:</strong> <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a> · <a href="zrodla-i-prawa/" data-go="legal">Źródła i prawa</a> · <a href="polityka-prywatnosci/">Polityka prywatności</a> · <a href="polityka-prywatnosci/" id="privacySettingsLink">Ustawienia prywatności i cookies</a></p>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="book-data.js?v=20260821-macro"></script>
+    <script src="curriculum-data.js?v=20260821-macro"></script>
+    <script src="macro-data.js?v=20260821-book-map"></script>
+    <script src="owe-quiz-data.js?v=20260903-reworded"></script>
+    <script src="owe-quiz-extra-data.js?v=20260903-reworded"></script>
+    <script src="owe-quiz-missing-data.js?v=20260903-reworded"></script>
+    <script src="app.js?v=20260903-privacy-1"></script>
+  </body>
+</html>

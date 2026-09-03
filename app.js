@@ -1,5 +1,81 @@
 const $ = selector => document.querySelector(selector);
 
+const publicModeRoutes = {
+  home: {
+    slug: '',
+    title: 'NaukaEkonomii.pl · Mikroekonomia i makroekonomia',
+    description: 'Bezpłatna nauka mikro- i makroekonomii: tryb Ucz się, fiszki, quizy, testy i arkusze olimpijskie.'
+  },
+  learn: {
+    slug: 'ucz-sie/',
+    title: 'Tryb Ucz się z ekonomii | NaukaEkonomii.pl',
+    description: 'Adaptacyjny tryb nauki mikro- i makroekonomii. Ucz się bez logowania, odpowiadaj na pytania i utrwalaj trudniejsze zagadnienia.'
+  },
+  flashcards: {
+    slug: 'fiszki/',
+    title: 'Fiszki z ekonomii | NaukaEkonomii.pl',
+    description: 'Bezpłatne fiszki z mikro- i makroekonomii. Powtarzaj pojęcia, oznaczaj trudne zagadnienia i zapisuj postęp bez logowania.'
+  },
+  quiz: {
+    slug: 'quizy/',
+    title: 'Quizy z ekonomii | NaukaEkonomii.pl',
+    description: 'Quizy z mikro- i makroekonomii z natychmiastowym wynikiem. Sprawdź wiedzę z wybranego zakresu bez zakładania konta.'
+  },
+  owe: {
+    slug: 'arkusze-olimpijskie/',
+    title: 'Arkusze olimpijskie z ekonomii | NaukaEkonomii.pl',
+    description: 'Rozwiązuj arkusze olimpijskie z ekonomii na poziomie podstawowym, średnim i zaawansowanym. 300 pytań z kluczami odpowiedzi.'
+  },
+  concepts: {
+    slug: 'zagadnienia/',
+    title: 'Zagadnienia z mikro- i makroekonomii | NaukaEkonomii.pl',
+    description: 'Przeglądaj uporządkowany słownik zagadnień z mikro- i makroekonomii oraz szybko odnajduj potrzebne definicje.'
+  }
+};
+const modeByRouteSlug = Object.fromEntries(
+  Object.entries(publicModeRoutes)
+    .filter(([, route]) => route.slug)
+    .map(([mode, route]) => [route.slug.replace(/\/$/, ''), mode])
+);
+const siteBaseUrl = document.querySelector('base')?.href || new URL('./', window.location.href).href;
+
+function publicModeFromLocation() {
+  const slug = decodeURIComponent(window.location.pathname.replace(/\/+$/, '').split('/').pop() || '');
+  return modeByRouteSlug[slug] || 'home';
+}
+
+function applyPublicModeMetadata(mode) {
+  const route = publicModeRoutes[mode];
+  if (!route) return;
+  const canonicalUrl = new URL(route.slug, 'https://naukaekonomii.pl/').href;
+  document.title = route.title;
+  const description = document.querySelector('meta[name="description"]');
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (description) description.content = route.description;
+  if (ogTitle) ogTitle.content = route.title;
+  if (ogDescription) ogDescription.content = route.description;
+  if (ogUrl) ogUrl.content = canonicalUrl;
+  if (canonical) canonical.href = canonicalUrl;
+}
+
+function updatePublicModeRoute(mode, { replace = false } = {}) {
+  const route = publicModeRoutes[mode];
+  if (!route) return;
+  const target = new URL(route.slug, siteBaseUrl);
+  if (window.location.pathname !== target.pathname) {
+    window.history[replace ? 'replaceState' : 'pushState']({ mode }, '', target.pathname);
+  }
+  applyPublicModeMetadata(mode);
+}
+
+function navigateToMode(mode, options) {
+  switchMode(mode);
+  updatePublicModeRoute(mode, options);
+}
+
 const storageKey = 'mankiw-taylor-study-progress-v14';
 const legacyStorageKeys = ['mankiw-taylor-study-progress-v13', 'mankiw-taylor-study-progress-v12', 'mankiw-taylor-study-progress-v11', 'mankiw-taylor-study-progress-v9', 'mankiw-taylor-study-progress-v7', 'mankiw-taylor-study-progress-v5'];
 const studyRewardSeconds = 15 * 60;
@@ -3013,11 +3089,17 @@ function renderConcepts() {
 }
 
 document.querySelectorAll('[data-go]').forEach(button => {
-  button.addEventListener('click', () => switchMode(button.dataset.go));
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    navigateToMode(button.dataset.go);
+  });
 });
 
 document.querySelectorAll('.mode-tab').forEach(tab => {
-  tab.addEventListener('click', () => switchMode(tab.dataset.mode));
+  tab.addEventListener('click', event => {
+    event.preventDefault();
+    navigateToMode(tab.dataset.mode);
+  });
 });
 
 $('#oweQuizCount').addEventListener('change', updateOweQuizPool);
@@ -3384,11 +3466,14 @@ $('#appMenuBackdrop').addEventListener('click', () => setAppMenu(false));
 $('#notificationButton').addEventListener('click', toggleNotificationCenter);
 $('#markNotificationsRead').addEventListener('click', markAllNotificationsRead);
 document.querySelectorAll('[data-menu-mode]').forEach(button => {
-  button.addEventListener('click', () => switchMode(button.dataset.menuMode));
+  button.addEventListener('click', event => {
+    event.preventDefault();
+    navigateToMode(button.dataset.menuMode);
+  });
 });
 $('.brand').addEventListener('click', event => {
   event.preventDefault();
-  switchMode('home');
+  navigateToMode('home');
 });
 $('#pointsMenuButton').addEventListener('click', () => setPointsMenu(true));
 $('#pointsMenuClose').addEventListener('click', () => setPointsMenu(false));
@@ -3484,8 +3569,17 @@ document.addEventListener('keydown', event => {
   }
 });
 
+window.addEventListener('popstate', () => {
+  const mode = publicModeFromLocation();
+  switchMode(mode);
+  applyPublicModeMetadata(mode);
+});
+
 initializeTheme();
 switchSubject(activeSubject);
+const initialPublicMode = publicModeFromLocation();
+switchMode(initialPublicMode);
+applyPublicModeMetadata(initialPublicMode);
 updateOweQuizPool();
 renderNotifications();
 updateStudyTimer();

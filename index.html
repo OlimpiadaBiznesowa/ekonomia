@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f3ed" />
+    <meta name="description" content="Bezpłatna nauka mikro- i makroekonomii: tryb Ucz się, fiszki, quizy, testy i arkusze Olimpiady Wiedzy Ekonomicznej." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:title" content="NaukaEkonomii.pl · Mikroekonomia i makroekonomia" />
+    <meta property="og:description" content="Ucz się ekonomii bez logowania. Korzystaj z adaptacyjnych powtórek, fiszek, quizów, testów i arkuszy OWE." />
+    <meta property="og:url" content="https://naukaekonomii.pl/" />
+    <meta property="og:image" content="https://naukaekonomii.pl/assets/nauka-ekonomii-logo.png" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="canonical" href="https://naukaekonomii.pl/" />
+    <link rel="icon" type="image/png" href="assets/nauka-ekonomii-logo.png" />
     <title>NaukaEkonomii.pl · Mikroekonomia i makroekonomia</title>
     <script>
       try {
@@ -16,7 +26,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260903-nauka-ekonomii-pl-4" />
+    <link rel="stylesheet" href="styles.css?v=20260903-guest-access-1" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
@@ -80,8 +90,20 @@
               <h1>Zostań mistrzem<br /><em>ekonomii już teraz.</em></h1>
               <p class="home-hero-description">Ucz się mikro- i makroekonomii, rozwiązuj oficjalne arkusze OWE i obserwuj swój postęp w jednym miejscu.</p>
               <div class="hero-actions home-hero-actions">
-                <button class="primary-button home-account-cta" id="homeAccountCta" type="button">Zaloguj się <span>→</span></button>
-                <button class="secondary-button home-menu-cta" id="homeMenuCta" type="button"><span aria-hidden="true">☰</span> Menu</button>
+                <button class="home-feature-button home-learn-button" type="button" data-go="learn">
+                  <span class="home-feature-icon" aria-hidden="true">↗</span>
+                  <span><strong>Tryb Ucz się</strong><small>Adaptacyjna sesja dopasowana do postępu</small></span>
+                  <b>Rozpocznij →</b>
+                </button>
+                <button class="home-feature-button home-owe-button" type="button" data-go="owe">
+                  <span class="home-feature-icon" aria-hidden="true">OWE</span>
+                  <span><strong>Arkusze OWE</strong><small>Pytania olimpijskie z kluczami odpowiedzi</small></span>
+                  <b>Ćwicz →</b>
+                </button>
+              </div>
+              <div class="home-account-row">
+                <small>Materiały i postęp lokalny działają bez konta.</small>
+                <button class="text-button home-account-cta" id="homeAccountCta" type="button">Ranking: zaloguj się →</button>
               </div>
               <span class="sr-only"><span id="heroTopicCount">0</span> tematów, <span id="heroFormulaCount">0</span> wzorów, <span id="heroConceptCount">0</span> zagadnień.</span>
             </div>
@@ -119,9 +141,9 @@
           </section>
 
           <nav class="home-shortcuts" aria-label="Szybki start">
-            <button type="button" data-go="learn"><span aria-hidden="true">↗</span><strong>Ucz się</strong><small>Sesja dopasowana do postępu</small></button>
             <button type="button" data-go="flashcards"><span aria-hidden="true">▱</span><strong>Fiszki</strong><small>Szybka powtórka pojęć</small></button>
-            <button type="button" data-go="owe"><span aria-hidden="true">OWE</span><strong>Arkusze</strong><small>Oficjalne pytania olimpijskie</small></button>
+            <button type="button" data-go="quiz"><span aria-hidden="true">?</span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></button>
+            <button type="button" data-go="concepts"><span aria-hidden="true">≡</span><strong>Zagadnienia</strong><small>Słownik mikro- i makroekonomii</small></button>
           </nav>
         </section>
 
@@ -409,7 +431,7 @@
             </div>
           </article>
 
-          <p class="owe-attribution">Pytania i klucze odpowiedzi pochodzą z oficjalnych materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Zachowano numer pytania, edycję i etap.</p>
+          <p class="owe-attribution">Pytania i klucze odpowiedzi pochodzą z materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Zachowano numer pytania, edycję i etap. NaukaEkonomii.pl nie jest oficjalną stroną OWE ani serwisem powiązanym z PTE.</p>
         </section>
 
         <section class="study-panel" id="more" data-panel="more">
@@ -679,7 +701,7 @@
           </div>
           <div class="legal-notice">
             <strong>Ta strona jest samodzielnym materiałem edukacyjnym.</strong>
-            <p>Zawiera autorskie objaśnienia, pytania, streszczenia i parafrazy. Nie udostępnia skanów, pełnego tekstu ani rozbudowanych fragmentów podręcznika. Samo wymienienie źródła nie zastępuje licencji i nie pozwala kopiować cudzego sposobu wyrażenia.</p>
+            <p>Poza wyraźnie oznaczonym modułem archiwalnych pytań OWE zawiera autorskie objaśnienia, pytania, streszczenia i parafrazy. Nie udostępnia skanów, pełnego tekstu ani rozbudowanych fragmentów podręcznika. Samo wymienienie źródła nie zastępuje licencji i nie pozwala kopiować cudzego sposobu wyrażenia.</p>
           </div>
           <div class="legal-grid">
             <article>
@@ -705,8 +727,9 @@
               <h3>Zasady publikacji</h3>
               <ul>
                 <li>brak reprodukcji stron i skanów książki,</li>
-                <li>brak długich cytatów i kopiowania definicji,</li>
+                <li>brak długich cytatów i kopiowania definicji z podręczników,</li>
                 <li>wyraźne oznaczenie każdego ewentualnego krótkiego cytatu,</li>
+                <li>odrębne oznaczenie materiałów OWE i publikowanie ich po potwierdzeniu prawa do ponownego wykorzystania,</li>
                 <li>bibliografia i odsyłacz do oficjalnego aktu prawnego,</li>
                 <li>możliwość zgłoszenia uzasadnionej uwagi dotyczącej praw.</li>
               </ul>
@@ -842,7 +865,7 @@
           <p class="auth-copy">Logowanie wymaga jednorazowego połączenia strony z projektem Supabase. Instrukcja znajduje się w pliku <strong>SUPABASE_SETUP.md</strong>.</p>
         </div>
         <div id="authSignedOut">
-          <p class="auth-copy auth-gate-copy">Zaloguj się lub utwórz konto, aby korzystać z fiszek, quizów, testów i pozostałych materiałów.</p>
+          <p class="auth-copy auth-gate-copy">Konto jest opcjonalne. Zaloguj się lub je utwórz, aby wejść do rankingu i synchronizować postęp między urządzeniami. Wszystkie materiały edukacyjne działają bez logowania.</p>
           <div class="auth-tabs" role="tablist" aria-label="Logowanie lub rejestracja">
             <button class="active" id="loginTab" type="button" role="tab" aria-selected="true">Logowanie</button>
             <button id="registerTab" type="button" role="tab" aria-selected="false">Rejestracja</button>
@@ -935,7 +958,7 @@
         </div>
       </div>
 
-      <footer>Samodzielny materiał edukacyjny z mikro- i makroekonomii · autorzy i wydawcy wskazanych publikacji nie są związani z witryną · po zalogowaniu postęp jest synchronizowany między urządzeniami.</footer>
+      <footer>Samodzielny materiał edukacyjny z mikro- i makroekonomii · konto jest opcjonalne, a logowanie jest wymagane wyłącznie do rankingu i synchronizacji postępu · autorzy i wydawcy wskazanych publikacji nie są związani z witryną.</footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
@@ -945,6 +968,6 @@
     <script src="owe-quiz-data.js?v=20260831-150q"></script>
     <script src="owe-quiz-extra-data.js?v=20260902-central-60q"></script>
     <script src="owe-quiz-missing-data.js?v=20260903-complete-90q"></script>
-    <script src="app.js?v=20260903-nauka-ekonomii-pl-5"></script>
+    <script src="app.js?v=20260903-guest-access-1"></script>
   </body>
 </html>

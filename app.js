@@ -383,6 +383,7 @@ let cloudClient = null;
 let currentUser = null;
 let currentProfile = null;
 let authInitialized = false;
+let pendingAuthenticatedMode = null;
 let cloudSyncTimer = null;
 let cloudSyncRunning = false;
 let cloudSyncQueued = false;
@@ -1094,7 +1095,7 @@ function updateAccountUi() {
   const name = signedIn ? displayNameForUser() : 'Zaloguj się';
   const homeAccountCta = $('#homeAccountCta');
   if (homeAccountCta) {
-    homeAccountCta.innerHTML = signedIn ? 'Zobacz ranking <span>→</span>' : 'Zaloguj się <span>→</span>';
+    homeAccountCta.textContent = signedIn ? 'Otwórz ranking →' : 'Ranking: zaloguj się →';
     homeAccountCta.setAttribute('aria-label', signedIn ? 'Zobacz ranking uczniów' : 'Zaloguj się do konta ucznia');
   }
   $('#accountLabel').textContent = name;
@@ -1132,8 +1133,6 @@ function updateAuthGate({ closeAfterUnlock = false } = {}) {
   $('#authBackdrop').setAttribute('aria-label', 'Zamknij okno konta');
   if (locked) {
     if (document.body.classList.contains('focus-mode')) exitFocusMode();
-    setAppMenu(false, { returnFocus: false });
-    setPointsMenu(false);
   } else if (closeAfterUnlock && $('#emailConfirmationPopup').hidden) {
     setAuthModal(false);
   }
@@ -1469,6 +1468,8 @@ async function loadLeaderboard({ silent = false } = {}) {
 async function applyAuthSession(session, { initial = false } = {}) {
   const previousUserId = currentUser?.id || null;
   currentUser = session?.user || null;
+  const authenticatedDestination = currentUser ? pendingAuthenticatedMode : null;
+  if (currentUser) pendingAuthenticatedMode = null;
   const shouldLoadProgress = Boolean(currentUser && (!authInitialized || previousUserId !== currentUser.id));
   authInitialized = true;
   if (currentUser) {
@@ -1487,8 +1488,11 @@ async function applyAuthSession(session, { initial = false } = {}) {
       renderCard();
     }
     updateAccountUi();
+    loadLeaderboard({ silent: true });
   }
   updateAuthGate({ closeAfterUnlock: Boolean(currentUser && !previousUserId) });
+  if (authenticatedDestination) switchMode(authenticatedDestination);
+  else if (!currentUser && document.body.dataset.mode === 'leaderboard') switchMode('home');
 }
 
 async function initializeCloud() {
@@ -1565,7 +1569,7 @@ function tickStudyTime() {
   const now = Date.now();
   const elapsed = Math.min(2, Math.max(0, (now - lastStudyTick) / 1000));
   lastStudyTick = now;
-  if (!currentUser || document.visibilityState !== 'visible') return;
+  if (document.visibilityState !== 'visible') return;
 
   progress.studySeconds += elapsed;
   unsavedStudySeconds += elapsed;
@@ -1690,8 +1694,10 @@ function switchSubject(nextSubject) {
 }
 
 function switchMode(mode) {
-  const publicModes = ['home', 'owe', 'legal'];
-  if (!currentUser && !publicModes.includes(mode)) {
+  const protectedModes = ['leaderboard'];
+  if (!currentUser && protectedModes.includes(mode)) {
+    pendingAuthenticatedMode = mode;
+    setAuthFeedback('Zaloguj się, aby otworzyć ranking.', 'local');
     setAuthModal(true);
     return;
   }
@@ -3196,6 +3202,7 @@ function setAuthMode(mode) {
 
 function setAuthModal(open) {
   if (open) setAppMenu(false, { returnFocus: false });
+  else pendingAuthenticatedMode = null;
   $('#authModal').hidden = !open;
   $('#authBackdrop').hidden = !open;
   $('#accountButton').setAttribute('aria-expanded', String(open));
@@ -3350,6 +3357,7 @@ async function handleDeleteAccount() {
     renderCard();
     updateAccountUi();
     setAuthModal(false);
+    switchMode('home');
     window.alert('Konto i zapisany postęp zostały usunięte.');
   } catch (error) {
     console.error('Nie udało się usunąć konta:', error);
@@ -3384,9 +3392,12 @@ $('#activateBoost').addEventListener('click', activateDailyBoost);
 $('#accountButton').addEventListener('click', () => setAuthModal($('#authModal').hidden));
 $('#homeAccountCta').addEventListener('click', () => {
   if (currentUser) switchMode('leaderboard');
-  else setAuthModal(true);
+  else {
+    pendingAuthenticatedMode = 'leaderboard';
+    setAuthFeedback('Zaloguj się, aby otworzyć ranking.', 'local');
+    setAuthModal(true);
+  }
 });
-$('#homeMenuCta').addEventListener('click', () => setAppMenu(true));
 $('#authClose').addEventListener('click', () => setAuthModal(false));
 $('#authBackdrop').addEventListener('click', () => setAuthModal(false));
 $('#darkModeToggle').addEventListener('change', event => applyTheme(event.target.checked ? 'dark' : 'light'));

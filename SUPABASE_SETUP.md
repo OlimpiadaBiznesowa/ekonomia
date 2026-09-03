@@ -1,6 +1,6 @@
-# Logowanie, zapis postępu i ranking — konfiguracja
+# Opcjonalne konto, synchronizacja postępu i ranking — konfiguracja
 
-Strona wymaga zalogowania, dlatego przed udostępnieniem jej uczniom trzeba połączyć ją z Supabase. Bez poniższej konfiguracji materiały pozostają zablokowane.
+Materiały edukacyjne i lokalny zapis postępu działają bez logowania. Supabase jest potrzebny do opcjonalnych kont, synchronizacji postępu między urządzeniami oraz rankingu — ranking jest jedyną częścią strony wymagającą zalogowania.
 
 ## 1. Utwórz projekt
 
@@ -30,11 +30,14 @@ Klucz publishable/anon jest przeznaczony do aplikacji przeglądarkowych i może 
 
 W **Authentication → URL Configuration** ustaw:
 
-- **Site URL**: docelowy adres Cloudflare Pages, np. `https://mikroekonomia.pages.dev/`
-- **Redirect URL**: `https://mikroekonomia.pages.dev/**`
+- **Site URL**: `https://naukaekonomii.pl`
+- **Redirect URL**: `https://naukaekonomii.pl/**`
+- opcjonalny dodatkowy **Redirect URL**: `https://www.naukaekonomii.pl/**` (jeżeli wersja `www` nie będzie od razu przekierowywana na domenę główną)
 - opcjonalny lokalny **Redirect URL** do testów: `http://127.0.0.1:4173/`
 
 W **Authentication → Providers → Email** pozostaw włączone logowanie e-mail/hasło. Domyślnie nowy uczeń potwierdza adres przez wiadomość e-mail; to bezpieczniejsza konfiguracja dla klasy.
+
+Przed produkcyjnym uruchomieniem skonfiguruj własny SMTP i adres nadawcy w domenie (np. `konto@naukaekonomii.pl`). Wbudowany serwer pocztowy Supabase jest przeznaczony do testów i ma bardzo niski limit wysyłki.
 
 ## 4. Po aktualizacji funkcji konta, rankingu, serii lub questów
 
@@ -44,7 +47,7 @@ Prywatny ranking używa kodu współdzielonego, ale w bazie znajduje się wyłą
 
 ## 5. Opublikuj
 
-Dodaj do repozytorium wszystkie pliki strony, w tym `supabase-config.js`, `supabase-setup.sql` i `SUPABASE_SETUP.md`, a następnie opublikuj GitHub Pages. Po wejściu na stronę uczniowie muszą utworzyć konto lub się zalogować, aby uzyskać dostęp do materiałów i rankingu.
+Dodaj do repozytorium wszystkie pliki strony, w tym `supabase-config.js`, `supabase-setup.sql` i `SUPABASE_SETUP.md`, a następnie opublikuj stronę. Goście mogą korzystać z całej nauki bez konta; próba wejścia do rankingu otwiera logowanie. Po zalogowaniu lokalny postęp jest łączony z kontem.
 
 Po zalogowaniu nazwę użytkownika można zmienić w oknie **Konto ucznia**. Zmiana jest zapisywana w profilu i od razu widoczna w rankingu.
 

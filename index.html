@@ -2,6 +2,14 @@
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
+    <base id="siteBase" href="./" />
+    <script>
+      (() => {
+        const routeSlugs = new Set(['ucz-sie', 'fiszki', 'quizy', 'arkusze-olimpijskie', 'zagadnienia', 'ranking', 'wiecej', 'test', 'odpowiedzi', 'zakres-i-streszczenia', 'wzory-matematyczne', 'zrodla-i-prawa']);
+        const pathParts = window.location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+        if (routeSlugs.has(pathParts.at(-1))) document.querySelector('#siteBase').href = '../';
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f3ed" />
     <meta name="description" content="Bezpłatna nauka mikro- i makroekonomii: tryb Ucz się, fiszki, quizy, testy i arkusze olimpijskie." />
@@ -26,7 +34,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260903-seo-routes-2" />
+    <link rel="stylesheet" href="styles.css?v=20260903-route-base-1" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
@@ -145,6 +153,18 @@
             <a href="quizy/" data-go="quiz"><span aria-hidden="true">?</span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></a>
             <a href="zagadnienia/" data-go="concepts"><span aria-hidden="true">≡</span><strong>Zagadnienia</strong><small>Słownik mikro- i makroekonomii</small></a>
           </nav>
+          <section class="home-contact" aria-labelledby="homeContactTitle">
+            <div>
+              <p class="eyebrow">KONTAKT I PRYWATNOŚĆ</p>
+              <h2 id="homeContactTitle">Masz pytanie lub zauważyłeś błąd?</h2>
+              <p>Napisz na <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a>.</p>
+            </div>
+            <div class="home-data-summary">
+              <strong>Jak zapisujemy dane?</strong>
+              <p>Bez konta postęp i preferencje pozostają w pamięci Twojej przeglądarki. Po zalogowaniu dane konta i postęp są synchronizowane przez Supabase. Serwis nie korzysta z reklam ani profilowania marketingowego; Cloudflare mierzy jedynie ruch i wydajność strony bez plików cookie.</p>
+              <a href="zrodla-i-prawa/" data-go="legal">Pełna informacja o prywatności →</a>
+            </div>
+          </section>
         </section>
 
         <div class="learning-layout">
@@ -450,8 +470,8 @@
               <p>Znajdź wzory, zmienne, symbole oraz warunki ich stosowania.</p><b>Otwórz →</b>
             </button>
             <button class="more-card" data-go="legal">
-              <span>05</span><strong>Źródła i prawa</strong>
-              <p>Bibliografia, zasady opracowania treści i oficjalne podstawy prawne.</p><b>Otwórz →</b>
+              <span>05</span><strong>Źródła, prawa i prywatność</strong>
+              <p>Bibliografia, zasady opracowania treści oraz informacja o danych.</p><b>Otwórz →</b>
             </button>
           </div>
         </section>
@@ -685,8 +705,8 @@
         <section class="study-panel" id="legal" data-panel="legal">
           <div class="section-heading legal-heading">
             <div>
-              <p class="eyebrow">BIBLIOGRAFIA · PRAWA AUTORSKIE · ZASADY OPRACOWANIA</p>
-              <h2>Źródła i prawa</h2>
+              <p class="eyebrow">BIBLIOGRAFIA · PRAWA AUTORSKIE · PRYWATNOŚĆ</p>
+              <h2>Źródła, prawa i prywatność</h2>
             </div>
           </div>
           <div class="legal-notice">
@@ -727,6 +747,49 @@
             </article>
           </div>
           <p class="legal-disclaimer">Informacja ma charakter organizacyjny i nie jest poradą prawną. W razie planowania komercyjnego wykorzystania lub publikacji cudzych fragmentów warto uzyskać zgodę uprawnionego albo indywidualną poradę prawną.</p>
+
+          <section class="privacy-section" aria-labelledby="privacyTitle">
+            <div class="privacy-heading">
+              <p class="eyebrow">INFORMACJA O PRZETWARZANIU DANYCH</p>
+              <h3 id="privacyTitle">Prywatność użytkowników</h3>
+              <p>Wersja obowiązująca od 3 września 2026 r.</p>
+            </div>
+            <div class="privacy-grid">
+              <article>
+                <h4>Administrator i kontakt</h4>
+                <p>Administratorem danych jest właściciel serwisu NaukaEkonomii.pl. W sprawach dotyczących strony, danych osobowych i realizacji praw napisz na <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a>.</p>
+              </article>
+              <article>
+                <h4>Korzystanie bez konta</h4>
+                <p>Postęp nauki, punkty, opanowane i oznaczone fiszki, historia ćwiczeń, wybrany dział, preferencje wyglądu i stan powiadomień są zapisywane w <code>localStorage</code> na Twoim urządzeniu. Nie są synchronizowane z kontem, dopóki się nie zalogujesz. Możesz je usunąć przez „Wyzeruj postęp” oraz ustawienia danych witryny w przeglądarce.</p>
+              </article>
+              <article>
+                <h4>Dane konta i rankingu</h4>
+                <p>Po dobrowolnej rejestracji przetwarzane są: adres e-mail, identyfikator konta, podana nazwa w rankingu, punkty, szczegóły postępu, daty aktualizacji, członkostwo w prywatnym rankingu oraz dane służące ograniczaniu nieudanych prób dołączenia. Nazwa i punkty mogą być widoczne zalogowanym użytkownikom rankingu. Użyj pseudonimu zamiast imienia i nazwiska. Hasło obsługuje bezpośrednio Supabase Auth; jego jawna treść nie trafia do kodu strony.</p>
+              </article>
+              <article>
+                <h4>Cele i podstawy</h4>
+                <p>Dane konta i postępu są używane do utworzenia konta, logowania, synchronizacji i prowadzenia rankingu — na podstawie art. 6 ust. 1 lit. b RODO. Dane techniczne oraz zabezpieczenia serwisu przetwarzane są w prawnie uzasadnionym interesie zapewnienia działania i bezpieczeństwa strony — art. 6 ust. 1 lit. f RODO. Wiadomości e-mail są używane do obsługi zgłoszenia na podstawie art. 6 ust. 1 lit. f RODO, a gdy dotyczą usługi także lit. b.</p>
+              </article>
+              <article>
+                <h4>Dostawcy i dane techniczne</h4>
+                <p>Strona jest hostowana przez Cloudflare Pages, kod źródłowy jest przechowywany w GitHub, a konta i synchronizację zapewnia Supabase. Czcionki pobierane są z Google Fonts, a biblioteka Supabase z jsDelivr. Dostawcy mogą otrzymywać dane techniczne połączenia, takie jak adres IP, typ przeglądarki, czas żądania i żądany zasób, zgodnie z własnymi zasadami i okresami przechowywania. Cloudflare Web Analytics mierzy odsłony i wydajność bez zapisywania plików cookie lub danych w <code>localStorage</code> i bez profilowania użytkowników. Administrator nie korzysta z reklam ani analityki marketingowej.</p>
+              </article>
+              <article>
+                <h4>Okres przechowywania</h4>
+                <p>Dane lokalne pozostają na urządzeniu do ich wyczyszczenia. Dane konta i zsynchronizowany postęp są przechowywane do usunięcia konta przez użytkownika, a następnie mogą pozostać tylko w kopiach bezpieczeństwa przez technicznie niezbędny okres. Korespondencja jest przechowywana do zakończenia sprawy, a dłużej jedynie, gdy jest to potrzebne do obrony przed roszczeniami lub wykonania obowiązku prawnego.</p>
+              </article>
+              <article>
+                <h4>Twoje prawa</h4>
+                <p>Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia, przeniesienia oraz wnieść sprzeciw wobec przetwarzania opartego na uzasadnionym interesie. Konto wraz z postępem można usunąć w ustawieniach konta. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych.</p>
+                <a href="https://uodo.gov.pl/pl/p/skargi" target="_blank" rel="noopener noreferrer">Informacje o skargach do UODO ↗</a>
+              </article>
+              <article>
+                <h4>Dobrowolność i automatyzacja</h4>
+                <p>Podanie danych konta jest dobrowolne. Bez nich nadal skorzystasz z materiałów i lokalnego zapisu postępu, ale nie z rankingu ani synchronizacji między urządzeniami. Punkty i rangi są wyliczane automatycznie na podstawie aktywności edukacyjnej; nie wywołuje to skutków prawnych ani podobnie istotnych skutków. Dane nie są sprzedawane.</p>
+              </article>
+            </div>
+          </section>
         </section>
           </div>
         </div>
@@ -870,6 +933,7 @@
             <label>E-mail<input id="registerEmail" type="email" autocomplete="email" required /></label>
             <label>Hasło<input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required /></label>
             <small>Minimum 8 znaków. Hasło jest obsługiwane przez Supabase i nie trafia do kodu strony.</small>
+            <small>Tworząc konto, przekazujesz dane potrzebne do logowania, synchronizacji i rankingu. <a href="zrodla-i-prawa/">Sprawdź informację o prywatności</a>.</small>
             <button class="primary-button" type="submit">Utwórz konto</button>
           </form>
           <p class="auth-feedback" id="authFeedback" aria-live="polite"></p>
@@ -948,7 +1012,10 @@
         </div>
       </div>
 
-      <footer>Samodzielny materiał edukacyjny z mikro- i makroekonomii · konto jest opcjonalne, a logowanie jest wymagane wyłącznie do rankingu i synchronizacji postępu · autorzy i wydawcy wskazanych publikacji nie są związani z witryną.</footer>
+      <footer>
+        <p>Samodzielny materiał edukacyjny z mikro- i makroekonomii · konto jest opcjonalne, a logowanie jest wymagane wyłącznie do rankingu i synchronizacji postępu.</p>
+        <p><strong>Kontakt:</strong> <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a> · <a href="zrodla-i-prawa/" data-go="legal">Źródła, prawa i prywatność</a></p>
+      </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase-config.js"></script>
@@ -958,6 +1025,6 @@
     <script src="owe-quiz-data.js?v=20260903-reworded"></script>
     <script src="owe-quiz-extra-data.js?v=20260903-reworded"></script>
     <script src="owe-quiz-missing-data.js?v=20260903-reworded"></script>
-    <script src="app.js?v=20260903-seo-routes-2"></script>
+    <script src="app.js?v=20260903-route-base-1"></script>
   </body>
 </html>

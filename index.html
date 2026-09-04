@@ -92,7 +92,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260904-seo-1" />
+    <link rel="stylesheet" href="styles.css?v=20260904-nav-2" />
   </head>
   <body class="home-active" data-mode="home">
     <div class="page-shell">
@@ -108,16 +108,16 @@
         </a>
         <nav class="workspace-nav">
           <p>TWÓJ PANEL</p>
-          <a class="active" href="./" data-menu-mode="home"><span>⌂</span><b>Plan na dziś</b></a>
-          <a href="ucz-sie/" data-menu-mode="learn"><span>↗</span><b>Ucz się</b></a>
-          <a href="fiszki/" data-menu-mode="flashcards"><span>▱</span><b>Fiszki</b></a>
-          <a href="quizy/" data-menu-mode="quiz"><span>?</span><b>Quiz</b></a>
+          <a class="active" href="./" data-menu-mode="home"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path class="icon-accent" d="M9 21v-6h6v6"></path></svg></span><b>Plan na dziś</b></a>
+          <a href="ucz-sie/" data-menu-mode="learn"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="m4 17 5-5 4 3 7-8"></path><path class="icon-accent" d="M15 7h5v5"></path></svg></span><b>Ucz się</b></a>
+          <a href="fiszki/" data-menu-mode="flashcards"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="7" y="4" width="13" height="15" rx="2"></rect><path class="icon-accent" d="M7 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2"></path></svg></span><b>Fiszki</b></a>
+          <a href="quizy/" data-menu-mode="quiz"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.6 9a2.6 2.6 0 1 1 4.2 2c-1.1.8-1.8 1.3-1.8 2.5"></path><path class="icon-accent" d="M12 17h.01"></path></svg></span><b>Quiz</b></a>
           <p>OLIMPIADA</p>
-          <a class="workspace-owe-link" href="arkusze-olimpijskie/" data-menu-mode="owe"><span>OLI</span><b>Arkusze olimpijskie</b><i id="oweQuestionCount">300</i></a>
+          <a class="workspace-owe-link" href="arkusze-olimpijskie/" data-menu-mode="owe"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"></path><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"></path><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"></path></svg></span><b>Arkusze olimpijskie</b><i id="oweQuestionCount">300</i></a>
           <p>POSTĘP</p>
-          <a href="zagadnienia/" data-menu-mode="concepts"><span>≡</span><b>Zagadnienia</b></a>
-          <a href="ranking/" data-menu-mode="leaderboard"><span>♢</span><b>Ranking</b></a>
-          <a href="wiecej/" data-menu-mode="more"><span>＋</span><b>Więcej</b></a>
+          <a href="zagadnienia/" data-menu-mode="concepts"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"></path><circle class="icon-accent" cx="4.5" cy="6" r="1"></circle><circle cx="4.5" cy="12" r="1"></circle><circle cx="4.5" cy="18" r="1"></circle></svg></span><b>Zagadnienia</b></a>
+          <a href="ranking/" data-menu-mode="leaderboard"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 20v-5h5v5M9 20V9h6v11M15 20v-8h5v8"></path><path class="icon-accent" d="M3 20h18M12 3l1 2 2 .3-1.5 1.5.4 2.2L12 8l-1.9 1 .4-2.2L9 5.3l2-.3z"></path></svg></span><b>Ranking</b></a>
+          <a href="wiecej/" data-menu-mode="more"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect class="icon-accent" x="14" y="14" width="6" height="6" rx="1.5"></rect></svg></span><b>Więcej</b></a>
         </nav>
         <div class="workspace-sidebar-foot">
           <span class="workspace-streak" id="workspaceStreak">0</span>
@@ -157,12 +157,12 @@
               <p class="home-hero-description">Poznaj mikro- i makroekonomię, rozwiązuj quizy oraz arkusze olimpijskie i obserwuj swój postęp w jednym miejscu.</p>
               <div class="hero-actions home-hero-actions">
                 <a class="home-feature-button home-learn-button" href="ucz-sie/" data-go="learn">
-                  <span class="home-feature-icon" aria-hidden="true">↗</span>
+                  <span class="home-feature-icon nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="m4 17 5-5 4 3 7-8"></path><path class="icon-accent" d="M15 7h5v5"></path></svg></span>
                   <span><strong>Tryb Ucz się</strong><small>Adaptacyjna sesja dopasowana do postępu</small></span>
                   <b>Rozpocznij →</b>
                 </a>
                 <a class="home-feature-button home-owe-button" href="arkusze-olimpijskie/" data-go="owe">
-                  <span class="home-feature-icon" aria-hidden="true">OLI</span>
+                  <span class="home-feature-icon nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"></path><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"></path><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"></path></svg></span>
                   <span><strong>Arkusze olimpijskie</strong><small>Pytania z trzema poziomami trudności</small></span>
                   <b>Ćwicz →</b>
                 </a>
@@ -207,9 +207,9 @@
           </section>
 
           <nav class="home-shortcuts" aria-label="Szybki start">
-            <a href="fiszki/" data-go="flashcards"><span aria-hidden="true">▱</span><strong>Fiszki</strong><small>Szybka powtórka pojęć</small></a>
-            <a href="quizy/" data-go="quiz"><span aria-hidden="true">?</span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></a>
-            <a href="zagadnienia/" data-go="concepts"><span aria-hidden="true">≡</span><strong>Zagadnienia</strong><small>Słownik mikro- i makroekonomii</small></a>
+            <a href="fiszki/" data-go="flashcards"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="7" y="4" width="13" height="15" rx="2"></rect><path class="icon-accent" d="M7 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2"></path></svg></span><strong>Fiszki</strong><small>Szybka powtórka pojęć</small></a>
+            <a href="quizy/" data-go="quiz"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.6 9a2.6 2.6 0 1 1 4.2 2c-1.1.8-1.8 1.3-1.8 2.5"></path><path class="icon-accent" d="M12 17h.01"></path></svg></span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></a>
+            <a href="zagadnienia/" data-go="concepts"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"></path><circle class="icon-accent" cx="4.5" cy="6" r="1"></circle><circle cx="4.5" cy="12" r="1"></circle><circle cx="4.5" cy="18" r="1"></circle></svg></span><strong>Zagadnienia</strong><small>Słownik mikro- i makroekonomii</small></a>
           </nav>
           <section class="home-subject-guides" aria-labelledby="homeSubjectGuidesTitle">
             <div>
@@ -888,15 +888,15 @@
         </section>
 
         <nav class="app-menu-nav" aria-label="Nawigacja strony">
-          <a class="menu-nav-button learn-menu-button" href="ucz-sie/" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></a>
-          <a class="menu-nav-button owe-menu-button" href="arkusze-olimpijskie/" data-menu-mode="owe"><span>OLI</span><div><strong>Arkusze olimpijskie</strong><small>300 pytań · 3 poziomy trudności</small></div></a>
-          <a class="menu-nav-button active" href="./" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></a>
+          <a class="menu-nav-button learn-menu-button" href="ucz-sie/" data-menu-mode="learn"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="m4 17 5-5 4 3 7-8"></path><path class="icon-accent" d="M15 7h5v5"></path></svg></span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></a>
+          <a class="menu-nav-button owe-menu-button" href="arkusze-olimpijskie/" data-menu-mode="owe"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"></path><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"></path><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"></path></svg></span><div><strong>Arkusze olimpijskie</strong><small>300 pytań · 3 poziomy trudności</small></div></a>
+          <a class="menu-nav-button active" href="./" data-menu-mode="home"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path class="icon-accent" d="M9 21v-6h6v6"></path></svg></span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></a>
           <p class="menu-section-label">NAUKA</p>
-          <a class="menu-nav-button" href="fiszki/" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></a>
-          <a class="menu-nav-button" href="quizy/" data-menu-mode="quiz"><span>02</span><div><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></div></a>
-          <a class="menu-nav-button" href="zagadnienia/" data-menu-mode="concepts"><span>03</span><div><strong>Zagadnienia</strong><small>Słownik pojęć z książki</small></div></a>
-          <a class="menu-nav-button" href="ranking/" data-menu-mode="leaderboard"><span>04</span><div><strong>Ranking</strong><small>Punkty i rangi uczniów</small></div></a>
-          <a class="menu-nav-button" href="wiecej/" data-menu-mode="more"><span>05</span><div><strong>Więcej</strong><small>Test, odpowiedzi, streszczenia i wzory</small></div></a>
+          <a class="menu-nav-button" href="fiszki/" data-menu-mode="flashcards"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="7" y="4" width="13" height="15" rx="2"></rect><path class="icon-accent" d="M7 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2"></path></svg></span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></a>
+          <a class="menu-nav-button" href="quizy/" data-menu-mode="quiz"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.6 9a2.6 2.6 0 1 1 4.2 2c-1.1.8-1.8 1.3-1.8 2.5"></path><path class="icon-accent" d="M12 17h.01"></path></svg></span><div><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></div></a>
+          <a class="menu-nav-button" href="zagadnienia/" data-menu-mode="concepts"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"></path><circle class="icon-accent" cx="4.5" cy="6" r="1"></circle><circle cx="4.5" cy="12" r="1"></circle><circle cx="4.5" cy="18" r="1"></circle></svg></span><div><strong>Zagadnienia</strong><small>Słownik pojęć z książki</small></div></a>
+          <a class="menu-nav-button" href="ranking/" data-menu-mode="leaderboard"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 20v-5h5v5M9 20V9h6v11M15 20v-8h5v8"></path><path class="icon-accent" d="M3 20h18M12 3l1 2 2 .3-1.5 1.5.4 2.2L12 8l-1.9 1 .4-2.2L9 5.3l2-.3z"></path></svg></span><div><strong>Ranking</strong><small>Punkty i rangi uczniów</small></div></a>
+          <a class="menu-nav-button" href="wiecej/" data-menu-mode="more"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect class="icon-accent" x="14" y="14" width="6" height="6" rx="1.5"></rect></svg></span><div><strong>Więcej</strong><small>Test, odpowiedzi, streszczenia i wzory</small></div></a>
         </nav>
 
         <div class="app-menu-profile">

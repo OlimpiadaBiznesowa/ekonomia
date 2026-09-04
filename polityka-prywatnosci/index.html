@@ -2,6 +2,8 @@
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
+    <script src="/google-analytics.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2YY78KWV0"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f3ed" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -9,7 +11,10 @@
     <meta name="googlebot" content="noindex,follow,nosnippet" />
     <meta name="description" content="Polityka prywatności i plików cookie serwisu NaukaEkonomii.pl." />
     <link rel="canonical" href="https://naukaekonomii.pl/polityka-prywatnosci/" />
-    <link rel="icon" type="image/png" href="../assets/nauka-ekonomii-logo.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <title>Polityka prywatności i cookies | NaukaEkonomii.pl</title>
     <style>
       :root{color-scheme:light;--paper:#f6f3ed;--card:#fffdf9;--ink:#24312e;--muted:#63706c;--line:#dcded8;--teal:#237f75;--accent:#ef6043}
@@ -68,6 +73,7 @@
           <li><strong>Korzystanie bez konta:</strong> postęp nauki, punkty, opanowane i oznaczone fiszki, historia ćwiczeń, wybrany dział, preferencje wyglądu oraz stan powiadomień są zapisywane lokalnie w pamięci przeglądarki (<code>localStorage</code>).</li>
           <li><strong>Konto i ranking:</strong> adres e-mail, identyfikator konta, pseudonim w rankingu, punkty, postęp, daty aktualizacji, członkostwo w prywatnym rankingu oraz dane zabezpieczające przed nadużyciami. Pseudonim i wynik mogą być widoczne dla zalogowanych użytkowników rankingu.</li>
           <li><strong>Dane techniczne:</strong> m.in. adres IP, typ urządzenia i przeglądarki, czas oraz adres żądanego zasobu, dane diagnostyczne i związane z bezpieczeństwem.</li>
+          <li><strong>Analityka:</strong> po wyrażeniu zgody Google Analytics może przetwarzać identyfikator internetowy, odwiedzone podstrony, źródło wizyty, zdarzenia związane z korzystaniem ze strony, przybliżoną lokalizację oraz informacje o urządzeniu i przeglądarce.</li>
           <li><strong>Reklamy i zgody:</strong> wybory dokonane w Google CMP, identyfikatory internetowe, przybliżona lokalizacja wywnioskowana z adresu IP, informacje o urządzeniu oraz korzystaniu ze strony — w zakresie zależnym od ustawień użytkownika i zastosowanego rodzaju reklamy.</li>
           <li><strong>Kontakt:</strong> adres e-mail i treść wiadomości przesłanej do administratora.</li>
         </ul>
@@ -79,6 +85,7 @@
           <li>świadczenie usługi konta, logowania, synchronizacji postępu i rankingu — art. 6 ust. 1 lit. b RODO;</li>
           <li>zapewnienie działania, bezpieczeństwa, diagnostyki i obrona przed roszczeniami — prawnie uzasadniony interes administratora, art. 6 ust. 1 lit. f RODO;</li>
           <li>obsługa korespondencji — art. 6 ust. 1 lit. f RODO, a gdy wiadomość dotyczy świadczonej usługi również art. 6 ust. 1 lit. b RODO;</li>
+          <li>pomiar odwiedzin i sposobu korzystania ze strony za pomocą Google Analytics 4 — po uzyskaniu wymaganej zgody, art. 6 ust. 1 lit. a RODO i art. 399 Prawa komunikacji elektronicznej;</li>
           <li>zapisywanie lub odczytywanie informacji reklamowych na urządzeniu oraz personalizacja reklam — po uzyskaniu wymaganej zgody, art. 6 ust. 1 lit. a RODO i art. 399 Prawa komunikacji elektronicznej;</li>
           <li>wyświetlanie reklam niespersonalizowanych lub ograniczonych oraz pomiar, bezpieczeństwo i zapobieganie nadużyciom — zgodnie z wyborem pokazanym w Google CMP i podstawami wskazanymi przy poszczególnych celach i dostawcach, w tym zgodą albo prawnie uzasadnionym interesem.</li>
         </ul>
@@ -87,9 +94,10 @@
 
       <section class="policy-card" aria-labelledby="cookies">
         <h2 id="cookies">4. Pliki cookie i podobne technologie</h2>
-        <p>Strona wykorzystuje pamięć przeglądarki niezbędną do działania funkcji edukacyjnych oraz może korzystać z plików cookie i podobnych technologii Google i partnerów reklamowych.</p>
+        <p>Strona wykorzystuje pamięć przeglądarki niezbędną do działania funkcji edukacyjnych oraz może korzystać z plików cookie i podobnych technologii Google Analytics, Google AdSense i partnerów reklamowych.</p>
         <ul>
           <li><strong>Niezbędne i funkcjonalne:</strong> utrzymanie sesji, bezpieczeństwo, zapis ustawień i lokalnego postępu. Niektóre funkcje mogą nie działać po ich usunięciu.</li>
+          <li><strong>Analityczne:</strong> pomiar liczby wizyt, źródeł ruchu, odwiedzanych podstron i sposobu używania serwisu — uruchamiany zgodnie z wyborem użytkownika przekazanym przez Google CMP.</li>
           <li><strong>Reklamowe i pomiarowe:</strong> dobór, wyświetlanie i pomiar reklam, ograniczanie ich częstotliwości, wykrywanie nadużyć oraz — po wyrażeniu zgody — personalizacja.</li>
         </ul>
         <p>Przy pierwszej wizycie użytkownik z EOG, Wielkiej Brytanii lub Szwajcarii otrzymuje komunikat Google CMP z możliwością wyrażenia zgody, odmowy albo zarządzania szczegółowymi opcjami. Odmowa personalizacji nie zawsze oznacza brak reklam: mogą zostać wyświetlone reklamy niespersonalizowane lub ograniczone.</p>
@@ -99,7 +107,7 @@
 
       <section class="policy-card" aria-labelledby="recipients">
         <h2 id="recipients">5. Odbiorcy danych i transfery</h2>
-        <p>Dane mogą być powierzane podmiotom potrzebnym do prowadzenia serwisu: Cloudflare (hosting, bezpieczeństwo i pomiar działania), Supabase (konta, baza danych i synchronizacja), Google (AdSense, CMP i czcionki), jsDelivr (dostarczanie biblioteki) oraz dostawcom reklam wybranym w Google CMP. Aktualna lista partnerów, ich cele i podstawy prawne są dostępne w opcji „Zarządzaj opcjami” komunikatu prywatności.</p>
+        <p>Dane mogą być powierzane podmiotom potrzebnym do prowadzenia serwisu: Cloudflare (hosting, bezpieczeństwo i pomiar działania), Supabase (konta, baza danych i synchronizacja), Google (Analytics 4, AdSense, CMP i czcionki), jsDelivr (dostarczanie biblioteki) oraz dostawcom reklam wybranym w Google CMP. Aktualna lista partnerów, ich cele i podstawy prawne są dostępne w opcji „Zarządzaj opcjami” komunikatu prywatności.</p>
         <p>Niektórzy dostawcy mogą przetwarzać dane poza Europejskim Obszarem Gospodarczym. Odbywa się to na podstawie odpowiedniego mechanizmu prawnego stosowanego przez danego dostawcę, np. decyzji stwierdzającej odpowiedni stopień ochrony albo standardowych klauzul umownych.</p>
         <p>Dane nie są sprzedawane przez administratora.</p>
       </section>
@@ -130,7 +138,7 @@
       <section class="policy-card" aria-labelledby="changes">
         <h2 id="changes">9. Zmiany polityki</h2>
         <p>Polityka może być aktualizowana po zmianie sposobu działania serwisu, dostawców lub przepisów. Aktualna wersja jest publikowana pod tym adresem.</p>
-        <p><strong>Wersja obowiązująca od: 3 września 2026 r.</strong></p>
+        <p><strong>Wersja obowiązująca od: 4 września 2026 r.</strong></p>
       </section>
     </main>
 

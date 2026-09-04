@@ -187,6 +187,7 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/seo-content.css?v=20260905-navigation" />
+  <link rel="stylesheet" href="/navigation-icons.css?v=20260905-1" />
 </head>
 <body class="content-page">
   <a class="skip-link" href="#tresc">Przejdź do treści</a>

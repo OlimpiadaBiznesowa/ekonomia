@@ -1,0 +1,93 @@
+/* Shared illustrated, vertical navigation for the app and chapter pages. */
+:root {
+  --nav-micro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10V6l2-3h14l2 3v4M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 13v8h14v-8M9 21v-6h6v6M9 3v7M15 3v7'/%3E%3C/svg%3E");
+  --nav-macro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cellipse cx='12' cy='12' rx='4' ry='9'/%3E%3Cpath d='M3 12h18M5 6h14M5 18h14'/%3E%3C/svg%3E");
+  --nav-learn: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 17 5-5 4 3 7-8M15 7h5v5'/%3E%3C/svg%3E");
+  --nav-flashcards: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='7' y='4' width='13' height='15' rx='2'/%3E%3Cpath d='M7 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2'/%3E%3C/svg%3E");
+  --nav-quiz: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9.6 9a2.6 2.6 0 1 1 4.2 2c-1.1.8-1.8 1.3-1.8 2.5M12 17h.01'/%3E%3C/svg%3E");
+  --nav-test: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='4' width='14' height='17' rx='2'/%3E%3Crect x='9' y='2' width='6' height='4' rx='1'/%3E%3Cpath d='m8 13 3 3 5-6'/%3E%3C/svg%3E");
+  --nav-concepts: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6h11M9 12h11M9 18h11'/%3E%3Ccircle cx='4.5' cy='6' r='1'/%3E%3Ccircle cx='4.5' cy='12' r='1'/%3E%3Ccircle cx='4.5' cy='18' r='1'/%3E%3C/svg%3E");
+  --nav-book: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v16M12 5C9 3 6 3 3 4v15c3-1 6-1 9 2 3-3 6-3 9-2V4c-3-1-6-1-9 1'/%3E%3C/svg%3E");
+}
+
+/* Pictograms replace the decorative letter badges. */
+:is(.subject-menu-group, .home-mobile-subject, .content-subject-group) > summary > span:first-child {
+  --nav-icon: var(--nav-micro);
+  font-size: 0;
+  color: var(--teal);
+  background: #e7f0ed;
+  border: 1px solid rgba(40,124,116,.16);
+}
+:is(.subject-menu-group[data-menu-subject="macro"], .home-mobile-subject:nth-of-type(2), .content-subject-group:nth-of-type(2)) > summary > span:first-child {
+  --nav-icon: var(--nav-macro);
+  color: #315e70;
+  background: #e8eff3;
+}
+:is(.subject-menu-group, .home-mobile-subject, .content-subject-group) > summary > span:first-child::before {
+  content: "";
+  width: 19px;
+  height: 19px;
+  background: currentColor;
+  mask: var(--nav-icon) center / contain no-repeat;
+  -webkit-mask: var(--nav-icon) center / contain no-repeat;
+}
+
+.workspace-nav .subject-menu-items,
+.app-menu-nav .subject-menu-items,
+.home-mobile-subject nav,
+.content-subject-group > div {
+  grid-template-columns: minmax(0,1fr);
+  gap: 3px;
+}
+.workspace-nav .subject-menu-items,
+.app-menu-nav .subject-menu-items,
+.content-subject-group > div {
+  margin-left: 22px;
+  padding-left: 8px;
+}
+.workspace-nav .subject-menu-items a,
+.app-menu-nav .subject-menu-items a,
+.home-mobile-subject nav a,
+.content-subject-group > div a {
+  --nav-icon: var(--nav-book);
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 7px 9px;
+  font-size: 12px;
+  text-align: left;
+}
+:is(.subject-menu-items, .home-mobile-subject nav, .content-subject-group > div) a::before {
+  content: "";
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(40,124,116,.18);
+  border-radius: 8px;
+  background: #e7f0ed;
+}
+:is(.subject-menu-items, .home-mobile-subject nav, .content-subject-group > div) a::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  width: 17px;
+  height: 17px;
+  background: var(--teal);
+  mask: var(--nav-icon) center / contain no-repeat;
+  -webkit-mask: var(--nav-icon) center / contain no-repeat;
+}
+:is(.subject-menu-items, .home-mobile-subject nav, .content-subject-group > div) a[href*="/ucz-sie/"] { --nav-icon: var(--nav-learn); }
+:is(.subject-menu-items, .home-mobile-subject nav, .content-subject-group > div) a[href*="/fiszki/"] { --nav-icon: var(--nav-flashcards); }
+:is(.subject-menu-items, .home-mobile-subject nav, .content-subject-group > div) a[href*="/quizy/"] { --nav-icon: var(--nav-quiz); }
+:is(.subject-menu-items, .home-mobile-subject nav, .content-subject-group > div) a[href*="/test/"] { --nav-icon: var(--nav-test); }
+:is(.subject-menu-items, .home-mobile-subject nav, .content-subject-group > div) a[href*="/zagadnienia/"] { --nav-icon: var(--nav-concepts); }
+html[data-theme="dark"] :is(.subject-menu-group, .home-mobile-subject) > summary > span:first-child,
+html[data-theme="dark"] :is(.subject-menu-items, .home-mobile-subject nav) a::before {
+  border-color: #31504a;
+  color: #78c1b5;
+  background: #20332f;
+}
+html[data-theme="dark"] :is(.subject-menu-items, .home-mobile-subject nav) a::after { background: #78c1b5; }

@@ -3,70 +3,70 @@ const $ = selector => document.querySelector(selector);
 const publicModeRoutes = {
   home: {
     slug: '',
-    title: 'Nauka ekonomii online — mikroekonomia i makroekonomia | NaukaEkonomii.pl',
-    description: 'Bezpłatna nauka ekonomii online: 487 pojęć, 94 wzory, fiszki, quizy, testy i 300 pytań OWE z mikro- i makroekonomii.'
+    title: 'Nauka ekonomii online — mikroekonomia i makroekonomia',
+    description: 'Darmowa nauka ekonomii online: mikroekonomia, makroekonomia, pojęcia, wzory, fiszki, quizy, testy i pytania Olimpiady Wiedzy Ekonomicznej.'
   },
   learn: {
     slug: 'ucz-sie/',
-    title: 'Nauka ekonomii online — tryb adaptacyjny | NaukaEkonomii.pl',
+    title: 'Nauka ekonomii online — tryb adaptacyjny | Nauka Ekonomii',
     description: 'Ucz się mikroekonomii i makroekonomii online bez logowania. Adaptacyjne pytania wracają do zagadnień, które wymagają powtórki.'
   },
   flashcards: {
     slug: 'fiszki/',
-    title: 'Fiszki z mikroekonomii i makroekonomii | NaukaEkonomii.pl',
+    title: 'Fiszki z mikroekonomii i makroekonomii | Nauka Ekonomii',
     description: '487 bezpłatnych fiszek z mikroekonomii i makroekonomii. Powtarzaj pojęcia, oznaczaj trudne zagadnienia i zapisuj postęp bez logowania.'
   },
   quiz: {
     slug: 'quizy/',
-    title: 'Quiz z mikroekonomii i makroekonomii online | NaukaEkonomii.pl',
+    title: 'Quiz z mikroekonomii i makroekonomii online | Nauka Ekonomii',
     description: 'Bezpłatny quiz z mikroekonomii i makroekonomii z natychmiastowym wynikiem. Wybierz zakres i sprawdź wiedzę bez zakładania konta.'
   },
   owe: {
     slug: 'arkusze-olimpijskie/',
-    title: 'Olimpiada Wiedzy Ekonomicznej — pytania i arkusze | NaukaEkonomii.pl',
+    title: 'Olimpiada Wiedzy Ekonomicznej — pytania i arkusze | Nauka Ekonomii',
     description: 'Przygotuj się do Olimpiady Wiedzy Ekonomicznej. Rozwiązuj 300 pytań OWE z odpowiedziami na trzech poziomach trudności.'
   },
   concepts: {
     slug: 'zagadnienia/',
-    title: 'Pojęcia z mikroekonomii i makroekonomii — słownik | NaukaEkonomii.pl',
+    title: 'Pojęcia z mikroekonomii i makroekonomii — słownik | Nauka Ekonomii',
     description: 'Słownik 487 pojęć z mikroekonomii i makroekonomii. Znajdź krótkie definicje i przejdź do odpowiedniego rozdziału.'
   },
   leaderboard: {
     slug: 'ranking/',
-    title: 'Ranking uczniów | NaukaEkonomii.pl',
-    description: 'Ranking użytkowników NaukaEkonomii.pl. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.',
+    title: 'Ranking uczniów | Nauka Ekonomii',
+    description: 'Ranking użytkowników Nauki Ekonomii. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.',
     indexable: false
   },
   more: {
     slug: 'wiecej/',
-    title: 'Narzędzia do nauki ekonomii | NaukaEkonomii.pl',
+    title: 'Narzędzia do nauki ekonomii | Nauka Ekonomii',
     description: 'Testy, wyszukiwarka odpowiedzi, streszczenia, wzory matematyczne oraz informacje o źródłach w jednym miejscu.'
   },
   test: {
     slug: 'test/',
-    title: 'Test z mikroekonomii i makroekonomii online | NaukaEkonomii.pl',
+    title: 'Test z mikroekonomii i makroekonomii online | Nauka Ekonomii',
     description: 'Bezpłatny test z mikroekonomii i makroekonomii. Samodzielnie wpisuj nazwy pojęć, sprawdzaj odpowiedzi i utrwalaj materiał.'
   },
   answers: {
     slug: 'odpowiedzi/',
-    title: 'Odpowiedzi z ekonomii | NaukaEkonomii.pl',
+    title: 'Odpowiedzi z ekonomii | Nauka Ekonomii',
     description: 'Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów.',
     indexable: false
   },
   scope: {
     slug: 'zakres-i-streszczenia/',
-    title: 'Streszczenia z mikroekonomii i makroekonomii | NaukaEkonomii.pl',
+    title: 'Streszczenia z mikroekonomii i makroekonomii | Nauka Ekonomii',
     description: 'Przeglądaj zakres i najważniejsze wnioski z 37 rozdziałów mikroekonomii i makroekonomii.'
   },
   math: {
     slug: 'wzory-matematyczne/',
-    title: 'Wzory z mikroekonomii i makroekonomii | NaukaEkonomii.pl',
+    title: 'Wzory z mikroekonomii i makroekonomii | Nauka Ekonomii',
     description: '94 wzory z mikroekonomii i makroekonomii wraz z opisem zmiennych, interpretacją i zastosowaniem.'
   },
   legal: {
     slug: 'zrodla-i-prawa/',
-    title: 'Źródła, prawa i prywatność | NaukaEkonomii.pl',
-    description: 'Bibliografia, prawa autorskie, zasady opracowania treści oraz informacja o przetwarzaniu danych w serwisie NaukaEkonomii.pl.'
+    title: 'Źródła, prawa i prywatność | Nauka Ekonomii',
+    description: 'Bibliografia, prawa autorskie, zasady opracowania treści oraz informacja o przetwarzaniu danych w serwisie Nauka Ekonomii.'
   }
 };
 const modeByRouteSlug = Object.fromEntries(
@@ -111,7 +111,8 @@ function applyPublicModeMetadata(mode) {
           '@type': 'Organization',
           '@id': 'https://naukaekonomii.pl/#organization',
           url: 'https://naukaekonomii.pl/',
-          name: 'NaukaEkonomii.pl',
+          name: 'Nauka Ekonomii',
+          alternateName: 'NaukaEkonomii.pl',
           logo: {
             '@type': 'ImageObject',
             url: 'https://naukaekonomii.pl/assets/logo-square-512.png',
@@ -123,8 +124,8 @@ function applyPublicModeMetadata(mode) {
           '@type': 'WebSite',
           '@id': 'https://naukaekonomii.pl/#website',
           url: 'https://naukaekonomii.pl/',
-          name: 'NaukaEkonomii.pl',
-          alternateName: ['Nauka Ekonomii', 'naukaekonomii.pl'],
+          name: 'Nauka Ekonomii',
+          alternateName: ['NaukaEkonomii.pl', 'naukaekonomii.pl'],
           description: 'Bezpłatna platforma do nauki mikroekonomii i makroekonomii.',
           inLanguage: 'pl-PL',
           publisher: { '@id': 'https://naukaekonomii.pl/#organization' }
@@ -133,7 +134,7 @@ function applyPublicModeMetadata(mode) {
           '@type': 'WebPage',
           '@id': `${canonicalUrl}#webpage`,
           url: canonicalUrl,
-          name: route.title.replace(/ \| NaukaEkonomii\.pl$/, ''),
+          name: route.title.replace(/ \| (?:NaukaEkonomii\.pl|Nauka Ekonomii)$/, ''),
           isPartOf: { '@id': 'https://naukaekonomii.pl/#website' },
           inLanguage: 'pl-PL'
         }
@@ -592,7 +593,10 @@ let runtimeNotifications = loadRuntimeNotifications();
 let readNotificationIds = loadReadNotificationIds();
 let activeSubject = 'micro';
 try {
-  activeSubject = localStorage.getItem(subjectStorageKey) === 'macro' ? 'macro' : 'micro';
+  const requestedSubject = new URLSearchParams(window.location.search).get('subject');
+  activeSubject = requestedSubject === 'macro' || requestedSubject === 'micro'
+    ? requestedSubject
+    : localStorage.getItem(subjectStorageKey) === 'macro' ? 'macro' : 'micro';
 } catch {
   activeSubject = 'micro';
 }
@@ -1787,7 +1791,7 @@ function applySubjectUi() {
   const data = subjectData();
   const copy = subjectUiCopy[activeSubject];
   const parts = new Set(data.chapters.map(chapter => `${chapter.part}:${chapter.partTitle}`)).size;
-  document.title = `NaukaEkonomii.pl · ${data.label}`;
+  document.title = `Nauka Ekonomii · ${data.label}`;
   document.body.dataset.subject = activeSubject;
   document.body.classList.toggle('macro-active', activeSubject === 'macro');
   document.querySelectorAll('[data-subject]').forEach(button => {
@@ -1805,7 +1809,7 @@ function applySubjectUi() {
   $('#conceptsIntro').textContent = activeSubject === 'micro'
     ? 'Hasła są uporządkowane według rozdziałów i służą jako materiał do powtórki. Skorzystaj z wyszukiwarki, aby szybko znaleźć pojęcie.'
     : 'Hasła ze słownika książki są uporządkowane według rozdziałów, w których pojawiają się w materiale. Skorzystaj z wyszukiwarki, aby szybko znaleźć pojęcie.';
-  $('#appMenuSubject').textContent = data.label.toLocaleUpperCase('pl-PL');
+  $('#appMenuSubject').textContent = 'NAWIGACJA';
   $('#answerSearch').placeholder = copy.answerPlaceholder;
   $('#answerSearchLabel').textContent = `Wpisz pytanie z ${activeSubject === 'micro' ? 'mikroekonomii' : 'makroekonomii'}`;
   document.querySelectorAll('.answer-prompts button').forEach((button, index) => {
@@ -1820,6 +1824,11 @@ function switchSubject(nextSubject) {
   if (!subjectCatalog[nextSubject]) return;
   activeSubject = nextSubject;
   try { localStorage.setItem(subjectStorageKey, activeSubject); } catch {}
+  document.querySelectorAll('.workspace-nav, .app-menu-nav').forEach(nav => {
+    nav.querySelectorAll('.subject-menu-group').forEach(group => {
+      group.open = group.dataset.menuSubject === activeSubject;
+    });
+  });
   selectedFlashcardChapter = 'all';
   selectedLearnChapter = 'all';
   selectedQuizChapter = 'all';
@@ -1862,7 +1871,13 @@ function switchMode(mode) {
   const secondaryModes = ['test', 'answers', 'scope', 'math', 'legal'];
   const menuMode = secondaryModes.includes(mode) ? 'more' : mode;
   document.querySelectorAll('[data-menu-mode]').forEach(button => {
-    button.classList.toggle('active', button.dataset.menuMode === menuMode);
+    const subjectMatches = !button.dataset.subjectTarget || button.dataset.subjectTarget === activeSubject;
+    button.classList.toggle('active', button.dataset.menuMode === menuMode && subjectMatches);
+  });
+  document.querySelectorAll('.subject-menu-group').forEach(group => {
+    const containsActiveTool = Boolean(group.querySelector('[data-menu-mode].active'));
+    group.classList.toggle('menu-has-active', containsActiveTool);
+    if (containsActiveTool) group.open = true;
   });
   document.querySelectorAll('.study-panel').forEach(panel => {
     panel.classList.toggle('active', panel.dataset.panel === mode);
@@ -3549,7 +3564,17 @@ $('#markNotificationsRead').addEventListener('click', markAllNotificationsRead);
 document.querySelectorAll('[data-menu-mode]').forEach(button => {
   button.addEventListener('click', event => {
     event.preventDefault();
+    if (button.dataset.subjectTarget) switchSubject(button.dataset.subjectTarget);
     navigateToMode(button.dataset.menuMode);
+  });
+});
+document.querySelectorAll('.subject-menu-group').forEach(group => {
+  group.addEventListener('toggle', () => {
+    if (!group.open) return;
+    const menu = group.closest('.workspace-nav, .app-menu-nav');
+    menu?.querySelectorAll('.subject-menu-group').forEach(sibling => {
+      if (sibling !== group) sibling.open = false;
+    });
   });
 });
 $('.brand').addEventListener('click', event => {

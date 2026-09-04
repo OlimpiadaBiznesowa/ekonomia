@@ -143,6 +143,15 @@ const brandMark = `
     <svg viewBox="0 0 24 24" focusable="false"><path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H9a3 3 0 0 1 3 3v17a3 3 0 0 0-3-3H4.5A2.5 2.5 0 0 0 2 21.5z"></path><path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H15a3 3 0 0 0-3 3v17a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.5 2.5z"></path></svg>
   </span>`;
 
+function contentSubjectGroup(slug, label, mark, canonical) {
+  const subject = slug === 'makroekonomia' ? 'macro' : 'micro';
+  const active = canonical.startsWith(`${siteUrl}/${slug}/`);
+  return `<details class="content-subject-group${active ? ' active' : ''}"${active ? ' open' : ''}>
+      <summary><span>${mark}</span><strong>${label}</strong><i aria-hidden="true">⌄</i></summary>
+      <div><a class="${active ? 'active' : ''}" href="/${slug}/">Wszystkie rozdziały</a><a href="/ucz-sie/?subject=${subject}">Ucz się</a><a href="/fiszki/?subject=${subject}">Fiszki</a><a href="/quizy/?subject=${subject}">Quiz</a><a href="/test/?subject=${subject}">Test</a><a href="/zagadnienia/?subject=${subject}">Zagadnienia</a></div>
+    </details>`;
+}
+
 function pageShell({ title, description, canonical, body, pageType = 'WebPage', breadcrumbs = [] }) {
   return `<!doctype html>
 <html lang="pl">
@@ -177,16 +186,33 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/seo-content.css?v=20260904" />
+  <link rel="stylesheet" href="/seo-content.css?v=20260905-navigation" />
 </head>
-<body>
+<body class="content-page">
   <a class="skip-link" href="#tresc">Przejdź do treści</a>
-  <header class="content-header">
-    <a class="content-brand" href="/" aria-label="Nauka Ekonomii — strona główna">${brandMark}<span><b>Nauka Ekonomii</b></span></a>
-    <nav aria-label="Główna nawigacja"><a href="/mikroekonomia/">Mikroekonomia</a><a href="/makroekonomia/">Makroekonomia</a><a href="/quizy/">Quiz</a><a href="/fiszki/">Fiszki</a></nav>
-  </header>
-  <main id="tresc" class="content-main">${body}</main>
-  <footer class="content-footer"><span>© 2026 Nauka Ekonomii</span><nav><a href="/zrodla-i-prawa/">Źródła i prawa</a><a href="/polityka-prywatnosci/">Prywatność</a></nav></footer>
+  <div class="content-page-shell">
+    <aside class="content-sidebar" aria-label="Nawigacja materiałów">
+      <a class="content-brand content-sidebar-brand" href="/" aria-label="Nauka Ekonomii — strona główna">${brandMark}<span><b>Nauka Ekonomii</b></span></a>
+      <nav class="content-sidebar-nav" aria-label="Główna nawigacja">
+        <p>TWÓJ PANEL</p>
+        <a class="content-home-link" href="/"><span aria-hidden="true">⌂</span><strong>Strona główna</strong></a>
+        <p>DZIAŁY NAUKI</p>
+        ${contentSubjectGroup('mikroekonomia', 'Mikroekonomia', 'μ', canonical)}
+        ${contentSubjectGroup('makroekonomia', 'Makroekonomia', 'M', canonical)}
+        <p>OLIMPIADA</p>
+        <a class="content-owe-link" href="/arkusze-olimpijskie/"><span aria-hidden="true">◎</span><strong>Arkusze olimpijskie</strong></a>
+      </nav>
+      <div class="content-sidebar-foot"><span>37</span><div><strong>Rozdziałów</strong><small>mikro- i makroekonomii</small></div></div>
+    </aside>
+    <div class="content-workspace">
+      <header class="content-header">
+        <a class="content-brand" href="/" aria-label="Nauka Ekonomii — strona główna">${brandMark}<span><b>Nauka Ekonomii</b></span></a>
+        <nav aria-label="Wybierz dział"><a href="/mikroekonomia/">Mikroekonomia</a><a href="/makroekonomia/">Makroekonomia</a></nav>
+      </header>
+      <main id="tresc" class="content-main">${body}</main>
+      <footer class="content-footer"><span>© 2026 Nauka Ekonomii</span><nav><a href="/zrodla-i-prawa/">Źródła i prawa</a><a href="/polityka-prywatnosci/">Prywatność</a></nav></footer>
+    </div>
+  </div>
 </body>
 </html>`;
 }
@@ -197,6 +223,7 @@ function breadcrumbMarkup(items) {
 
 function subjectHub(subject) {
   const canonical = `${siteUrl}/${subject.slug}/`;
+  const subjectId = subject.slug === 'makroekonomia' ? 'macro' : 'micro';
   const title = `${subject.name} — kurs, pojęcia i wzory | Nauka Ekonomii`;
   const description = `${subject.name} online bezpłatnie: ${subject.chapters.length} rozdziałów, ${subject.concepts.length} pojęć, ${subject.formulas.length} wzorów, streszczenia, fiszki i quizy.`;
   const crumbs = [{ name: siteName, url: `${siteUrl}/` }, { name: subject.name, url: canonical }];
@@ -208,9 +235,9 @@ function subjectHub(subject) {
   }).join('\n');
   const body = `
     ${breadcrumbMarkup([{ name: 'Strona główna', path: '/' }, { name: subject.name, path: `/${subject.slug}/` }])}
-    <section class="content-hero subject-hero"><div><span class="eyebrow">Bezpłatny kurs online</span><h1>${subject.name}</h1><p>${escapeHtml(subject.intro)}</p><div class="hero-actions"><a class="button primary" href="/ucz-sie/">Rozpocznij naukę</a><a class="button" href="/quizy/">Sprawdź wiedzę</a></div></div><dl class="subject-stats"><div><dt>Rozdziały</dt><dd>${subject.chapters.length}</dd></div><div><dt>Pojęcia</dt><dd>${subject.concepts.length}</dd></div><div><dt>Wzory</dt><dd>${subject.formulas.length}</dd></div></dl></section>
-    <section class="content-section"><div class="section-title"><span>Ścieżka nauki</span><h2>Wszystkie rozdziały ${subject.genitive}</h2><p>Zacznij od podstaw albo przejdź prosto do tematu, który chcesz powtórzyć.</p></div><div class="chapter-grid">${cards}</div></section>
-    <section class="content-section tool-section"><div class="section-title"><span>Ćwiczenia</span><h2>Utrwal materiał aktywnie</h2></div><div class="tool-links"><a href="/fiszki/"><b>Fiszki</b><span>Powtarzaj definicje i oznaczaj trudne pojęcia.</span></a><a href="/quizy/"><b>Quiz</b><span>Sprawdź wynik od razu po odpowiedzi.</span></a><a href="/wzory-matematyczne/"><b>Wzory</b><span>Zobacz zapis, zmienne i zastosowanie.</span></a><a href="/zakres-i-streszczenia/"><b>Streszczenia</b><span>Wróć do najważniejszych wniosków.</span></a></div></section>`;
+    <section class="content-hero subject-hero"><div><span class="eyebrow">Bezpłatny kurs online</span><h1>${subject.name}</h1><p>${escapeHtml(subject.intro)}</p><div class="hero-actions"><a class="button primary" href="/ucz-sie/?subject=${subjectId}">Rozpocznij naukę</a><a class="button" href="/quizy/?subject=${subjectId}">Sprawdź wiedzę</a></div></div><dl class="subject-stats"><div><dt>Rozdziały</dt><dd>${subject.chapters.length}</dd></div><div><dt>Pojęcia</dt><dd>${subject.concepts.length}</dd></div><div><dt>Wzory</dt><dd>${subject.formulas.length}</dd></div></dl></section>
+    <section class="content-section tool-section subject-tools-section"><div class="section-title"><span>Szybki start</span><h2>Jak chcesz się uczyć?</h2></div><div class="tool-links"><a href="/ucz-sie/?subject=${subjectId}"><b>Ucz się</b><span>Adaptacyjna sesja dopasowana do postępu.</span></a><a href="/fiszki/?subject=${subjectId}"><b>Fiszki</b><span>Powtarzaj definicje i oznaczaj trudne pojęcia.</span></a><a href="/quizy/?subject=${subjectId}"><b>Quiz</b><span>Sprawdź wynik od razu po odpowiedzi.</span></a><a href="/test/?subject=${subjectId}"><b>Test</b><span>Samodzielnie wpisuj odpowiedzi.</span></a><a href="/zagadnienia/?subject=${subjectId}"><b>Zagadnienia</b><span>Przejrzyj słownik najważniejszych pojęć.</span></a></div></section>
+    <section class="content-section"><div class="section-title"><span>Ścieżka nauki</span><h2>Wszystkie rozdziały ${subject.genitive}</h2><p>Zacznij od podstaw albo przejdź prosto do tematu, który chcesz powtórzyć.</p></div><div class="chapter-grid">${cards}</div></section>`;
   return pageShell({ title, description, canonical, body, pageType: 'CollectionPage', breadcrumbs: crumbs });
 }
 
@@ -221,6 +248,7 @@ function chapterPath(subject, chapter) {
 function chapterPage(subject, chapter, index) {
   const route = chapterPath(subject, chapter);
   const canonical = `${siteUrl}/${route}/`;
+  const subjectId = subject.slug === 'makroekonomia' ? 'macro' : 'micro';
   const outline = subject.outlines.find(item => item.number === chapter.number) || { topics: chapter.sections, pages: chapter.pages || '' };
   const guide = subject.guides.find(item => item.number === chapter.number) || { overview: chapter.sections.join('. '), qa: [] };
   const concepts = subject.conceptsForChapter(chapter.number);
@@ -244,7 +272,7 @@ function chapterPage(subject, chapter, index) {
   const body = `
     ${breadcrumbMarkup([{ name: 'Strona główna', path: '/' }, { name: subject.name, path: `/${subject.slug}/` }, { name: `Rozdział ${chapter.number}`, path: `/${route}/` }])}
     <article class="chapter-article">
-      <header class="content-hero chapter-hero"><div><span class="eyebrow">${escapeHtml(subject.name)} · rozdział ${chapter.number}</span><h1>${escapeHtml(chapter.title)}</h1><p>${escapeHtml(guide.overview)}</p><div class="hero-actions"><a class="button primary" href="/ucz-sie/">Ucz się aktywnie</a><a class="button" href="/quizy/">Rozwiąż quiz</a></div></div><aside><span>W tym opracowaniu</span><b>${concepts.length} pojęć</b><b>${guide.qa.length} pytań kontrolnych</b>${formulas.length ? `<b>${formulas.length} wzorów</b>` : ''}${outline.pages ? `<small>Zakres źródłowy: s. ${escapeHtml(outline.pages)}</small>` : ''}</aside></header>
+      <header class="content-hero chapter-hero"><div><span class="eyebrow">${escapeHtml(subject.name)} · rozdział ${chapter.number}</span><h1>${escapeHtml(chapter.title)}</h1><p>${escapeHtml(guide.overview)}</p><div class="hero-actions"><a class="button primary" href="/ucz-sie/?subject=${subjectId}">Ucz się aktywnie</a><a class="button" href="/quizy/?subject=${subjectId}">Rozwiąż quiz</a></div></div><aside><span>W tym opracowaniu</span><b>${concepts.length} pojęć</b><b>${guide.qa.length} pytań kontrolnych</b>${formulas.length ? `<b>${formulas.length} wzorów</b>` : ''}${outline.pages ? `<small>Zakres źródłowy: s. ${escapeHtml(outline.pages)}</small>` : ''}</aside></header>
       <div class="article-layout"><div class="article-body">
         <section id="zakres" class="content-section"><div class="section-title"><span>Zakres</span><h2>Czego dotyczy ten rozdział?</h2></div><ul class="topic-list">${topicItems}</ul></section>
         ${questions ? `<section id="pytania" class="content-section"><div class="section-title"><span>Sprawdź rozumienie</span><h2>Pytania i odpowiedzi</h2></div><div class="qa-list">${questions}</div></section>` : ''}

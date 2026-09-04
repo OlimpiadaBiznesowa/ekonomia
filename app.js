@@ -1824,11 +1824,6 @@ function switchSubject(nextSubject) {
   if (!subjectCatalog[nextSubject]) return;
   activeSubject = nextSubject;
   try { localStorage.setItem(subjectStorageKey, activeSubject); } catch {}
-  document.querySelectorAll('.workspace-nav, .app-menu-nav').forEach(nav => {
-    nav.querySelectorAll('.subject-menu-group').forEach(group => {
-      group.open = group.dataset.menuSubject === activeSubject;
-    });
-  });
   selectedFlashcardChapter = 'all';
   selectedLearnChapter = 'all';
   selectedQuizChapter = 'all';
@@ -1877,7 +1872,6 @@ function switchMode(mode) {
   document.querySelectorAll('.subject-menu-group').forEach(group => {
     const containsActiveTool = Boolean(group.querySelector('[data-menu-mode].active'));
     group.classList.toggle('menu-has-active', containsActiveTool);
-    if (containsActiveTool) group.open = true;
   });
   document.querySelectorAll('.study-panel').forEach(panel => {
     panel.classList.toggle('active', panel.dataset.panel === mode);

@@ -146,7 +146,7 @@ const brandMark = `
 function contentSubjectGroup(slug, label, mark, canonical) {
   const subject = slug === 'makroekonomia' ? 'macro' : 'micro';
   const active = canonical.startsWith(`${siteUrl}/${slug}/`);
-  return `<details class="content-subject-group${active ? ' active' : ''}"${active ? ' open' : ''}>
+  return `<details class="content-subject-group${active ? ' active' : ''}">
       <summary><span>${mark}</span><strong>${label}</strong><i aria-hidden="true">⌄</i></summary>
       <div><a class="${active ? 'active' : ''}" href="/${slug}/">Wszystkie rozdziały</a><a href="/ucz-sie/?subject=${subject}">Ucz się</a><a href="/fiszki/?subject=${subject}">Fiszki</a><a href="/quizy/?subject=${subject}">Quiz</a><a href="/test/?subject=${subject}">Test</a><a href="/zagadnienia/?subject=${subject}">Zagadnienia</a></div>
     </details>`;

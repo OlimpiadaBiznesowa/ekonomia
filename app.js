@@ -3,63 +3,65 @@ const $ = selector => document.querySelector(selector);
 const publicModeRoutes = {
   home: {
     slug: '',
-    title: 'NaukaEkonomii.pl · Mikroekonomia i makroekonomia',
-    description: 'Bezpłatna nauka mikro- i makroekonomii: tryb Ucz się, fiszki, quizy, testy i arkusze olimpijskie.'
+    title: 'Nauka ekonomii online — mikroekonomia i makroekonomia | NaukaEkonomii.pl',
+    description: 'Bezpłatna nauka ekonomii online: 487 pojęć, 94 wzory, fiszki, quizy, testy i 300 pytań OWE z mikro- i makroekonomii.'
   },
   learn: {
     slug: 'ucz-sie/',
-    title: 'Tryb Ucz się z ekonomii | NaukaEkonomii.pl',
-    description: 'Adaptacyjny tryb nauki mikro- i makroekonomii. Ucz się bez logowania, odpowiadaj na pytania i utrwalaj trudniejsze zagadnienia.'
+    title: 'Nauka ekonomii online — tryb adaptacyjny | NaukaEkonomii.pl',
+    description: 'Ucz się mikroekonomii i makroekonomii online bez logowania. Adaptacyjne pytania wracają do zagadnień, które wymagają powtórki.'
   },
   flashcards: {
     slug: 'fiszki/',
-    title: 'Fiszki z ekonomii | NaukaEkonomii.pl',
-    description: 'Bezpłatne fiszki z mikro- i makroekonomii. Powtarzaj pojęcia, oznaczaj trudne zagadnienia i zapisuj postęp bez logowania.'
+    title: 'Fiszki z mikroekonomii i makroekonomii | NaukaEkonomii.pl',
+    description: '487 bezpłatnych fiszek z mikroekonomii i makroekonomii. Powtarzaj pojęcia, oznaczaj trudne zagadnienia i zapisuj postęp bez logowania.'
   },
   quiz: {
     slug: 'quizy/',
-    title: 'Quizy z ekonomii | NaukaEkonomii.pl',
-    description: 'Quizy z mikro- i makroekonomii z natychmiastowym wynikiem. Sprawdź wiedzę z wybranego zakresu bez zakładania konta.'
+    title: 'Quiz z mikroekonomii i makroekonomii online | NaukaEkonomii.pl',
+    description: 'Bezpłatny quiz z mikroekonomii i makroekonomii z natychmiastowym wynikiem. Wybierz zakres i sprawdź wiedzę bez zakładania konta.'
   },
   owe: {
     slug: 'arkusze-olimpijskie/',
-    title: 'Arkusze olimpijskie z ekonomii | NaukaEkonomii.pl',
-    description: 'Rozwiązuj arkusze olimpijskie z ekonomii na poziomie podstawowym, średnim i zaawansowanym. 300 pytań z kluczami odpowiedzi.'
+    title: 'Olimpiada Wiedzy Ekonomicznej — pytania i arkusze | NaukaEkonomii.pl',
+    description: 'Przygotuj się do Olimpiady Wiedzy Ekonomicznej. Rozwiązuj 300 pytań OWE z odpowiedziami na trzech poziomach trudności.'
   },
   concepts: {
     slug: 'zagadnienia/',
-    title: 'Zagadnienia z mikro- i makroekonomii | NaukaEkonomii.pl',
-    description: 'Przeglądaj uporządkowany słownik zagadnień z mikro- i makroekonomii oraz szybko odnajduj potrzebne definicje.'
+    title: 'Pojęcia z mikroekonomii i makroekonomii — słownik | NaukaEkonomii.pl',
+    description: 'Słownik 487 pojęć z mikroekonomii i makroekonomii. Znajdź krótkie definicje i przejdź do odpowiedniego rozdziału.'
   },
   leaderboard: {
     slug: 'ranking/',
     title: 'Ranking uczniów | NaukaEkonomii.pl',
-    description: 'Ranking użytkowników NaukaEkonomii.pl. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.'
+    description: 'Ranking użytkowników NaukaEkonomii.pl. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.',
+    indexable: false
   },
   more: {
     slug: 'wiecej/',
-    title: 'Więcej narzędzi do nauki ekonomii | NaukaEkonomii.pl',
+    title: 'Narzędzia do nauki ekonomii | NaukaEkonomii.pl',
     description: 'Testy, wyszukiwarka odpowiedzi, streszczenia, wzory matematyczne oraz informacje o źródłach w jednym miejscu.'
   },
   test: {
     slug: 'test/',
-    title: 'Test pojęć ekonomicznych | NaukaEkonomii.pl',
-    description: 'Sprawdź pamięć, samodzielnie wpisując nazwy zagadnień z mikro- i makroekonomii.'
+    title: 'Test z mikroekonomii i makroekonomii online | NaukaEkonomii.pl',
+    description: 'Bezpłatny test z mikroekonomii i makroekonomii. Samodzielnie wpisuj nazwy pojęć, sprawdzaj odpowiedzi i utrwalaj materiał.'
   },
   answers: {
     slug: 'odpowiedzi/',
     title: 'Odpowiedzi z ekonomii | NaukaEkonomii.pl',
-    description: 'Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów.'
+    description: 'Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów.',
+    indexable: false
   },
   scope: {
     slug: 'zakres-i-streszczenia/',
-    title: 'Zakres i streszczenia z ekonomii | NaukaEkonomii.pl',
-    description: 'Przeglądaj zakres materiału i najważniejsze wnioski z rozdziałów mikro- i makroekonomii.'
+    title: 'Streszczenia z mikroekonomii i makroekonomii | NaukaEkonomii.pl',
+    description: 'Przeglądaj zakres i najważniejsze wnioski z 37 rozdziałów mikroekonomii i makroekonomii.'
   },
   math: {
     slug: 'wzory-matematyczne/',
-    title: 'Wzory matematyczne z ekonomii | NaukaEkonomii.pl',
-    description: 'Najważniejsze wzory ekonomiczne, zmienne, symbole i warunki ich prawidłowego stosowania.'
+    title: 'Wzory z mikroekonomii i makroekonomii | NaukaEkonomii.pl',
+    description: '94 wzory z mikroekonomii i makroekonomii wraz z opisem zmiennych, interpretacją i zastosowaniem.'
   },
   legal: {
     slug: 'zrodla-i-prawa/',
@@ -88,12 +90,56 @@ function applyPublicModeMetadata(mode) {
   const ogTitle = document.querySelector('meta[property="og:title"]');
   const ogDescription = document.querySelector('meta[property="og:description"]');
   const ogUrl = document.querySelector('meta[property="og:url"]');
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+  const robots = document.querySelector('meta[name="robots"]');
   const canonical = document.querySelector('link[rel="canonical"]');
+  const structuredDataElement = document.querySelector('#websiteStructuredData');
   if (description) description.content = route.description;
   if (ogTitle) ogTitle.content = route.title;
   if (ogDescription) ogDescription.content = route.description;
   if (ogUrl) ogUrl.content = canonicalUrl;
+  if (twitterTitle) twitterTitle.content = route.title;
+  if (twitterDescription) twitterDescription.content = route.description;
+  if (robots) robots.content = route.indexable === false ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
   if (canonical) canonical.href = canonicalUrl;
+  if (structuredDataElement) {
+    structuredDataElement.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Organization',
+          '@id': 'https://naukaekonomii.pl/#organization',
+          url: 'https://naukaekonomii.pl/',
+          name: 'NaukaEkonomii.pl',
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://naukaekonomii.pl/assets/logo-square-512.png',
+            width: 512,
+            height: 512
+          }
+        },
+        {
+          '@type': 'WebSite',
+          '@id': 'https://naukaekonomii.pl/#website',
+          url: 'https://naukaekonomii.pl/',
+          name: 'NaukaEkonomii.pl',
+          alternateName: ['Nauka Ekonomii', 'naukaekonomii.pl'],
+          description: 'Bezpłatna platforma do nauki mikroekonomii i makroekonomii.',
+          inLanguage: 'pl-PL',
+          publisher: { '@id': 'https://naukaekonomii.pl/#organization' }
+        },
+        {
+          '@type': 'WebPage',
+          '@id': `${canonicalUrl}#webpage`,
+          url: canonicalUrl,
+          name: route.title.replace(/ \| NaukaEkonomii\.pl$/, ''),
+          isPartOf: { '@id': 'https://naukaekonomii.pl/#website' },
+          inLanguage: 'pl-PL'
+        }
+      ]
+    });
+  }
 }
 
 function updatePublicModeRoute(mode, { replace = false } = {}) {

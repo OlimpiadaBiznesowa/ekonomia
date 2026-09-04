@@ -1,4 +1,18 @@
 /* Shared illustrated, vertical navigation for the app and chapter pages. */
+.content-tool-link { display:flex; align-items:center; gap:9px; min-height:44px; padding:7px 9px; border-radius:8px; text-decoration:none; color:#65706c; font-size:12px; }
+.content-tool-link > span { display:grid; place-items:center; flex:0 0 28px; height:28px; border:1px solid #c8dfd8; border-radius:8px; background:#e7f0ed; color:#287c74; }
+.content-tool-link svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.content-tool-link:hover,.content-tool-link.active { background:#e7f0ed; color:#185e57; }
+.workspace-nav .tool-nav-link b { white-space:normal; line-height:1.35; }
+.content-home-link svg,.content-owe-link svg { display:block; width:17px; height:17px; overflow:visible; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.content-home-link .icon-accent,.content-owe-link .icon-accent { stroke:var(--coral); }
+.owe-intro-mark .nav-icon { width:30px; height:30px; }
+@media(max-width:700px) { .owe-intro-mark .nav-icon { width:24px; height:24px; } }
+@media(max-width:700px) {
+  .content-header { flex-wrap:wrap; gap:4px; }
+  .content-header nav { flex-basis:100%; justify-content:flex-start; }
+  .content-header nav a:nth-child(n+3) { display:inline-flex; }
+}
 :root {
   --nav-micro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 10V6l2-3h14l2 3v4M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M5 13v8h14v-8M9 21v-6h6v6M9 3v7M15 3v7'/%3E%3C/svg%3E");
   --nav-macro: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cellipse cx='12' cy='12' rx='4' ry='9'/%3E%3Cpath d='M3 12h18M5 6h14M5 18h14'/%3E%3C/svg%3E");

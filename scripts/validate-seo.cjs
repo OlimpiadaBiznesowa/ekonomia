@@ -19,7 +19,7 @@ function pagePath(url) {
 
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
-assert(urls.length === 50, `Sitemap ma ${urls.length} adresów zamiast 50.`);
+assert(urls.length === 53, `Sitemap ma ${urls.length} adresów zamiast 53.`);
 assert(new Set(urls).size === urls.length, 'Sitemap zawiera zduplikowane adresy.');
 assert(!urls.some(url => /\/(ranking|odpowiedzi)\/$/.test(url)), 'Sitemap zawiera stronę oznaczoną jako noindex.');
 
@@ -59,7 +59,7 @@ for (const route of ['ranking', 'odpowiedzi']) {
   assert(/<meta name="robots" content="noindex,follow"/i.test(html), `/${route}/ powinno mieć noindex,follow.`);
 }
 
-for (const url of urls.filter(item => /\/(mikroekonomia|makroekonomia)\//.test(item))) {
+for (const url of urls.filter(item => /\/(mikroekonomia|makroekonomia|narzedzia)\//.test(item))) {
   const html = fs.readFileSync(pagePath(url), 'utf8');
   const targets = [...html.matchAll(/(?:href|src)="(\/[^"#]+)"/g)].map(match => match[1]);
   for (const target of targets) {
@@ -87,7 +87,10 @@ for (const relative of [
   'assets/og-nauka-ekonomii.png',
   'google-analytics.js',
   'site.webmanifest',
-  'seo-content.css'
+  'seo-content.css',
+  'economic-tools.css',
+  'economic-tools.js',
+  'economic-tools-math.js'
 ]) assert(fs.existsSync(path.join(root, ...relative.split('/'))), `Brak zasobu: ${relative}`);
 
 try { JSON.parse(fs.readFileSync(path.join(root, 'site.webmanifest'), 'utf8')); }

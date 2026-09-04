@@ -152,7 +152,7 @@ function contentSubjectGroup(slug, label, mark, canonical) {
     </details>`;
 }
 
-function pageShell({ title, description, canonical, body, pageType = 'WebPage', breadcrumbs = [] }) {
+function pageShell({ title, description, canonical, body, pageType = 'WebPage', breadcrumbs = [], toolsPage = false }) {
   return `<!doctype html>
 <html lang="pl">
 <head>
@@ -187,7 +187,9 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/seo-content.css?v=20260905-navigation" />
-  <link rel="stylesheet" href="/navigation-icons.css?v=20260905-1" />
+  <link rel="stylesheet" href="/navigation-icons.css?v=20260905-sidebar" />
+  <script defer src="/content-sidebar.js?v=20260905-1"></script>
+  ${toolsPage ? '<link rel="stylesheet" href="/economic-tools.css?v=20260905-1" /><script defer src="/economic-tools-math.js?v=20260905-1"></script><script defer src="/economic-tools.js?v=20260905-1"></script>' : ''}
 </head>
 <body class="content-page">
   <a class="skip-link" href="#tresc">Przejdź do treści</a>
@@ -196,19 +198,22 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
       <a class="content-brand content-sidebar-brand" href="/" aria-label="Nauka Ekonomii — strona główna">${brandMark}<span><b>Nauka Ekonomii</b></span></a>
       <nav class="content-sidebar-nav" aria-label="Główna nawigacja">
         <p>TWÓJ PANEL</p>
-        <a class="content-home-link" href="/"><span aria-hidden="true">⌂</span><strong>Strona główna</strong></a>
+        <a class="content-home-link" href="/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path class="icon-accent" d="M9 21v-6h6v6"/></svg></span><strong>Strona główna</strong></a>
         <p>DZIAŁY NAUKI</p>
         ${contentSubjectGroup('mikroekonomia', 'Mikroekonomia', 'μ', canonical)}
         ${contentSubjectGroup('makroekonomia', 'Makroekonomia', 'M', canonical)}
         <p>OLIMPIADA</p>
-        <a class="content-owe-link" href="/arkusze-olimpijskie/"><span aria-hidden="true">◎</span><strong>Arkusze olimpijskie</strong></a>
+        <a class="content-owe-link" href="/arkusze-olimpijskie/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"/></svg></span><strong>Arkusze olimpijskie</strong></a>
+        <p>NARZĘDZIA</p>
+        <a class="content-tool-link${canonical.endsWith('/narzedzia/kalkulator-elastycznosci-popytu/') ? ' active' : ''}" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"/></svg></span><strong>Elastyczność popytu</strong></a>
+        <a class="content-tool-link${canonical.endsWith('/narzedzia/podaz-i-popyt/') ? ' active' : ''}" href="/narzedzia/podaz-i-popyt/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"/></svg></span><strong>Podaż i popyt</strong></a>
       </nav>
-      <div class="content-sidebar-foot"><span>37</span><div><strong>Rozdziałów</strong><small>mikro- i makroekonomii</small></div></div>
+      <div class="content-sidebar-foot"><span id="contentStreak">0</span><div><strong>Seria nauki</strong><small id="contentStreakLabel">Rozpocznij serię dziś</small></div></div>
     </aside>
     <div class="content-workspace">
       <header class="content-header">
         <a class="content-brand" href="/" aria-label="Nauka Ekonomii — strona główna">${brandMark}<span><b>Nauka Ekonomii</b></span></a>
-        <nav aria-label="Wybierz dział"><a href="/mikroekonomia/">Mikroekonomia</a><a href="/makroekonomia/">Makroekonomia</a></nav>
+        <nav aria-label="Wybierz dział"><a href="/mikroekonomia/">Mikroekonomia</a><a href="/makroekonomia/">Makroekonomia</a><a href="/narzedzia/">Narzędzia</a></nav>
       </header>
       <main id="tresc" class="content-main">${body}</main>
       <footer class="content-footer"><span>© 2026 Nauka Ekonomii</span><nav><a href="/zrodla-i-prawa/">Źródła i prawa</a><a href="/polityka-prywatnosci/">Prywatność</a></nav></footer>
@@ -321,6 +326,19 @@ function writeContentPages() {
   return urls;
 }
 
+function writeToolPages() {
+  return require('./economic-tools-pages.cjs').map(tool => {
+    const canonical = `${siteUrl}/${tool.slug}/`;
+    const crumbs = [{name:siteName,url:`${siteUrl}/`},{name:'Narzędzia',url:`${siteUrl}/narzedzia/`}];
+    if (tool.slug !== 'narzedzia') crumbs.push({name:tool.label,url:canonical});
+    const body = breadcrumbMarkup(crumbs.map(item => ({name:item.name,path:new URL(item.url).pathname}))) + tool.body;
+    const directory = path.join(root, tool.slug);
+    fs.mkdirSync(directory, {recursive:true});
+    fs.writeFileSync(path.join(directory,'index.html'), pageShell({...tool, canonical, body, toolsPage:true, breadcrumbs:crumbs}), 'utf8');
+    return `/${tool.slug}/`;
+  });
+}
+
 function writeSitemap(contentUrls) {
   const appUrls = appRoutes.filter(route => route.indexable).map(route => `/${route.slug}/`);
   const urls = ['/', ...appUrls, ...contentUrls];
@@ -330,6 +348,6 @@ function writeSitemap(contentUrls) {
 }
 
 writeAppRoutes();
-const contentUrls = writeContentPages();
+const contentUrls = [...writeContentPages(), ...writeToolPages()];
 const sitemapCount = writeSitemap(contentUrls);
 console.log(`Wygenerowano ${appRoutes.length} podstron aplikacji, ${contentUrls.length} stron treści i sitemapę z ${sitemapCount} adresami.`);

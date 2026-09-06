@@ -3,6 +3,7 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const origin = 'https://naukaekonomii.pl';
+const adsenseClient = 'ca-pub-8851383447848259';
 const errors = [];
 
 function assert(condition, message) {
@@ -43,10 +44,23 @@ for (const url of urls) {
   assert(html.includes('"name": "Nauka Ekonomii"'), `Brak preferowanej nazwy witryny w JSON-LD: ${url}`);
   assert(html.includes('/google-analytics.js'), `Brak konfiguracji Google Analytics: ${url}`);
   assert(html.includes('G-P2YY78KWV0'), `Brak identyfikatora GA4: ${url}`);
+  const adsenseScripts = [...html.matchAll(new RegExp(`pagead2\\.googlesyndication\\.com/pagead/js/adsbygoogle\\.js\\?client=${adsenseClient}`, 'g'))];
+  assert(adsenseScripts.length === 1, `Strona ${url} powinna ładować dokładnie jeden skrypt AdSense, znaleziono: ${adsenseScripts.length}.`);
   const ldScripts = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)];
   assert(ldScripts.length > 0, `Brak danych uporządkowanych: ${url}`);
   for (const script of ldScripts) {
     try { JSON.parse(script[1]); } catch (error) { errors.push(`Błędny JSON-LD dla ${url}: ${error.message}`); }
+  }
+  const documentBase = html.includes('id="siteBase"') ? `${origin}/` : url;
+  const localTargets = [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map(match => match[1]);
+  for (const target of localTargets) {
+    if (/^(?:#|mailto:|tel:|data:|javascript:)/i.test(target)) continue;
+    let resolved;
+    try { resolved = new URL(target, documentBase); }
+    catch { errors.push(`Nieprawidłowy adres ${target} na ${url}.`); continue; }
+    if (resolved.origin !== origin) continue;
+    const localFile = pagePath(resolved.href);
+    assert(fs.existsSync(localFile), `Uszkodzony link lub zasób ${target} na ${url}.`);
   }
   if (canonical) {
     assert(!canonicals.has(canonical), `Powielony canonical: ${canonical}`);
@@ -101,9 +115,14 @@ assert(analytics.includes("analytics_storage: 'denied'"), 'Google Analytics nie 
 assert(analytics.includes("'PL'"), 'Polska nie jest objęta regionalnym stanem zgody.');
 assert(analytics.includes("gtag('config', 'G-P2YY78KWV0')"), 'Nieprawidłowy identyfikator Google Analytics.');
 
+const adsTxt = fs.readFileSync(path.join(root, 'ads.txt'), 'utf8').trim();
+assert(adsTxt === 'google.com, pub-8851383447848259, DIRECT, f08c47fec0942fa0', 'ads.txt nie zawiera poprawnego bezpośredniego wpisu Google AdSense.');
+const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+assert(!/history\.(?:pushState|replaceState)/.test(appJs), 'Nawigacja aplikacji nadal zmienia URL bez przeładowania dokumentu.');
+
 if (errors.length) {
   console.error(errors.map(error => `- ${error}`).join('\n'));
   process.exit(1);
 }
 
-console.log(`SEO OK: ${urls.length} unikalnych adresów, poprawne canonicale, indeksowanie, JSON-LD i zasoby.`);
+console.log(`SEO/AdSense OK: ${urls.length} unikalnych adresów, poprawne canonicale, indeksowanie, JSON-LD, linki, zasoby i pojedynczy skrypt reklamowy.`);

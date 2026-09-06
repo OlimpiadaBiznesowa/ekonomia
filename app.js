@@ -167,19 +167,15 @@ function applyPublicModeMetadata(mode) {
   }
 }
 
-function updatePublicModeRoute(mode, { replace = false } = {}) {
+function updatePublicModeRoute(mode) {
   const route = publicModeRoutes[mode];
   if (!route) return;
   const target = new URL(route.slug, siteBaseUrl);
   if (window.location.pathname !== target.pathname) {
-    window.history[replace ? 'replaceState' : 'pushState']({ mode }, '', target.pathname);
+    window.location.replace(target.href);
+    return;
   }
   applyPublicModeMetadata(mode);
-}
-
-function navigateToMode(mode, options) {
-  switchMode(mode);
-  updatePublicModeRoute(mode, options);
 }
 
 const storageKey = 'mankiw-taylor-study-progress-v14';
@@ -3203,16 +3199,17 @@ function renderConcepts() {
 }
 
 document.querySelectorAll('[data-go]').forEach(button => {
+  if (button.matches('a[href]')) return;
   button.addEventListener('click', event => {
     event.preventDefault();
-    navigateToMode(button.dataset.go);
+    switchMode(button.dataset.go);
   });
 });
 
 document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.addEventListener('click', event => {
     event.preventDefault();
-    navigateToMode(tab.dataset.mode);
+    switchMode(tab.dataset.mode);
   });
 });
 
@@ -3581,10 +3578,11 @@ $('#appMenuBackdrop').addEventListener('click', () => setAppMenu(false));
 $('#notificationButton').addEventListener('click', toggleNotificationCenter);
 $('#markNotificationsRead').addEventListener('click', markAllNotificationsRead);
 document.querySelectorAll('[data-menu-mode]').forEach(button => {
+  if (button.matches('a[href]')) return;
   button.addEventListener('click', event => {
     event.preventDefault();
     if (button.dataset.subjectTarget) switchSubject(button.dataset.subjectTarget);
-    navigateToMode(button.dataset.menuMode);
+    switchMode(button.dataset.menuMode);
   });
 });
 document.querySelectorAll('.subject-menu-group').forEach(group => {
@@ -3595,10 +3593,6 @@ document.querySelectorAll('.subject-menu-group').forEach(group => {
       if (sibling !== group) sibling.open = false;
     });
   });
-});
-$('.brand').addEventListener('click', event => {
-  event.preventDefault();
-  navigateToMode('home');
 });
 $('#pointsMenuButton').addEventListener('click', () => setPointsMenu(true));
 $('#pointsMenuClose').addEventListener('click', () => setPointsMenu(false));
@@ -3713,7 +3707,7 @@ initializeTheme();
 switchSubject(activeSubject);
 const initialPublicMode = publicModeFromLocation();
 switchMode(initialPublicMode);
-updatePublicModeRoute(initialPublicMode, { replace: true });
+updatePublicModeRoute(initialPublicMode);
 updateOweQuizPool();
 renderNotifications();
 updateStudyTimer();

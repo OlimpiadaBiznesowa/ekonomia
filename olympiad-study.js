@@ -29,6 +29,7 @@
   let cardGroup = 'all';
   let showDifficultOnly = false;
   let cardIndex = 0;
+  let cardTransitioning = false;
   let quizSet = [];
   let quizIndex = 0;
   let quizScore = 0;
@@ -208,11 +209,43 @@
     $('#olympiadRecallActions').hidden = !flipped;
   }
 
-  function moveCard(direction) {
+  function moveCard(direction, preferredId) {
     const cards = cardPool();
-    if (!cards.length) return;
-    cardIndex = (cardIndex + direction + cards.length) % cards.length;
-    renderCard();
+    if ((!cards.length && !preferredId) || cardTransitioning) return;
+    cardTransitioning = true;
+    const element = $('#olympiadCard');
+    const updateCard = () => {
+      const currentPool = cardPool();
+      const preferredIndex = preferredId
+        ? currentPool.findIndex(item => item.id === preferredId)
+        : -1;
+      cardIndex = preferredIndex >= 0
+        ? preferredIndex
+        : currentPool.length
+          ? (cardIndex + direction + currentPool.length) % currentPool.length
+          : 0;
+      renderCard();
+    };
+    if (typeof element.animate !== 'function') {
+      updateCard();
+      cardTransitioning = false;
+      return;
+    }
+    const exitX = direction > 0 ? '-72px' : '72px';
+    const enterX = direction > 0 ? '72px' : '-72px';
+    const exitAnimation = element.animate([
+      { opacity: 1, transform: 'translateX(0) scale(1)' },
+      { opacity: 0, transform: 'translateX(' + exitX + ') scale(.985)' }
+    ], { duration: 180, easing: 'ease-in', fill: 'forwards' });
+    exitAnimation.finished.then(() => {
+      updateCard();
+      exitAnimation.cancel();
+      const enterAnimation = element.animate([
+        { opacity: 0, transform: 'translateX(' + enterX + ') scale(.985)' },
+        { opacity: 1, transform: 'translateX(0) scale(1)' }
+      ], { duration: 260, easing: 'cubic-bezier(.22,1,.36,1)' });
+      enterAnimation.finished.finally(() => { cardTransitioning = false; });
+    }).catch(() => { cardTransitioning = false; });
   }
 
   function assessCard(mastered) {
@@ -228,7 +261,7 @@
       difficult.add(item.id);
     }
     save();
-    renderCard(nextId);
+    moveCard(1, nextId);
   }
 
   function toggleDifficult() {

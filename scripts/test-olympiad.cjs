@@ -80,17 +80,23 @@ for (const file of ['index.html', ...Object.keys(olympiadRoutes)]) {
   for (const mode of Object.values(olympiadRoutes)) {
     assert.equal([...html.matchAll(new RegExp(`data-menu-mode="${mode}"`, 'g'))].length, 2, `${file}: tryb ${mode} nie ma przycisku w obu menu`);
   }
+  assert(!/<b>(Arkusze OWE|Zagadnienia|Fiszki|Quiz)<\/b><i/.test(html), `${file}: pozostały pomarańczowe liczniki w menu Olimpiady`);
   const expectedMode = olympiadRoutes[file];
   if (expectedMode) assert(html.includes(`data-mode="${expectedMode}"`), `${file}: nieaktywny właściwy panel`);
 }
 const olympiadCss = fs.readFileSync(path.join(root, 'olympiad-study.css'), 'utf8');
 const olympiadJs = fs.readFileSync(path.join(root, 'olympiad-study.js'), 'utf8');
+const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 assert(olympiadCss.includes('.olympiad-card .card-face.is-definition'), 'Brak typografii dla definicji na fiszce');
 assert(olympiadCss.includes('.olympiad-quiz-settings'), 'Brak integracji ustawień quizu');
 assert(!olympiadCss.includes('.owe-answer-option'), 'Moduł pojęć nadal nadpisuje osobny styl odpowiedzi OWE');
 assert(olympiadJs.includes('class="answer" type="button" data-olympiad-answer'), 'Quiz nie używa wspólnego komponentu odpowiedzi');
 assert(olympiadJs.includes("classList.toggle('is-flipped')"), 'Fiszka nie używa animowanego odwracania');
+assert(olympiadJs.includes("{ duration: 180, easing: 'ease-in', fill: 'forwards' }"), 'Brak animacji wyjścia fiszki');
+assert(olympiadJs.includes("{ duration: 260, easing: 'cubic-bezier(.22,1,.36,1)' }"), 'Brak animacji wejścia następnej fiszki');
 assert(olympiadJs.includes("classList.add(correct ? 'answer-correct' : 'answer-wrong')"), 'Quiz nie używa animacji odpowiedzi');
 assert(!olympiadJs.includes('location.hash'), 'Moduł nadal używa zakładek w jednym adresie');
 assert(!olympiadJs.includes('olympiadCardText'), 'Pozostało odwołanie do usuniętej karty');
+assert(!appJs.includes('history.pushState') && !appJs.includes('history.replaceState'), 'Nawigacja nadal sztucznie zmienia URL bez przeładowania');
+assert.equal((appJs.match(/if \(button\.matches\('a\[href\]'\)\) return;/g) || []).length, 2, 'Linki podstron nie są pozostawione natywnej nawigacji');
 console.log(`OWE OK: ${data.concepts.length} definicji/fiszek, ${data.applications.length} zadań, 4 osobne podstrony, wspólne komponenty i animacje.`);

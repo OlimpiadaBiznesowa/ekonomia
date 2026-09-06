@@ -5,7 +5,7 @@
     <base id="siteBase" href="./" />
     <script>
       (() => {
-        const routeSlugs = new Set(['ucz-sie', 'fiszki', 'quizy', 'arkusze-olimpijskie', 'zagadnienia', 'ranking', 'wiecej', 'test', 'odpowiedzi', 'zakres-i-streszczenia', 'wzory-matematyczne', 'zrodla-i-prawa']);
+        const routeSlugs = new Set(['ucz-sie', 'fiszki', 'quizy', 'arkusze-olimpijskie', 'olimpiada-zagadnienia', 'olimpiada-fiszki', 'olimpiada-quiz', 'zagadnienia', 'ranking', 'wiecej', 'test', 'odpowiedzi', 'zakres-i-streszczenia', 'wzory-matematyczne', 'zrodla-i-prawa']);
         const pathParts = window.location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
         if (routeSlugs.has(pathParts.at(-1))) document.querySelector('#siteBase').href = '../';
       })();
@@ -21,25 +21,23 @@
     <meta name="robots" content="noindex,follow" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pl_PL" />
-    <meta property="og:site_name" content="NaukaEkonomii.pl" />
-    <meta property="og:title" content="Odpowiedzi z ekonomii | NaukaEkonomii.pl" />
+    <meta property="og:site_name" content="Nauka Ekonomii" />
+    <meta property="og:title" content="Odpowiedzi z ekonomii | Nauka Ekonomii" />
     <meta property="og:description" content="Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów." />
     <meta property="og:url" content="https://naukaekonomii.pl/odpowiedzi/" />
     <meta property="og:image" content="https://naukaekonomii.pl/assets/og-nauka-ekonomii.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="NaukaEkonomii.pl — mikroekonomia i makroekonomia bezpłatnie" />
+    <meta property="og:image:alt" content="Nauka Ekonomii — mikroekonomia i makroekonomia bezpłatnie" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Odpowiedzi z ekonomii | NaukaEkonomii.pl" />
+    <meta name="twitter:title" content="Odpowiedzi z ekonomii | Nauka Ekonomii" />
     <meta name="twitter:description" content="Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów." />
     <meta name="twitter:image" content="https://naukaekonomii.pl/assets/og-nauka-ekonomii.png" />
     <link rel="canonical" href="https://naukaekonomii.pl/odpowiedzi/" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <title>Odpowiedzi z ekonomii | NaukaEkonomii.pl</title>
+    <title>Odpowiedzi z ekonomii | Nauka Ekonomii</title>
     <script type="application/ld+json" id="websiteStructuredData">
 {
   "@context": "https://schema.org",
@@ -48,7 +46,8 @@
       "@type": "Organization",
       "@id": "https://naukaekonomii.pl/#organization",
       "url": "https://naukaekonomii.pl/",
-      "name": "NaukaEkonomii.pl",
+      "name": "Nauka Ekonomii",
+      "alternateName": "NaukaEkonomii.pl",
       "logo": {
         "@type": "ImageObject",
         "url": "https://naukaekonomii.pl/assets/logo-square-512.png",
@@ -60,9 +59,9 @@
       "@type": "WebSite",
       "@id": "https://naukaekonomii.pl/#website",
       "url": "https://naukaekonomii.pl/",
-      "name": "NaukaEkonomii.pl",
+      "name": "Nauka Ekonomii",
       "alternateName": [
-        "Nauka Ekonomii",
+        "NaukaEkonomii.pl",
         "naukaekonomii.pl"
       ],
       "description": "Bezpłatna platforma do nauki mikroekonomii i makroekonomii.",
@@ -95,32 +94,56 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260904-seo-1" />
+    <link rel="stylesheet" href="styles.css?v=20260905-navigation" />
+    <link rel="stylesheet" href="olympiad-study.css?v=20260906-3" />
+    <link rel="stylesheet" href="/navigation-icons.css?v=20260905-sidebar" />
   </head>
   <body class="answers-active" data-mode="answers">
     <div class="page-shell">
       <aside class="workspace-sidebar" aria-label="Główna nawigacja">
-        <a class="workspace-brand" href="/" data-menu-mode="home" aria-label="NaukaEkonomii.pl — strona główna">
+        <a class="workspace-brand" href="/" data-menu-mode="home" aria-label="Nauka Ekonomii — strona główna">
           <span class="brand-book" aria-hidden="true">
             <svg viewBox="0 0 24 24" focusable="false">
               <path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H9a3 3 0 0 1 3 3v17a3 3 0 0 0-3-3H4.5A2.5 2.5 0 0 0 2 21.5z"></path>
               <path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H15a3 3 0 0 0-3 3v17a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.5 2.5z"></path>
             </svg>
           </span>
-          <span class="brand-wordmark"><b>NaukaEkonomii</b><em>.pl</em></span>
+          <span class="brand-wordmark"><b>Nauka Ekonomii</b></span>
         </a>
         <nav class="workspace-nav">
           <p>TWÓJ PANEL</p>
-          <a class="active" href="./" data-menu-mode="home"><span>⌂</span><b>Plan na dziś</b></a>
-          <a href="ucz-sie/" data-menu-mode="learn"><span>↗</span><b>Ucz się</b></a>
-          <a href="fiszki/" data-menu-mode="flashcards"><span>▱</span><b>Fiszki</b></a>
-          <a href="quizy/" data-menu-mode="quiz"><span>?</span><b>Quiz</b></a>
+          <a class="active" href="./" data-menu-mode="home"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path class="icon-accent" d="M9 21v-6h6v6"></path></svg></span><b>Strona główna</b></a>
+          <details class="subject-menu-group" data-menu-subject="micro">
+            <summary><span class="subject-menu-mark" aria-hidden="true">μ</span><span><b>Mikroekonomia</b><small>19 rozdziałów</small></span><i aria-hidden="true">⌄</i></summary>
+            <div class="subject-menu-items">
+              <a href="/ucz-sie/?subject=micro" data-menu-mode="learn" data-subject-target="micro">Ucz się</a>
+              <a href="/fiszki/?subject=micro" data-menu-mode="flashcards" data-subject-target="micro">Fiszki</a>
+              <a href="/quizy/?subject=micro" data-menu-mode="quiz" data-subject-target="micro">Quiz</a>
+              <a href="/test/?subject=micro" data-menu-mode="test" data-subject-target="micro">Test</a>
+              <a href="/zagadnienia/?subject=micro" data-menu-mode="concepts" data-subject-target="micro">Zagadnienia</a>
+            </div>
+          </details>
+          <details class="subject-menu-group" data-menu-subject="macro">
+            <summary><span class="subject-menu-mark" aria-hidden="true">M</span><span><b>Makroekonomia</b><small>18 rozdziałów</small></span><i aria-hidden="true">⌄</i></summary>
+            <div class="subject-menu-items">
+              <a href="/ucz-sie/?subject=macro" data-menu-mode="learn" data-subject-target="macro">Ucz się</a>
+              <a href="/fiszki/?subject=macro" data-menu-mode="flashcards" data-subject-target="macro">Fiszki</a>
+              <a href="/quizy/?subject=macro" data-menu-mode="quiz" data-subject-target="macro">Quiz</a>
+              <a href="/test/?subject=macro" data-menu-mode="test" data-subject-target="macro">Test</a>
+              <a href="/zagadnienia/?subject=macro" data-menu-mode="concepts" data-subject-target="macro">Zagadnienia</a>
+            </div>
+          </details>
           <p>OLIMPIADA</p>
-          <a class="workspace-owe-link" href="arkusze-olimpijskie/" data-menu-mode="owe"><span>OLI</span><b>Arkusze olimpijskie</b><i id="oweQuestionCount">300</i></a>
-          <p>POSTĘP</p>
-          <a href="zagadnienia/" data-menu-mode="concepts"><span>≡</span><b>Zagadnienia</b></a>
-          <a href="ranking/" data-menu-mode="leaderboard"><span>♢</span><b>Ranking</b></a>
-          <a href="wiecej/" data-menu-mode="more"><span>＋</span><b>Więcej</b></a>
+          <a href="/arkusze-olimpijskie/" data-menu-mode="owe"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"></path><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"></path><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"></path></svg></span><b>Arkusze OWE</b></a>
+          <a href="/olimpiada-zagadnienia/" data-menu-mode="olympiadConcepts"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"></path><path class="icon-accent" d="M8 8h7M8 12h7M8 16h4"></path></svg></span><b>Zagadnienia</b></a>
+          <a href="/olimpiada-fiszki/" data-menu-mode="olympiadFlashcards"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"></rect><path class="icon-accent" d="M7 3h10M7 21h10M8 10h8M8 14h5"></path></svg></span><b>Fiszki</b></a>
+          <a href="/olimpiada-quiz/" data-menu-mode="olympiadQuiz"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 12h6"></path><path class="icon-accent" d="m9 16 2 2 4-4"></path></svg></span><b>Quiz</b></a>
+          <p>NARZĘDZIA</p>
+          <a class="tool-nav-link" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"/></svg></span><b>Elastyczność popytu</b></a>
+          <a class="tool-nav-link" href="/narzedzia/podaz-i-popyt/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"/></svg></span><b>Podaż i popyt</b></a>
+          <p>POZOSTAŁE</p>
+          <a href="ranking/" data-menu-mode="leaderboard"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 20v-5h5v5M9 20V9h6v11M15 20v-8h5v8"></path><path class="icon-accent" d="M3 20h18M12 3l1 2 2 .3-1.5 1.5.4 2.2L12 8l-1.9 1 .4-2.2L9 5.3l2-.3z"></path></svg></span><b>Ranking</b></a>
+          <a href="wiecej/" data-menu-mode="more"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect class="icon-accent" x="14" y="14" width="6" height="6" rx="1.5"></rect></svg></span><b>Więcej</b></a>
         </nav>
         <div class="workspace-sidebar-foot">
           <span class="workspace-streak" id="workspaceStreak">0</span>
@@ -128,14 +151,14 @@
         </div>
       </aside>
       <header class="topbar">
-        <a class="brand" href="/" aria-label="NaukaEkonomii.pl — strona główna">
+        <a class="brand" href="/" aria-label="Nauka Ekonomii — strona główna">
           <span class="brand-book" aria-hidden="true">
             <svg viewBox="0 0 24 24" focusable="false">
               <path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H9a3 3 0 0 1 3 3v17a3 3 0 0 0-3-3H4.5A2.5 2.5 0 0 0 2 21.5z"></path>
               <path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H15a3 3 0 0 0-3 3v17a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.5 2.5z"></path>
             </svg>
           </span>
-          <span class="brand-wordmark"><b>NaukaEkonomii</b><em>.pl</em></span>
+          <span class="brand-wordmark"><b>Nauka Ekonomii</b></span>
         </a>
       </header>
       <div class="topbar-quick-actions">
@@ -156,17 +179,32 @@
           <section class="hero home-hero">
             <div class="home-hero-copy">
               <p class="eyebrow" id="heroEyebrow">MANKIW · TAYLOR · MIKROEKONOMIA</p>
-              <h1>Nauka ekonomii<br /><em>online i bezpłatnie.</em></h1>
+              <h1>Nauka ekonomii <em>online i bezpłatnie.</em></h1>
               <p class="home-hero-description">Poznaj mikro- i makroekonomię, rozwiązuj quizy oraz arkusze olimpijskie i obserwuj swój postęp w jednym miejscu.</p>
+              <section class="home-mobile-subjects" aria-labelledby="mobileSubjectTitle">
+                <p id="mobileSubjectTitle">Wybierz dział i zacznij naukę</p>
+                <details class="home-mobile-subject">
+                  <summary><span aria-hidden="true">μ</span><span><strong>Mikroekonomia</strong><small>19 rozdziałów · 271 pojęć</small></span><i aria-hidden="true">⌄</i></summary>
+                  <nav aria-label="Narzędzia do mikroekonomii">
+                    <a href="/ucz-sie/?subject=micro" data-menu-mode="learn" data-subject-target="micro">Ucz się</a><a href="/fiszki/?subject=micro" data-menu-mode="flashcards" data-subject-target="micro">Fiszki</a><a href="/quizy/?subject=micro" data-menu-mode="quiz" data-subject-target="micro">Quiz</a><a href="/test/?subject=micro" data-menu-mode="test" data-subject-target="micro">Test</a><a href="/zagadnienia/?subject=micro" data-menu-mode="concepts" data-subject-target="micro">Zagadnienia</a><a class="subject-materials-link" href="/mikroekonomia/">Wszystkie rozdziały →</a>
+                  </nav>
+                </details>
+                <details class="home-mobile-subject">
+                  <summary><span aria-hidden="true">M</span><span><strong>Makroekonomia</strong><small>18 rozdziałów · 216 pojęć</small></span><i aria-hidden="true">⌄</i></summary>
+                  <nav aria-label="Narzędzia do makroekonomii">
+                    <a href="/ucz-sie/?subject=macro" data-menu-mode="learn" data-subject-target="macro">Ucz się</a><a href="/fiszki/?subject=macro" data-menu-mode="flashcards" data-subject-target="macro">Fiszki</a><a href="/quizy/?subject=macro" data-menu-mode="quiz" data-subject-target="macro">Quiz</a><a href="/test/?subject=macro" data-menu-mode="test" data-subject-target="macro">Test</a><a href="/zagadnienia/?subject=macro" data-menu-mode="concepts" data-subject-target="macro">Zagadnienia</a><a class="subject-materials-link" href="/makroekonomia/">Wszystkie rozdziały →</a>
+                  </nav>
+                </details>
+              </section>
               <div class="hero-actions home-hero-actions">
                 <a class="home-feature-button home-learn-button" href="ucz-sie/" data-go="learn">
-                  <span class="home-feature-icon" aria-hidden="true">↗</span>
+                  <span class="home-feature-icon nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="m4 17 5-5 4 3 7-8"></path><path class="icon-accent" d="M15 7h5v5"></path></svg></span>
                   <span><strong>Tryb Ucz się</strong><small>Adaptacyjna sesja dopasowana do postępu</small></span>
                   <b>Rozpocznij →</b>
                 </a>
                 <a class="home-feature-button home-owe-button" href="arkusze-olimpijskie/" data-go="owe">
-                  <span class="home-feature-icon" aria-hidden="true">OLI</span>
-                  <span><strong>Arkusze olimpijskie</strong><small>Pytania z trzema poziomami trudności</small></span>
+                  <span class="home-feature-icon nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"></path><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"></path><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"></path></svg></span>
+                  <span><strong>Olimpiada</strong><small>Definicje, fiszki, quizy i arkusze OWE</small></span>
                   <b>Ćwicz →</b>
                 </a>
               </div>
@@ -210,9 +248,9 @@
           </section>
 
           <nav class="home-shortcuts" aria-label="Szybki start">
-            <a href="fiszki/" data-go="flashcards"><span aria-hidden="true">▱</span><strong>Fiszki</strong><small>Szybka powtórka pojęć</small></a>
-            <a href="quizy/" data-go="quiz"><span aria-hidden="true">?</span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></a>
-            <a href="zagadnienia/" data-go="concepts"><span aria-hidden="true">≡</span><strong>Zagadnienia</strong><small>Słownik mikro- i makroekonomii</small></a>
+            <a href="fiszki/" data-go="flashcards"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="7" y="4" width="13" height="15" rx="2"></rect><path class="icon-accent" d="M7 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2"></path></svg></span><strong>Fiszki</strong><small>Szybka powtórka pojęć</small></a>
+            <a href="quizy/" data-go="quiz"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.6 9a2.6 2.6 0 1 1 4.2 2c-1.1.8-1.8 1.3-1.8 2.5"></path><path class="icon-accent" d="M12 17h.01"></path></svg></span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></a>
+            <a href="zagadnienia/" data-go="concepts"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"></path><circle class="icon-accent" cx="4.5" cy="6" r="1"></circle><circle cx="4.5" cy="12" r="1"></circle><circle cx="4.5" cy="18" r="1"></circle></svg></span><strong>Zagadnienia</strong><small>Słownik mikro- i makroekonomii</small></a>
           </nav>
           <section class="home-subject-guides" aria-labelledby="homeSubjectGuidesTitle">
             <div>
@@ -438,15 +476,15 @@
         <section class="study-panel owe-panel" id="owe" data-panel="owe">
           <div class="section-heading owe-heading">
             <div>
-              <p class="eyebrow">ARKUSZE OLIMPIJSKIE · EKONOMIA</p>
-              <h1>Arkusze Olimpiady Wiedzy Ekonomicznej</h1>
+              <p class="eyebrow">OLIMPIADA · WIEDZA I PRAKTYKA</p>
+              <h1>Olimpiada Wiedzy Ekonomicznej</h1>
             </div>
             <a class="owe-source-link" href="https://owe.pte.pl/informacje/poprzednie-edycje/zestawy-pytan-z-poprzednich-edycji.html" target="_blank" rel="noopener noreferrer">Materiały źródłowe PTE ↗</a>
           </div>
 
           <article class="owe-quiz-setup" id="oweQuizSetup">
             <div class="owe-setup-copy">
-              <span class="owe-intro-mark" aria-hidden="true">OLI</span>
+              <span class="owe-intro-mark" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6v4"/></svg></span>
               <div>
                 <p class="eyebrow">TRENING OLIMPIJSKI</p>
                 <h3>Olimpijski poziom. Natychmiastowy wynik.</h3>
@@ -513,7 +551,118 @@
             </div>
           </article>
 
-          <p class="owe-attribution">Arkusze opracowano na podstawie materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Wybrane polecenia sytuacyjne, obliczeniowe i rozbudowane zredagowano językowo bez zmiany danych, sensu ani kluczy odpowiedzi. Poziomy trudności porządkują bank od materiału podstawowego do zaawansowanego. NaukaEkonomii.pl nie jest oficjalną stroną OWE ani serwisem powiązanym z PTE.</p>
+          <p class="owe-attribution">Arkusze opracowano na podstawie materiałów Komitetu Głównego Olimpiady Wiedzy Ekonomicznej przy Polskim Towarzystwie Ekonomicznym. Wybrane polecenia sytuacyjne, obliczeniowe i rozbudowane zredagowano językowo bez zmiany danych, sensu ani kluczy odpowiedzi. Poziomy trudności porządkują bank od materiału podstawowego do zaawansowanego. Nauka Ekonomii nie jest oficjalną stroną OWE ani serwisem powiązanym z PTE.</p>
+        </section>
+
+        <section class="study-panel" id="olympiadConcepts" data-panel="olympiadConcepts">
+          <div class="section-heading concepts-heading">
+            <div>
+              <p class="eyebrow">OLIMPIADA · SŁOWNIK POJĘĆ</p>
+              <h1>Zagadnienia do Olimpiady Wiedzy Ekonomicznej</h1>
+            </div>
+            <div class="concept-heading-tools olympiad-concept-tools">
+              <label class="compact-select">Dział
+                <select id="olympiadConceptGroup" aria-label="Filtruj zagadnienia olimpijskie według działu"></select>
+              </label>
+              <label class="concept-search">
+                <span class="sr-only">Szukaj w zagadnieniach olimpijskich</span>
+                <input id="olympiadSearch" type="search" placeholder="Szukaj pojęcia lub definicji" autocomplete="off" />
+              </label>
+            </div>
+          </div>
+          <p class="concept-count" id="olympiadConceptCount" aria-live="polite"></p>
+          <div class="concept-grid olympiad-definitions" id="olympiadDefinitions"></div>
+        </section>
+
+        <section class="study-panel" id="olympiadFlashcards" data-panel="olympiadFlashcards">
+          <div class="section-heading study-heading">
+            <div>
+              <p class="eyebrow">OLIMPIADA · 155 ZAGADNIEŃ</p>
+              <h1>Fiszki do Olimpiady Wiedzy Ekonomicznej</h1>
+            </div>
+            <div class="study-filters">
+              <label class="compact-select">Dział
+                <select id="olympiadCardGroup" aria-label="Filtruj fiszki olimpijskie według działu"></select>
+              </label>
+              <button class="starred-filter" id="olympiadStarredFilter" type="button" aria-pressed="false"><span aria-hidden="true">★</span> Tylko trudne <b id="olympiadStarredCount">0</b></button>
+            </div>
+          </div>
+          <p class="study-pool" id="olympiadCardPool"></p>
+          <div id="olympiadCardContent">
+            <div class="card-counter"><span id="olympiadCardPosition">1 / 1</span><span id="olympiadCardMeta">DZIAŁ</span></div>
+            <div class="flashcard-stage">
+              <button class="card-star" id="olympiadDifficult" type="button" aria-label="Oznacz fiszkę jako trudną" aria-pressed="false">☆</button>
+              <button class="card-direction" id="olympiadReverse" type="button" aria-label="Najpierw pokazuj definicję" aria-pressed="false" title="Odwróć kolejność wszystkich fiszek">⇄</button>
+              <button class="flashcard olympiad-card" id="olympiadCard" type="button" aria-label="Odwróć fiszkę">
+                <span class="card-hint" id="olympiadCardLabel">POJĘCIE</span>
+                <span class="flashcard-inner">
+                  <span class="card-face card-front" id="olympiadCardFront" aria-hidden="false"></span>
+                  <span class="card-face card-back" id="olympiadCardBack" aria-hidden="true"></span>
+                </span>
+                <span class="flip-instruction" id="olympiadCardHint">Kliknij, aby zobaczyć definicję <b>↻</b></span>
+              </button>
+              <button class="focus-toggle focus-corner" type="button" data-focus="olympiadFlashcards" aria-label="Włącz tryb skupienia fiszek" title="Tryb skupienia">⛶</button>
+            </div>
+            <div class="card-actions">
+              <button class="secondary-button" id="olympiadPrevious" type="button">← Poprzednia</button>
+              <div class="recall-actions" id="olympiadRecallActions" hidden>
+                <button class="recall-button hard" id="olympiadAgain" type="button">Jeszcze raz</button>
+                <button class="recall-button good" id="olympiadKnown" type="button">Umiem</button>
+              </div>
+              <button class="secondary-button" id="olympiadNext" type="button">Następna →</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="study-panel" id="olympiadQuiz" data-panel="olympiadQuiz">
+          <div class="section-heading compact study-heading">
+            <div>
+              <p class="eyebrow">QUIZ · OLIMPIADA WIEDZY EKONOMICZNEJ</p>
+              <h1>Quiz z pojęć olimpijskich</h1>
+            </div>
+            <div class="heading-actions">
+              <button class="text-button" id="olympiadQuizRestart" type="button">Nowy zestaw</button>
+            </div>
+          </div>
+          <div class="quiz-settings olympiad-quiz-settings">
+            <label class="compact-select">Dział
+              <select id="olympiadQuizGroup" aria-label="Wybierz dział quizu olimpijskiego"></select>
+            </label>
+            <label class="compact-select">Rodzaj pytań
+              <select id="olympiadQuizKind" aria-label="Wybierz rodzaj pytań olimpijskich">
+                <option value="mixed">Definicje i zastosowania</option>
+                <option value="definitions">Rozpoznawanie definicji</option>
+                <option value="applications">Zastosowania i obliczenia</option>
+              </select>
+            </label>
+            <label class="compact-select">Liczba pytań
+              <select id="olympiadQuizCount" aria-label="Wybierz liczbę pytań w quizie olimpijskim">
+                <option value="10">10 pytań</option>
+                <option value="20" selected>20 pytań</option>
+                <option value="30">30 pytań</option>
+                <option value="50">50 pytań</option>
+                <option value="all">Cała dostępna pula</option>
+              </select>
+            </label>
+            <p class="study-pool" id="olympiadQuizPool"></p>
+          </div>
+          <div class="quiz-progress"><span id="olympiadQuizProgressLabel">Pytanie 1 z 20</span><div><i id="olympiadQuizProgressBar"></i></div></div>
+          <article class="quiz-card olympiad-quiz-card" id="olympiadQuizCard">
+            <p class="question-topic" id="olympiadQuestionMeta"></p>
+            <h3 id="olympiadQuestion"></h3>
+            <div class="answers" id="olympiadOptions"></div>
+            <p class="quiz-feedback" id="olympiadFeedback" aria-live="polite"></p>
+            <button class="primary-button next-question" id="olympiadQuestionNext" type="button" hidden>Dalej <span>→</span></button>
+            <button class="focus-toggle focus-corner" type="button" data-focus="olympiadQuiz" aria-label="Włącz tryb skupienia quizu" title="Tryb skupienia">⛶</button>
+          </article>
+          <article class="quiz-result" id="olympiadQuizResult" hidden>
+            <p class="eyebrow">WYNIK SESJI</p>
+            <p class="result-number"><span id="olympiadScore">0</span>/<span id="olympiadTotal">0</span></p>
+            <h3 id="olympiadResultTitle"></h3>
+            <p class="quiz-points-earned" id="olympiadResultCopy"></p>
+            <button class="primary-button" id="olympiadQuizAgain" type="button">Spróbuj ponownie <span>↻</span></button>
+            <button class="focus-toggle focus-corner" type="button" data-focus="olympiadQuiz" aria-label="Włącz tryb skupienia quizu" title="Tryb skupienia">⛶</button>
+          </article>
         </section>
 
         <section class="study-panel" id="more" data-panel="more">
@@ -820,7 +969,7 @@
           </div>
           <p class="legal-disclaimer">Informacja ma charakter organizacyjny i nie jest poradą prawną. W razie planowania komercyjnego wykorzystania lub publikacji cudzych fragmentów warto uzyskać zgodę uprawnionego albo indywidualną poradę prawną.</p>
 
-          <section class="privacy-section" aria-labelledby="privacyTitle">
+          <section class="privacy-section" aria-labelledby="privacyTitle" data-nosnippet>
             <div class="privacy-heading">
               <p class="eyebrow">INFORMACJA O PRZETWARZANIU DANYCH</p>
               <h3 id="privacyTitle">Prywatność użytkowników</h3>
@@ -870,7 +1019,7 @@
       <aside class="app-menu" id="appMenu" hidden aria-label="Menu główne">
         <div class="app-menu-head">
           <div>
-            <p class="eyebrow" id="appMenuSubject">MIKROEKONOMIA</p>
+            <p class="eyebrow" id="appMenuSubject">NAWIGACJA</p>
             <h2>Menu</h2>
           </div>
           <div class="app-menu-head-actions">
@@ -882,7 +1031,7 @@
           </div>
         </div>
 
-        <section class="notification-center" id="notificationCenter" hidden aria-label="Centrum powiadomień">
+        <section class="notification-center" id="notificationCenter" hidden aria-label="Centrum powiadomień" data-nosnippet>
           <div class="notification-center-head">
             <div><strong>Powiadomienia</strong><small>Aktualizacje strony i zmiany w rankingu</small></div>
             <button class="text-button" id="markNotificationsRead" type="button">Oznacz jako przeczytane</button>
@@ -891,15 +1040,27 @@
         </section>
 
         <nav class="app-menu-nav" aria-label="Nawigacja strony">
-          <a class="menu-nav-button learn-menu-button" href="ucz-sie/" data-menu-mode="learn"><span>↗</span><div><strong>Ucz się</strong><small>Adaptacyjna ścieżka nauki</small></div></a>
-          <a class="menu-nav-button owe-menu-button" href="arkusze-olimpijskie/" data-menu-mode="owe"><span>OLI</span><div><strong>Arkusze olimpijskie</strong><small>300 pytań · 3 poziomy trudności</small></div></a>
-          <a class="menu-nav-button" href="./" data-menu-mode="home"><span>⌂</span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></a>
-          <p class="menu-section-label">NAUKA</p>
-          <a class="menu-nav-button" href="fiszki/" data-menu-mode="flashcards"><span>01</span><div><strong>Fiszki</strong><small>Powtarzaj pojęcia z rozdziałów</small></div></a>
-          <a class="menu-nav-button" href="quizy/" data-menu-mode="quiz"><span>02</span><div><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></div></a>
-          <a class="menu-nav-button" href="zagadnienia/" data-menu-mode="concepts"><span>03</span><div><strong>Zagadnienia</strong><small>Słownik pojęć z książki</small></div></a>
-          <a class="menu-nav-button" href="ranking/" data-menu-mode="leaderboard"><span>04</span><div><strong>Ranking</strong><small>Punkty i rangi uczniów</small></div></a>
-          <a class="menu-nav-button" href="wiecej/" data-menu-mode="more"><span>05</span><div><strong>Więcej</strong><small>Test, odpowiedzi, streszczenia i wzory</small></div></a>
+          <a class="menu-nav-button" href="./" data-menu-mode="home"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path class="icon-accent" d="M9 21v-6h6v6"></path></svg></span><div><strong>Strona główna</strong><small>Twój postęp i najważniejsze informacje</small></div></a>
+          <p class="menu-section-label">DZIAŁY NAUKI</p>
+          <details class="subject-menu-group" data-menu-subject="micro">
+            <summary><span class="subject-menu-mark" aria-hidden="true">μ</span><span><b>Mikroekonomia</b><small>19 rozdziałów</small></span><i aria-hidden="true">⌄</i></summary>
+            <div class="subject-menu-items"><a href="/ucz-sie/?subject=micro" data-menu-mode="learn" data-subject-target="micro">Ucz się</a><a href="/fiszki/?subject=micro" data-menu-mode="flashcards" data-subject-target="micro">Fiszki</a><a href="/quizy/?subject=micro" data-menu-mode="quiz" data-subject-target="micro">Quiz</a><a href="/test/?subject=micro" data-menu-mode="test" data-subject-target="micro">Test</a><a href="/zagadnienia/?subject=micro" data-menu-mode="concepts" data-subject-target="micro">Zagadnienia</a></div>
+          </details>
+          <details class="subject-menu-group" data-menu-subject="macro">
+            <summary><span class="subject-menu-mark" aria-hidden="true">M</span><span><b>Makroekonomia</b><small>18 rozdziałów</small></span><i aria-hidden="true">⌄</i></summary>
+            <div class="subject-menu-items"><a href="/ucz-sie/?subject=macro" data-menu-mode="learn" data-subject-target="macro">Ucz się</a><a href="/fiszki/?subject=macro" data-menu-mode="flashcards" data-subject-target="macro">Fiszki</a><a href="/quizy/?subject=macro" data-menu-mode="quiz" data-subject-target="macro">Quiz</a><a href="/test/?subject=macro" data-menu-mode="test" data-subject-target="macro">Test</a><a href="/zagadnienia/?subject=macro" data-menu-mode="concepts" data-subject-target="macro">Zagadnienia</a></div>
+          </details>
+          <p class="menu-section-label">OLIMPIADA</p>
+          <a class="menu-nav-button" href="/arkusze-olimpijskie/" data-menu-mode="owe"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"></path><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"></path><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"></path></svg></span><div><strong>Arkusze OWE</strong><small>Archiwalne pytania olimpijskie</small></div></a>
+          <a class="menu-nav-button" href="/olimpiada-zagadnienia/" data-menu-mode="olympiadConcepts"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"></path><path class="icon-accent" d="M8 8h7M8 12h7M8 16h4"></path></svg></span><div><strong>Zagadnienia</strong><small>155 definicji do OWE</small></div></a>
+          <a class="menu-nav-button" href="/olimpiada-fiszki/" data-menu-mode="olympiadFlashcards"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"></rect><path class="icon-accent" d="M7 3h10M7 21h10M8 10h8M8 14h5"></path></svg></span><div><strong>Fiszki</strong><small>Powtórka pojęć olimpijskich</small></div></a>
+          <a class="menu-nav-button" href="/olimpiada-quiz/" data-menu-mode="olympiadQuiz"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 12h6"></path><path class="icon-accent" d="m9 16 2 2 4-4"></path></svg></span><div><strong>Quiz</strong><small>195 pytań z pojęć OWE</small></div></a>
+          <p class="menu-section-label">NARZĘDZIA</p>
+          <a class="menu-nav-button" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"/></svg></span><div><strong>Elastyczność popytu</strong><small>Kalkulator z objaśnieniami</small></div></a>
+          <a class="menu-nav-button" href="/narzedzia/podaz-i-popyt/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"/></svg></span><div><strong>Podaż i popyt</strong><small>Interaktywny wykres rynku</small></div></a>
+          <p class="menu-section-label">POZOSTAŁE</p>
+          <a class="menu-nav-button" href="ranking/" data-menu-mode="leaderboard"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 20v-5h5v5M9 20V9h6v11M15 20v-8h5v8"></path><path class="icon-accent" d="M3 20h18M12 3l1 2 2 .3-1.5 1.5.4 2.2L12 8l-1.9 1 .4-2.2L9 5.3l2-.3z"></path></svg></span><div><strong>Ranking</strong><small>Punkty i rangi uczniów</small></div></a>
+          <a class="menu-nav-button" href="wiecej/" data-menu-mode="more"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect class="icon-accent" x="14" y="14" width="6" height="6" rx="1.5"></rect></svg></span><div><strong>Więcej</strong><small>Test, odpowiedzi, streszczenia i wzory</small></div></a>
         </nav>
 
         <div class="app-menu-profile">
@@ -1097,6 +1258,8 @@
     <script src="owe-quiz-data.js?v=20260903-reworded"></script>
     <script src="owe-quiz-extra-data.js?v=20260903-reworded"></script>
     <script src="owe-quiz-missing-data.js?v=20260903-reworded"></script>
-    <script src="app.js?v=20260904-seo-1"></script>
+    <script src="app.js?v=20260906-hard-navigation"></script>
+    <script src="olympiad-concepts-data.js?v=20260906-3"></script>
+    <script src="olympiad-study.js?v=20260906-4"></script>
   </body>
 </html>

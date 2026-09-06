@@ -1,0 +1,17 @@
+# Materiały robocze i źródłowe — nigdy nie publikuj ich przez GitHub Pages.
+tmp/
+design-previews/
+
+# Lokalne sekrety i konfiguracja deweloperska.
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+
+# Zależności, logi i pliki systemowe.
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+Desktop.ini

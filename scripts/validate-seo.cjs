@@ -42,8 +42,8 @@ for (const url of urls) {
   assert(html.includes(`${origin}/assets/og-nauka-ekonomii.png`), `Brak karty OG: ${url}`);
   assert(/<link rel="icon" type="image\/png" sizes="96x96" href="\/assets\/favicon-96\.png"/i.test(html), `Brak głównej favicony 96x96: ${url}`);
   assert(html.includes('"name": "Nauka Ekonomii"'), `Brak preferowanej nazwy witryny w JSON-LD: ${url}`);
-  assert(html.includes('/google-analytics.js'), `Brak konfiguracji Google Analytics: ${url}`);
-  assert(html.includes('G-P2YY78KWV0'), `Brak identyfikatora GA4: ${url}`);
+  assert(!/google-analytics\.js|googletagmanager\.com\/gtag|G-P2YY78KWV0/i.test(html), `Strona nadal zawiera Google Analytics: ${url}`);
+  assert(!/supabase-js|supabase-config\.js|authModal|data-panel="leaderboard"/i.test(html), `Strona nadal zawiera konto, Supabase lub ranking: ${url}`);
   const adsenseScripts = [...html.matchAll(new RegExp(`pagead2\\.googlesyndication\\.com/pagead/js/adsbygoogle\\.js\\?client=${adsenseClient}`, 'g'))];
   assert(adsenseScripts.length === 1, `Strona ${url} powinna ładować dokładnie jeden skrypt AdSense, znaleziono: ${adsenseScripts.length}.`);
   const ldScripts = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)];
@@ -68,7 +68,7 @@ for (const url of urls) {
   }
 }
 
-for (const route of ['ranking', 'odpowiedzi']) {
+for (const route of ['odpowiedzi']) {
   const html = fs.readFileSync(path.join(root, route, 'index.html'), 'utf8');
   assert(/<meta name="robots" content="noindex,follow"/i.test(html), `/${route}/ powinno mieć noindex,follow.`);
 }
@@ -99,7 +99,6 @@ for (const relative of [
   'assets/apple-touch-icon.png',
   'assets/logo-square-512.png',
   'assets/og-nauka-ekonomii.png',
-  'google-analytics.js',
   'site.webmanifest',
   'seo-content.css',
   'economic-tools.css',
@@ -109,11 +108,6 @@ for (const relative of [
 
 try { JSON.parse(fs.readFileSync(path.join(root, 'site.webmanifest'), 'utf8')); }
 catch (error) { errors.push(`Nieprawidłowy manifest: ${error.message}`); }
-
-const analytics = fs.readFileSync(path.join(root, 'google-analytics.js'), 'utf8');
-assert(analytics.includes("analytics_storage: 'denied'"), 'Google Analytics nie ma bezpieślnego domyślnego stanu zgody.');
-assert(analytics.includes("'PL'"), 'Polska nie jest objęta regionalnym stanem zgody.');
-assert(analytics.includes("gtag('config', 'G-P2YY78KWV0')"), 'Nieprawidłowy identyfikator Google Analytics.');
 
 const adsTxt = fs.readFileSync(path.join(root, 'ads.txt'), 'utf8').trim();
 assert(adsTxt === 'google.com, pub-8851383447848259, DIRECT, f08c47fec0942fa0', 'ads.txt nie zawiera poprawnego bezpośredniego wpisu Google AdSense.');
@@ -125,4 +119,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`SEO/AdSense OK: ${urls.length} unikalnych adresów, poprawne canonicale, indeksowanie, JSON-LD, linki, zasoby i pojedynczy skrypt reklamowy.`);
+console.log(`SEO/AdSense OK: ${urls.length} unikalnych adresów, bez Google Analytics, kont i rankingu; poprawne canonicale, indeksowanie, JSON-LD, linki, zasoby i pojedynczy skrypt reklamowy.`);

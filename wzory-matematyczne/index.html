@@ -5,7 +5,7 @@
     <base id="siteBase" href="./" />
     <script>
       (() => {
-        const routeSlugs = new Set(['ucz-sie', 'fiszki', 'quizy', 'arkusze-olimpijskie', 'olimpiada-zagadnienia', 'olimpiada-fiszki', 'olimpiada-quiz', 'zagadnienia', 'ranking', 'wiecej', 'test', 'odpowiedzi', 'zakres-i-streszczenia', 'wzory-matematyczne', 'zrodla-i-prawa']);
+        const routeSlugs = new Set(['ucz-sie', 'fiszki', 'quizy', 'arkusze-olimpijskie', 'olimpiada-zagadnienia', 'olimpiada-fiszki', 'olimpiada-quiz', 'zagadnienia', 'wiecej', 'test', 'odpowiedzi', 'zakres-i-streszczenia', 'wzory-matematyczne', 'zrodla-i-prawa']);
         const pathParts = window.location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
         if (routeSlugs.has(pathParts.at(-1))) document.querySelector('#siteBase').href = '../';
       })();
@@ -14,8 +14,6 @@
     <meta name="theme-color" content="#f6f3ed" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="google-adsense-account" content="ca-pub-8851383447848259" />
-    <script src="/google-analytics.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2YY78KWV0"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8851383447848259" crossorigin="anonymous"></script>
     <meta name="description" content="94 wzory z mikroekonomii i makroekonomii wraz z opisem zmiennych, interpretacją i zastosowaniem." />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
@@ -94,7 +92,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260905-navigation" />
+    <link rel="stylesheet" href="styles.css?v=20260907-local-only" />
     <link rel="stylesheet" href="olympiad-study.css?v=20260906-3" />
     <link rel="stylesheet" href="/navigation-icons.css?v=20260905-sidebar" />
   </head>
@@ -142,7 +140,6 @@
           <a class="tool-nav-link" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"/></svg></span><b>Elastyczność popytu</b></a>
           <a class="tool-nav-link" href="/narzedzia/podaz-i-popyt/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"/></svg></span><b>Podaż i popyt</b></a>
           <p>POZOSTAŁE</p>
-          <a href="ranking/" data-menu-mode="leaderboard"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 20v-5h5v5M9 20V9h6v11M15 20v-8h5v8"></path><path class="icon-accent" d="M3 20h18M12 3l1 2 2 .3-1.5 1.5.4 2.2L12 8l-1.9 1 .4-2.2L9 5.3l2-.3z"></path></svg></span><b>Ranking</b></a>
           <a href="wiecej/" data-menu-mode="more"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect class="icon-accent" x="14" y="14" width="6" height="6" rx="1.5"></rect></svg></span><b>Więcej</b></a>
         </nav>
         <div class="workspace-sidebar-foot">
@@ -209,8 +206,7 @@
                 </a>
               </div>
               <div class="home-account-row">
-                <small>Materiały i postęp lokalny działają bez konta.</small>
-                <button class="text-button home-account-cta" id="homeAccountCta" type="button">Ranking: zaloguj się →</button>
+                <small>Materiały, punkty i postęp są zapisywane wyłącznie na tym urządzeniu.</small>
               </div>
               <span class="sr-only"><span id="heroTopicCount">0</span> tematów, <span id="heroFormulaCount">0</span> wzorów, <span id="heroConceptCount">0</span> zagadnień.</span>
             </div>
@@ -271,7 +267,7 @@
             </div>
             <div class="home-data-summary">
               <strong>Jak zapisujemy dane?</strong>
-              <p>Bez konta postęp i preferencje pozostają w pamięci Twojej przeglądarki. Po zalogowaniu dane konta i postęp są synchronizowane przez Supabase. Google AdSense może przetwarzać dane na potrzeby reklam zgodnie z wyborem dokonanym w komunikacie o prywatności.</p>
+              <p>Postęp, punkty i preferencje pozostają w pamięci Twojej przeglądarki i nie są synchronizowane z kontem ani wysyłane do bazy użytkowników. Google AdSense może przetwarzać dane na potrzeby reklam zgodnie z wyborem dokonanym w komunikacie o prywatności.</p>
               <a href="polityka-prywatnosci/">Pełna polityka prywatności i cookies →</a>
             </div>
           </section>
@@ -697,64 +693,6 @@
           </div>
         </section>
 
-        <section class="study-panel" id="leaderboard" data-panel="leaderboard">
-          <div class="section-heading leaderboard-heading">
-            <div>
-              <p class="eyebrow">KLASYFIKACJA UCZNIÓW</p>
-              <h1>Ranking uczniów</h1>
-            </div>
-            <button class="text-button" id="refreshLeaderboard">Odśwież</button>
-          </div>
-          <p class="panel-intro">Porównaj wynik z najlepszą piątką wszystkich użytkowników albo dołącz hasłem do zamkniętej grupy.</p>
-          <p class="cloud-notice" id="leaderboardNotice" aria-live="polite"></p>
-          <div class="leaderboard-layout">
-            <section class="leaderboard-block" aria-labelledby="publicLeaderboardTitle">
-              <div class="leaderboard-block-head">
-                <div><span>RANKING PUBLICZNY</span><h3 id="publicLeaderboardTitle">Najlepsza piątka</h3></div>
-                <small>TOP 5</small>
-              </div>
-              <div class="leaderboard-list" id="leaderboardList"></div>
-            </section>
-
-            <section class="leaderboard-block leaderboard-you" aria-labelledby="leaderboardMeTitle">
-              <div class="leaderboard-block-head compact">
-                <div><span>TWOJA POZYCJA</span><h3 id="leaderboardMeTitle">Ty w rankingu</h3></div>
-              </div>
-              <div class="leaderboard-list" id="leaderboardMe"></div>
-            </section>
-
-            <section class="private-ranking-gate" id="privateLeaderboardGate" aria-labelledby="privateLeaderboardGateTitle">
-              <span class="private-ranking-lock" aria-hidden="true">◇</span>
-              <div class="private-ranking-gate-copy">
-                <p class="eyebrow">PRYWATNA GRUPA</p>
-                <h3 id="privateLeaderboardGateTitle">Dołącz do prywatnego rankingu</h3>
-                <p>Nazwa grupy pozostanie ukryta do momentu wpisania poprawnego hasła.</p>
-              </div>
-              <form class="private-ranking-form" id="privateLeaderboardJoinForm">
-                <label for="privateLeaderboardPassword">Hasło dostępu</label>
-                <div>
-                  <input id="privateLeaderboardPassword" type="password" maxlength="64" autocomplete="off" required placeholder="Wpisz hasło" aria-describedby="privateLeaderboardFeedback" />
-                  <button class="primary-button" id="privateLeaderboardJoin" type="submit">Dołącz <span>→</span></button>
-                </div>
-                <p id="privateLeaderboardFeedback" aria-live="polite"></p>
-              </form>
-            </section>
-
-            <section class="leaderboard-block private-leaderboard" id="privateLeaderboardPanel" hidden aria-labelledby="privateLeaderboardTitle">
-              <div class="leaderboard-block-head">
-                <div><span>RANKING PRYWATNY</span><h3 id="privateLeaderboardTitle"></h3></div>
-                <small>TOP 10</small>
-              </div>
-              <p class="private-leaderboard-meta" id="privateLeaderboardMeta"></p>
-              <div class="leaderboard-list" id="privateLeaderboardList"></div>
-              <div class="private-leaderboard-me" id="privateLeaderboardMeSection">
-                <span>TWOJA POZYCJA W GRUPIE</span>
-                <div class="leaderboard-list" id="privateLeaderboardMe"></div>
-              </div>
-            </section>
-          </div>
-        </section>
-
         <section class="study-panel" id="test" data-panel="test">
           <div class="section-heading compact study-heading">
             <div>
@@ -973,7 +911,7 @@
             <div class="privacy-heading">
               <p class="eyebrow">INFORMACJA O PRZETWARZANIU DANYCH</p>
               <h3 id="privacyTitle">Prywatność użytkowników</h3>
-              <p>Wersja obowiązująca od 3 września 2026 r.</p>
+              <p>Wersja obowiązująca od 6 września 2026 r.</p>
             </div>
             <div class="privacy-grid">
               <article>
@@ -981,33 +919,33 @@
                 <p>Pełne dane administratora, zasady przetwarzania oraz informacje o plikach cookie znajdują się w <a href="polityka-prywatnosci/">polityce prywatności</a>. W sprawach dotyczących danych napisz na <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a>.</p>
               </article>
               <article>
-                <h4>Korzystanie bez konta</h4>
-                <p>Postęp nauki, punkty, opanowane i oznaczone fiszki, historia ćwiczeń, wybrany dział, preferencje wyglądu i stan powiadomień są zapisywane w <code>localStorage</code> na Twoim urządzeniu. Nie są synchronizowane z kontem, dopóki się nie zalogujesz. Możesz je usunąć przez „Wyzeruj postęp” oraz ustawienia danych witryny w przeglądarce.</p>
+                <h4>Postęp tylko na urządzeniu</h4>
+                <p>Postęp nauki, punkty, opanowane i oznaczone fiszki, historia ćwiczeń, wybrany dział, preferencje wyglądu i stan powiadomień są zapisywane wyłącznie w <code>localStorage</code> na Twoim urządzeniu. Serwis nie oferuje kont, logowania ani synchronizacji i nie wysyła tych informacji do bazy użytkowników. Możesz je usunąć przez „Wyzeruj postęp” albo ustawienia danych witryny w przeglądarce.</p>
               </article>
               <article>
-                <h4>Dane konta i rankingu</h4>
-                <p>Po dobrowolnej rejestracji przetwarzane są: adres e-mail, identyfikator konta, podana nazwa w rankingu, punkty, szczegóły postępu, daty aktualizacji, członkostwo w prywatnym rankingu oraz dane służące ograniczaniu nieudanych prób dołączenia. Nazwa i punkty mogą być widoczne zalogowanym użytkownikom rankingu. Użyj pseudonimu zamiast imienia i nazwiska. Hasło obsługuje bezpośrednio Supabase Auth; jego jawna treść nie trafia do kodu strony.</p>
+                <h4>Dane techniczne i kontakt</h4>
+                <p>Dostawca hostingu może przetwarzać dane techniczne połączenia, takie jak adres IP, czas i adres żądanego zasobu oraz informacje o przeglądarce, w celu dostarczenia i zabezpieczenia strony. Gdy napiszesz wiadomość, przetwarzany jest Twój adres e-mail i treść korespondencji.</p>
               </article>
               <article>
                 <h4>Cele i podstawy</h4>
-                <p>Dane konta i postępu są używane do utworzenia konta, logowania, synchronizacji i prowadzenia rankingu — na podstawie art. 6 ust. 1 lit. b RODO. Dane techniczne oraz zabezpieczenia serwisu przetwarzane są w prawnie uzasadnionym interesie zapewnienia działania i bezpieczeństwa strony — art. 6 ust. 1 lit. f RODO. Dane wykorzystywane do reklam spersonalizowanych są przetwarzane po uzyskaniu wymaganej zgody; szczegóły i dostępne podstawy określa komunikat Google CMP oraz pełna polityka prywatności.</p>
+                <p>Dane techniczne oraz korespondencja są przetwarzane w prawnie uzasadnionym interesie zapewnienia działania, bezpieczeństwa i kontaktu — art. 6 ust. 1 lit. f RODO. Dane wykorzystywane do reklam spersonalizowanych oraz zapis lub odczyt informacji reklamowych na urządzeniu wymagają odpowiedniej zgody; szczegóły określa Google CMP i pełna polityka prywatności.</p>
               </article>
               <article>
                 <h4>Dostawcy i dane techniczne</h4>
-                <p>Strona korzysta z Cloudflare Pages i Web Analytics, Supabase, Google Fonts, jsDelivr, Google Analytics 4, Google AdSense i platformy Google CMP. Dostawcy mogą otrzymywać dane techniczne połączenia, a Google — zależnie od wyboru użytkownika — informacje o odwiedzanych podstronach, identyfikatory, dane urządzenia i informacje o korzystaniu ze strony. Szczegółowy opis odbiorców, cookies i możliwości zmiany wyboru znajduje się w <a href="polityka-prywatnosci/">polityce prywatności</a>.</p>
+                <p>Strona korzysta z Cloudflare Pages, Google Fonts, Google AdSense i platformy Google CMP. Dostawcy mogą otrzymywać dane techniczne połączenia, a Google — zależnie od wyboru użytkownika — informacje o odwiedzanych podstronach, identyfikatory i dane urządzenia. Serwis nie korzysta z Google Analytics ani Supabase. Szczegóły znajdują się w <a href="polityka-prywatnosci/">polityce prywatności</a>.</p>
               </article>
               <article>
                 <h4>Okres przechowywania</h4>
-                <p>Dane lokalne pozostają na urządzeniu do ich wyczyszczenia. Dane konta i zsynchronizowany postęp są przechowywane do usunięcia konta przez użytkownika, a następnie mogą pozostać tylko w kopiach bezpieczeństwa przez technicznie niezbędny okres. Dane reklamowe i wybór zgody są przechowywane przez okresy wskazane przez Google i właściwych partnerów w panelu „Zarządzaj opcjami”.</p>
+                <p>Dane lokalne pozostają na urządzeniu do ich wyczyszczenia. Korespondencja i dane techniczne są przechowywane tylko przez okres potrzebny do obsługi sprawy, bezpieczeństwa lub roszczeń. Dane reklamowe i wybór zgody są przechowywane przez okresy wskazane przez Google i partnerów w panelu „Zarządzaj opcjami”.</p>
               </article>
               <article>
                 <h4>Twoje prawa</h4>
-                <p>Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia, przeniesienia oraz wnieść sprzeciw wobec przetwarzania opartego na uzasadnionym interesie. Zgodę możesz wycofać w dowolnym momencie przez ustawienia prywatności i cookies. Konto wraz z postępem można usunąć w ustawieniach konta. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych.</p>
+                <p>Możesz żądać dostępu do danych, ich sprostowania, usunięcia, ograniczenia i przeniesienia oraz wnieść sprzeciw wobec przetwarzania opartego na uzasadnionym interesie. Zgodę możesz wycofać przez ustawienia prywatności i cookies. Dane postępu usuwasz samodzielnie z przeglądarki. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych.</p>
                 <a href="https://uodo.gov.pl/pl/p/skargi" target="_blank" rel="noopener noreferrer">Informacje o skargach do UODO ↗</a>
               </article>
               <article>
                 <h4>Dobrowolność i automatyzacja</h4>
-                <p>Podanie danych konta jest dobrowolne. Bez nich nadal skorzystasz z materiałów i lokalnego zapisu postępu, ale nie z rankingu ani synchronizacji między urządzeniami. Punkty i rangi są wyliczane automatycznie na podstawie aktywności edukacyjnej; nie wywołuje to skutków prawnych ani podobnie istotnych skutków. Dane nie są sprzedawane.</p>
+                <p>Nie trzeba podawać danych, aby korzystać z materiałów. Podanie adresu e-mail jest konieczne tylko wtedy, gdy chcesz otrzymać odpowiedź na wiadomość. Lokalne punkty i rangi nie są profilowaniem wywołującym skutki prawne. Dane nie są sprzedawane przez administratora.</p>
               </article>
             </div>
           </section>
@@ -1033,7 +971,7 @@
 
         <section class="notification-center" id="notificationCenter" hidden aria-label="Centrum powiadomień" data-nosnippet>
           <div class="notification-center-head">
-            <div><strong>Powiadomienia</strong><small>Aktualizacje strony i zmiany w rankingu</small></div>
+            <div><strong>Powiadomienia</strong><small>Aktualizacje strony i nauki</small></div>
             <button class="text-button" id="markNotificationsRead" type="button">Oznacz jako przeczytane</button>
           </div>
           <div class="notification-list" id="notificationList"></div>
@@ -1059,7 +997,6 @@
           <a class="menu-nav-button" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"/></svg></span><div><strong>Elastyczność popytu</strong><small>Kalkulator z objaśnieniami</small></div></a>
           <a class="menu-nav-button" href="/narzedzia/podaz-i-popyt/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"/></svg></span><div><strong>Podaż i popyt</strong><small>Interaktywny wykres rynku</small></div></a>
           <p class="menu-section-label">POZOSTAŁE</p>
-          <a class="menu-nav-button" href="ranking/" data-menu-mode="leaderboard"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 20v-5h5v5M9 20V9h6v11M15 20v-8h5v8"></path><path class="icon-accent" d="M3 20h18M12 3l1 2 2 .3-1.5 1.5.4 2.2L12 8l-1.9 1 .4-2.2L9 5.3l2-.3z"></path></svg></span><div><strong>Ranking</strong><small>Punkty i rangi uczniów</small></div></a>
           <a class="menu-nav-button" href="wiecej/" data-menu-mode="more"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect class="icon-accent" x="14" y="14" width="6" height="6" rx="1.5"></rect></svg></span><div><strong>Więcej</strong><small>Test, odpowiedzi, streszczenia i wzory</small></div></a>
         </nav>
 
@@ -1068,11 +1005,21 @@
             <span class="menu-profile-icon points-star" aria-hidden="true">✦</span>
             <div><strong>Punkty i rangi</strong><small><b id="topPoints">0</b> pkt · <span id="menuQuickRank">Początkujący</span></small></div><i aria-hidden="true">›</i>
           </button>
-          <button class="menu-profile-button account-trigger" id="accountButton" type="button" aria-expanded="false" aria-controls="authModal">
-            <span class="account-avatar" id="accountAvatar" aria-hidden="true">?</span>
-            <div><strong id="accountLabel">Zaloguj się</strong><small id="accountMenuStatus">Synchronizuj postęp</small></div><i aria-hidden="true">›</i>
-          </button>
         </div>
+        <section class="account-settings local-settings" aria-labelledby="localSettingsTitle">
+          <div class="account-settings-heading">
+            <p class="eyebrow">USTAWIENIA LOKALNE</p>
+            <h3 id="localSettingsTitle">Ustawienia</h3>
+          </div>
+          <label class="setting-row" for="darkModeToggle">
+            <span><strong>Tryb ciemny</strong><small>Przyciemnij interfejs i ogranicz jasne tło.</small></span>
+            <span class="toggle-switch"><input id="darkModeToggle" type="checkbox" role="switch" /><i aria-hidden="true"></i></span>
+          </label>
+          <div class="setting-row reset-setting">
+            <span><strong>Wyzeruj postęp</strong><small>Usuń lokalne punkty, rangi, fiszki i historię sesji.</small></span>
+            <button class="settings-reset-button" id="resetProgress" type="button">Wyzeruj</button>
+          </div>
+        </section>
       </aside>
       <button class="app-menu-backdrop" id="appMenuBackdrop" hidden aria-label="Zamknij menu"></button>
 
@@ -1092,7 +1039,7 @@
             <small id="rankDescription">Zaczynasz budować ekonomiczne podstawy.</small>
           </div>
         </section>
-        <p class="cloud-status" id="cloudStatus">Postęp lokalny</p>
+        <p class="local-progress-note">Postęp jest zapisywany wyłącznie na tym urządzeniu.</p>
         <div class="menu-rank-progress">
           <div><span id="menuNextRank">Następna ranga: Adept</span><span id="menuRankProgress">0 / 100</span></div>
           <div class="progress-track"><i id="menuRankBar"></i></div>
@@ -1138,86 +1085,6 @@
       </aside>
       <button class="points-backdrop" id="pointsBackdrop" hidden aria-label="Zamknij menu punktów"></button>
 
-      <button class="auth-backdrop" id="authBackdrop" hidden aria-label="Zamknij okno konta"></button>
-      <section class="auth-modal" id="authModal" hidden role="dialog" aria-modal="true" aria-labelledby="authTitle">
-        <div class="auth-modal-head">
-          <div>
-            <p class="eyebrow">KONTO UCZNIA</p>
-            <h2 id="authTitle">Zaloguj się</h2>
-          </div>
-          <button class="points-close" id="authClose" aria-label="Zamknij okno konta">×</button>
-        </div>
-        <div id="authUnavailable" hidden>
-          <p class="auth-copy">Logowanie wymaga jednorazowego połączenia strony z projektem Supabase. Instrukcja znajduje się w pliku <strong>SUPABASE_SETUP.md</strong>.</p>
-        </div>
-        <div id="authSignedOut">
-          <p class="auth-copy auth-gate-copy">Konto jest opcjonalne. Zaloguj się lub je utwórz, aby wejść do rankingu i synchronizować postęp między urządzeniami. Wszystkie materiały edukacyjne działają bez logowania.</p>
-          <div class="auth-tabs" role="tablist" aria-label="Logowanie lub rejestracja">
-            <button class="active" id="loginTab" type="button" role="tab" aria-selected="true">Logowanie</button>
-            <button id="registerTab" type="button" role="tab" aria-selected="false">Rejestracja</button>
-          </div>
-          <form class="auth-form" id="loginForm">
-            <label>E-mail<input id="loginEmail" type="email" autocomplete="email" required /></label>
-            <label>Hasło<input id="loginPassword" type="password" autocomplete="current-password" minlength="8" required /></label>
-            <button class="primary-button" type="submit">Zaloguj się</button>
-          </form>
-          <form class="auth-form" id="registerForm" hidden>
-            <label>Nazwa w rankingu<input id="registerName" type="text" autocomplete="nickname" minlength="2" maxlength="30" required /></label>
-            <label>E-mail<input id="registerEmail" type="email" autocomplete="email" required /></label>
-            <label>Hasło<input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required /></label>
-            <small>Minimum 8 znaków. Hasło jest obsługiwane przez Supabase i nie trafia do kodu strony.</small>
-            <small>Tworząc konto, przekazujesz dane potrzebne do logowania, synchronizacji i rankingu. <a href="polityka-prywatnosci/">Sprawdź politykę prywatności</a>.</small>
-            <button class="primary-button" type="submit">Utwórz konto</button>
-          </form>
-          <p class="auth-feedback" id="authFeedback" aria-live="polite"></p>
-        </div>
-        <div class="auth-profile" id="authSignedIn" hidden>
-          <span class="profile-avatar" id="profileAvatar" aria-hidden="true">U</span>
-          <div><strong id="profileName">Uczeń</strong><small id="profileEmail"></small></div>
-          <p id="profileSyncStatus">Postęp jest synchronizowany.</p>
-          <form class="profile-name-form" id="profileNameForm">
-            <label for="profileNameInput">Nazwa użytkownika</label>
-            <div>
-              <input id="profileNameInput" type="text" autocomplete="nickname" minlength="2" maxlength="30" required />
-              <button class="secondary-button" id="profileNameSave" type="submit">Zapisz</button>
-            </div>
-            <small class="profile-name-feedback" id="profileNameFeedback" aria-live="polite"></small>
-          </form>
-          <button class="primary-button" id="profileLeaderboard" type="button">Zobacz ranking</button>
-          <button class="text-button" id="logoutButton" type="button">Wyloguj się</button>
-          <section class="danger-zone">
-            <strong>Usuń konto</strong>
-            <p>Ta operacja trwale usunie konto, punkty i cały zapisany postęp.</p>
-            <label>Wpisz <b>USUŃ</b>, aby potwierdzić<input id="deleteAccountConfirmation" type="text" autocomplete="off" /></label>
-            <button class="delete-account-button" id="deleteAccountButton" type="button" disabled>Usuń konto na stałe</button>
-          </section>
-        </div>
-        <section class="account-settings" aria-labelledby="accountSettingsTitle">
-          <div class="account-settings-heading">
-            <p class="eyebrow">PREFERENCJE</p>
-            <h3 id="accountSettingsTitle">Ustawienia</h3>
-          </div>
-          <label class="setting-row" for="darkModeToggle">
-            <span><strong>Tryb ciemny</strong><small>Przyciemnij interfejs i ogranicz jasne tło.</small></span>
-            <span class="toggle-switch"><input id="darkModeToggle" type="checkbox" role="switch" /><i aria-hidden="true"></i></span>
-          </label>
-          <div class="setting-row reset-setting">
-            <span><strong>Wyzeruj postęp</strong><small>Usuń punkty, rangi, opanowane i trudne fiszki oraz historię sesji.</small></span>
-            <button class="settings-reset-button" id="resetProgress" type="button">Wyzeruj</button>
-          </div>
-        </section>
-      </section>
-
-      <button class="email-confirmation-backdrop" id="emailConfirmationBackdrop" hidden aria-label="Zamknij komunikat"></button>
-      <section class="email-confirmation-popup" id="emailConfirmationPopup" hidden role="alertdialog" aria-modal="true" aria-labelledby="emailConfirmationTitle">
-        <span class="confirmation-icon" aria-hidden="true">✉</span>
-        <p class="eyebrow">OSTATNI KROK</p>
-        <h2 id="emailConfirmationTitle">Potwierdź swój e-mail</h2>
-        <p>Wysłaliśmy link aktywacyjny na <strong id="confirmationEmail"></strong>. Otwórz wiadomość i kliknij przycisk potwierdzenia, a następnie wróć do logowania.</p>
-        <small>Jeśli wiadomości nie ma w skrzynce odbiorczej, sprawdź folder Spam lub Oferty.</small>
-        <button class="primary-button" id="emailConfirmationClose" type="button">Rozumiem</button>
-      </section>
-
       <div class="points-announcer sr-only" id="pointsAnnouncer" aria-live="polite"></div>
 
       <button class="quest-reward-backdrop" id="questRewardBackdrop" hidden aria-label="Zamknij nagrodę za quest"></button>
@@ -1246,19 +1113,17 @@
       </div>
 
       <footer>
-        <p>Samodzielny materiał edukacyjny z mikro- i makroekonomii · konto jest opcjonalne, a logowanie jest wymagane wyłącznie do rankingu i synchronizacji postępu.</p>
+        <p>Samodzielny materiał edukacyjny z mikro- i makroekonomii · bez konta i logowania · postęp zapisywany lokalnie.</p>
         <p><strong>Kontakt:</strong> <a href="mailto:mikroekonomia.oe@gmail.com">mikroekonomia.oe@gmail.com</a> · <a href="zrodla-i-prawa/" data-go="legal">Źródła i prawa</a> · <a href="polityka-prywatnosci/">Polityka prywatności</a> · <a href="polityka-prywatnosci/" id="privacySettingsLink">Ustawienia prywatności i cookies</a></p>
       </footer>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js"></script>
     <script src="book-data.js?v=20260821-macro"></script>
     <script src="curriculum-data.js?v=20260821-macro"></script>
     <script src="macro-data.js?v=20260821-book-map"></script>
     <script src="owe-quiz-data.js?v=20260903-reworded"></script>
     <script src="owe-quiz-extra-data.js?v=20260903-reworded"></script>
     <script src="owe-quiz-missing-data.js?v=20260903-reworded"></script>
-    <script src="app.js?v=20260906-hard-navigation"></script>
+    <script src="app.js?v=20260906-local-only"></script>
     <script src="olympiad-concepts-data.js?v=20260906-3"></script>
     <script src="olympiad-study.js?v=20260906-4"></script>
   </body>

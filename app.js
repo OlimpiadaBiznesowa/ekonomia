@@ -46,12 +46,6 @@ const publicModeRoutes = {
     title: 'Pojęcia z mikroekonomii i makroekonomii — słownik | Nauka Ekonomii',
     description: 'Słownik 487 pojęć z mikroekonomii i makroekonomii. Znajdź krótkie definicje i przejdź do odpowiedniego rozdziału.'
   },
-  leaderboard: {
-    slug: 'ranking/',
-    title: 'Ranking uczniów | Nauka Ekonomii',
-    description: 'Ranking użytkowników Nauki Ekonomii. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.',
-    indexable: false
-  },
   more: {
     slug: 'wiecej/',
     title: 'Narzędzia do nauki ekonomii | Nauka Ekonomii',
@@ -211,17 +205,10 @@ const siteUpdateNotifications = [
     createdAt: '2026-08-17T22:00:00+02:00'
   },
   {
-    id: 'update-summaries-ranking-2026-08-17',
-    type: 'update',
-    title: 'Streszczenia i szybszy dostęp do rankingu',
-    message: 'Każdy rozdział ma teraz krótkie streszczenie, a ranking znajdziesz bezpośrednio w menu.',
-    createdAt: '2026-08-17T21:30:00+02:00'
-  },
-  {
     id: 'update-clean-menu-2026-08-17',
     type: 'update',
     title: 'Nowe, czystsze menu',
-    message: 'Nawigacja, konto, punkty i powiadomienia są teraz dostępne w jednym miejscu.',
+    message: 'Nawigacja, punkty, lokalny postęp i powiadomienia są teraz dostępne w jednym miejscu.',
     createdAt: '2026-08-17T20:45:00+02:00'
   },
   {
@@ -491,60 +478,6 @@ const normalizeProgress = value => {
   };
 };
 
-const mergeProgress = (localValue, cloudValue) => {
-  const local = normalizeProgress(localValue);
-  const cloud = normalizeProgress(cloudValue);
-  const sameQuestDay = local.dailyQuestDate && local.dailyQuestDate === cloud.dailyQuestDate;
-  const localQuestDayIsNewer = local.dailyQuestDate > cloud.dailyQuestDate;
-  const questSource = localQuestDayIsNewer
-    ? local
-    : cloud.dailyQuestDate > local.dailyQuestDate
-      ? cloud
-      : cloud.dailyQuestIds.length === 3 ? cloud : local;
-  const newerStreakSource = local.lastStudyDate > cloud.lastStudyDate
-    ? local
-    : cloud.lastStudyDate > local.lastStudyDate ? cloud : null;
-  const mergedCounters = {
-    completedQuizzes: Math.max(local.completedQuizzes, cloud.completedQuizzes),
-    completedOweQuizzes: Math.max(local.completedOweQuizzes, cloud.completedOweQuizzes),
-    completedTests: Math.max(local.completedTests, cloud.completedTests),
-    completedLearnSessions: Math.max(local.completedLearnSessions, cloud.completedLearnSessions),
-    awardedStudyBlocks: Math.max(local.awardedStudyBlocks, cloud.awardedStudyBlocks)
-  };
-  const dailyQuestBaseline = { ...questSource.dailyQuestBaseline };
-  if (localQuestDayIsNewer) {
-    questSource.dailyQuestIds.forEach(id => {
-      const quest = questPool.find(item => item.id === id);
-      if (!quest) return;
-      const cloudValueForMetric = quest.metric === 'awardedFlashcards'
-        ? cloud.awardedFlashcards.length
-        : Number(cloud[quest.metric]) || 0;
-      dailyQuestBaseline[id] = Math.max(Number(dailyQuestBaseline[id]) || 0, cloudValueForMetric);
-    });
-  }
-  return {
-    mastered: [...new Set([...local.mastered, ...cloud.mastered])],
-    starred: [...new Set([...local.starred, ...cloud.starred])],
-    points: Math.max(local.points, cloud.points),
-    awardedFlashcards: [...new Set([...local.awardedFlashcards, ...cloud.awardedFlashcards])],
-    completedQuizzes: mergedCounters.completedQuizzes,
-    completedOweQuizzes: mergedCounters.completedOweQuizzes,
-    completedTests: mergedCounters.completedTests,
-    completedLearnSessions: mergedCounters.completedLearnSessions,
-    studySeconds: Math.max(local.studySeconds, cloud.studySeconds),
-    awardedStudyBlocks: mergedCounters.awardedStudyBlocks,
-    boostActivatedOn: local.boostActivatedOn > cloud.boostActivatedOn ? local.boostActivatedOn : cloud.boostActivatedOn,
-    boostEndsAt: new Date(local.boostEndsAt || 0) > new Date(cloud.boostEndsAt || 0) ? local.boostEndsAt : cloud.boostEndsAt,
-    dailyStreak: newerStreakSource?.dailyStreak ?? Math.max(local.dailyStreak, cloud.dailyStreak),
-    bestDailyStreak: Math.max(local.bestDailyStreak, cloud.bestDailyStreak, local.dailyStreak, cloud.dailyStreak),
-    lastStudyDate: newerStreakSource?.lastStudyDate || local.lastStudyDate || cloud.lastStudyDate,
-    dailyQuestDate: questSource.dailyQuestDate,
-    dailyQuestIds: [...questSource.dailyQuestIds],
-    dailyQuestBaseline,
-    questRewards: sameQuestDay ? { ...cloud.questRewards, ...local.questRewards } : { ...questSource.questRewards }
-  };
-};
-
 const loadProgress = () => {
   try {
     const saved = localStorage.getItem(storageKey)
@@ -557,20 +490,6 @@ const loadProgress = () => {
 };
 
 let progress = loadProgress();
-let cloudClient = null;
-let currentUser = null;
-let currentProfile = null;
-let authInitialized = false;
-let pendingAuthenticatedMode = null;
-let cloudSyncTimer = null;
-let cloudSyncRunning = false;
-let cloudSyncQueued = false;
-const supabaseSettings = window.SUPABASE_CONFIG || {};
-const supabaseConfigured = Boolean(
-  window.supabase?.createClient
-  && /^https:\/\/.+\.supabase\.co$/i.test(String(supabaseSettings.url || ''))
-  && String(supabaseSettings.publishableKey || '').length > 20
-);
 let selectedFlashcardChapter = 'all';
 let selectedLearnChapter = 'all';
 let selectedLearnGoal = '10';
@@ -853,7 +772,6 @@ function persistLocalProgress() {
 function saveProgress() {
   persistLocalProgress();
   updateProgress();
-  scheduleCloudSync();
 }
 
 function rankIndexForPoints(points) {
@@ -906,7 +824,6 @@ function ensureDailyQuests({ persist = true } = {}) {
   progress.questRewards = {};
   if (persist) {
     persistLocalProgress();
-    scheduleCloudSync();
   }
   return true;
 }
@@ -1154,554 +1071,6 @@ function updateProgress() {
   `).join('');
 }
 
-function cloudRowToProgress(row) {
-  if (!row) return blankProgress();
-  return normalizeProgress({
-    mastered: row.mastered,
-    starred: row.starred,
-    points: row.points,
-    awardedFlashcards: row.awarded_flashcards,
-    completedQuizzes: row.completed_quizzes,
-    completedOweQuizzes: row.completed_owe_quizzes,
-    completedTests: row.completed_tests,
-    completedLearnSessions: row.completed_learn_sessions,
-    studySeconds: row.study_seconds,
-    awardedStudyBlocks: row.awarded_study_blocks,
-    boostActivatedOn: row.boost_activated_on,
-    boostEndsAt: row.boost_ends_at,
-    dailyStreak: row.daily_streak,
-    bestDailyStreak: row.best_daily_streak,
-    lastStudyDate: row.last_study_date,
-    dailyQuestDate: row.daily_quest_date,
-    dailyQuestIds: row.daily_quest_ids,
-    dailyQuestBaseline: row.daily_quest_baseline,
-    questRewards: row.quest_rewards
-  });
-}
-
-function progressToCloudRow() {
-  return {
-    user_id: currentUser.id,
-    mastered: progress.mastered,
-    starred: progress.starred,
-    points: progress.points,
-    awarded_flashcards: progress.awardedFlashcards,
-    completed_quizzes: progress.completedQuizzes,
-    completed_owe_quizzes: progress.completedOweQuizzes,
-    completed_tests: progress.completedTests,
-    completed_learn_sessions: progress.completedLearnSessions,
-    study_seconds: progress.studySeconds,
-    awarded_study_blocks: progress.awardedStudyBlocks,
-    boost_activated_on: progress.boostActivatedOn || null,
-    boost_ends_at: progress.boostEndsAt || null,
-    daily_streak: progress.dailyStreak,
-    best_daily_streak: progress.bestDailyStreak,
-    last_study_date: progress.lastStudyDate || null,
-    daily_quest_date: progress.dailyQuestDate || null,
-    daily_quest_ids: progress.dailyQuestIds,
-    daily_quest_baseline: progress.dailyQuestBaseline,
-    quest_rewards: progress.questRewards,
-    updated_at: new Date().toISOString()
-  };
-}
-
-function progressToLegacyCloudRow() {
-  const row = progressToCloudRow();
-  delete row.completed_owe_quizzes;
-  delete row.completed_learn_sessions;
-  delete row.daily_streak;
-  delete row.best_daily_streak;
-  delete row.last_study_date;
-  delete row.daily_quest_date;
-  delete row.daily_quest_ids;
-  delete row.daily_quest_baseline;
-  delete row.quest_rewards;
-  return row;
-}
-
-function isQuestSchemaMissing(error) {
-  return /completed_owe_quizzes|completed_learn_sessions|daily_streak|best_daily_streak|last_study_date|daily_quest_date|daily_quest_ids|daily_quest_baseline|quest_rewards|schema cache/i.test(String(error?.message || error || ''));
-}
-
-function displayNameForUser(user = currentUser) {
-  const metadataName = String(currentProfile?.display_name || user?.user_metadata?.display_name || '').trim();
-  if (metadataName.length >= 2) return metadataName.slice(0, 30);
-  const emailName = String(user?.email || 'Uczeń').split('@')[0].trim();
-  return (emailName.length >= 2 ? emailName : 'Uczeń').slice(0, 30);
-}
-
-function initialsForName(name) {
-  const initials = String(name || 'U').trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('');
-  return initials.toLocaleUpperCase('pl-PL') || 'U';
-}
-
-function setCloudStatus(message, state = '') {
-  const status = $('#cloudStatus');
-  const profileStatus = $('#profileSyncStatus');
-  if (status) {
-    status.textContent = message;
-    status.dataset.state = state;
-  }
-  if (profileStatus) {
-    profileStatus.textContent = message;
-    profileStatus.dataset.state = state;
-  }
-}
-
-function setAuthFeedback(message = '', state = '') {
-  const feedback = $('#authFeedback');
-  feedback.textContent = message;
-  feedback.dataset.state = state;
-}
-
-function setProfileNameFeedback(message = '', state = '') {
-  const feedback = $('#profileNameFeedback');
-  if (!feedback) return;
-  feedback.textContent = message;
-  feedback.dataset.state = state;
-}
-
-function readableAuthError(error) {
-  const message = String(error?.message || error || 'Nie udało się wykonać operacji.');
-  if (/invalid login credentials/i.test(message)) return 'Nieprawidłowy e-mail lub hasło.';
-  if (/email not confirmed/i.test(message)) return 'Najpierw potwierdź adres e-mail przez wiadomość od Supabase.';
-  if (/already registered|already been registered/i.test(message)) return 'Konto z tym adresem e-mail już istnieje.';
-  if (/password/i.test(message) && /least|short|characters/i.test(message)) return 'Hasło jest zbyt krótkie. Użyj co najmniej 8 znaków.';
-  if (/failed to fetch|network/i.test(message)) return 'Brak połączenia z usługą logowania. Sprawdź internet i konfigurację Supabase.';
-  return message;
-}
-
-function updateAccountUi() {
-  const signedIn = Boolean(currentUser);
-  const name = signedIn ? displayNameForUser() : 'Zaloguj się';
-  const homeAccountCta = $('#homeAccountCta');
-  if (homeAccountCta) {
-    homeAccountCta.textContent = signedIn ? 'Otwórz ranking →' : 'Ranking: zaloguj się →';
-    homeAccountCta.setAttribute('aria-label', signedIn ? 'Zobacz ranking uczniów' : 'Zaloguj się do konta ucznia');
-  }
-  $('#accountLabel').textContent = name;
-  $('#accountAvatar').textContent = signedIn ? initialsForName(name) : '?';
-  $('#accountButton').classList.toggle('signed-in', signedIn);
-  $('#accountMenuStatus').textContent = signedIn ? 'Konto i synchronizacja postępu' : 'Zaloguj się lub utwórz konto';
-  $('#authUnavailable').hidden = supabaseConfigured;
-  $('#authSignedOut').hidden = signedIn || !supabaseConfigured;
-  $('#authSignedIn').hidden = !signedIn;
-  $('#authTitle').textContent = signedIn ? 'Twoje konto' : 'Zaloguj się';
-  $('#deleteAccountConfirmation').value = '';
-  $('#deleteAccountButton').disabled = true;
-  if (signedIn) {
-    $('#profileName').textContent = name;
-    $('#profileEmail').textContent = currentUser.email || '';
-    $('#profileAvatar').textContent = initialsForName(name);
-    if (document.activeElement !== $('#profileNameInput')) $('#profileNameInput').value = name;
-    setCloudStatus('Postęp zsynchronizowany', 'success');
-  } else if (supabaseConfigured) {
-    setCloudStatus('Zaloguj się, aby synchronizować postęp', 'local');
-  } else {
-    setCloudStatus('Postęp lokalny · skonfiguruj Supabase', 'local');
-  }
-}
-
-function updateAuthGate({ closeAfterUnlock = false } = {}) {
-  const locked = !currentUser;
-  document.body.classList.remove('auth-locked');
-  document.querySelectorAll('.topbar, main, footer').forEach(element => {
-    element.inert = false;
-    element.removeAttribute('inert');
-    element.removeAttribute('aria-hidden');
-  });
-  $('#authClose').hidden = false;
-  $('#authBackdrop').setAttribute('aria-label', 'Zamknij okno konta');
-  if (locked) {
-    if (document.body.classList.contains('focus-mode')) exitFocusMode();
-  } else if (closeAfterUnlock && $('#emailConfirmationPopup').hidden) {
-    setAuthModal(false);
-  }
-}
-
-function scheduleCloudSync() {
-  if (!cloudClient || !currentUser) return;
-  window.clearTimeout(cloudSyncTimer);
-  cloudSyncTimer = window.setTimeout(() => syncProgressToCloud(), 900);
-}
-
-async function syncProgressToCloud() {
-  if (!cloudClient || !currentUser) return;
-  if (cloudSyncRunning) {
-    cloudSyncQueued = true;
-    return;
-  }
-  cloudSyncRunning = true;
-  setCloudStatus('Synchronizowanie…', 'working');
-  try {
-    const displayName = displayNameForUser();
-    let [progressResult, profileResult] = await Promise.all([
-      cloudClient.from('study_progress').upsert(progressToCloudRow(), { onConflict: 'user_id' }),
-      cloudClient.from('profiles').upsert({
-        id: currentUser.id,
-        display_name: displayName,
-        points: progress.points,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'id' })
-    ]);
-    let questSchemaCurrent = true;
-    if (progressResult.error && isQuestSchemaMissing(progressResult.error)) {
-      questSchemaCurrent = false;
-      progressResult = await cloudClient.from('study_progress').upsert(progressToLegacyCloudRow(), { onConflict: 'user_id' });
-    }
-    if (progressResult.error) throw progressResult.error;
-    if (profileResult.error) throw profileResult.error;
-    currentProfile = { ...(currentProfile || {}), display_name: displayName, points: progress.points };
-    setCloudStatus(
-      questSchemaCurrent ? 'Postęp zsynchronizowany' : 'Punkty zsynchronizowane · questy zapisane lokalnie do czasu aktualizacji bazy',
-      questSchemaCurrent ? 'success' : 'local'
-    );
-  } catch (error) {
-    console.error('Nie udało się zsynchronizować postępu:', error);
-    setCloudStatus('Błąd synchronizacji · postęp zapisano lokalnie', 'error');
-  } finally {
-    cloudSyncRunning = false;
-    if (cloudSyncQueued) {
-      cloudSyncQueued = false;
-      scheduleCloudSync();
-    }
-  }
-}
-
-async function loadCloudProgress() {
-  if (!cloudClient || !currentUser) return;
-  setCloudStatus('Pobieranie postępu…', 'working');
-  try {
-    const [profileResult, progressResult] = await Promise.all([
-      cloudClient.from('profiles').select('id, display_name, points, updated_at').eq('id', currentUser.id).maybeSingle(),
-      cloudClient.from('study_progress').select('*').eq('user_id', currentUser.id).maybeSingle()
-    ]);
-    if (profileResult.error) throw profileResult.error;
-    if (progressResult.error) throw progressResult.error;
-    currentProfile = profileResult.data || {
-      id: currentUser.id,
-      display_name: displayNameForUser(currentUser),
-      points: 0
-    };
-    progress = mergeProgress(progress, cloudRowToProgress(progressResult.data));
-    if (Number.isFinite(currentProfile.points)) progress.points = Math.max(progress.points, currentProfile.points);
-    persistLocalProgress();
-    updateProgress();
-    updateStudyTimer();
-    renderCard();
-    updateAccountUi();
-    await syncProgressToCloud();
-  } catch (error) {
-    console.error('Nie udało się pobrać postępu:', error);
-    setCloudStatus('Błąd chmury · postęp działa lokalnie', 'error');
-  }
-}
-
-function formatLeaderboardPoints(value) {
-  const points = Math.max(0, Math.floor(Number(value) || 0));
-  if (points <= 1000) return String(points);
-  const thousands = Math.round((points / 1000) * 10) / 10;
-  const compact = Number.isInteger(thousands) ? thousands.toFixed(0) : thousands.toFixed(1);
-  return `${compact}K`;
-}
-
-function leaderboardRowMarkup(item, position, { current = false, privateRanking = false, personal = false } = {}) {
-  const points = Math.max(0, Math.floor(Number(item.points) || 0));
-  const rank = ranks[rankIndexForPoints(points)];
-  const name = String(item.display_name || 'Uczeń').slice(0, 30);
-  const numericPosition = Math.max(0, Math.floor(Number(position) || 0));
-  const isPodium = !personal && numericPosition >= 1 && numericPosition <= 3;
-  const positionCopy = personal
-    ? `<b>${numericPosition || '—'}</b><small>TY</small>`
-    : numericPosition === 1
-      ? '<i aria-hidden="true">♛</i><b>1</b>'
-      : numericPosition || '—';
-  return `
-    <article class="leaderboard-row ${current ? 'current-user' : ''} ${privateRanking ? 'private-ranking-row' : ''} ${isPodium ? `podium podium-${numericPosition}` : ''}">
-      <span class="leaderboard-position ${personal ? 'is-you' : ''}" ${numericPosition === 1 && !personal ? 'title="Lider rankingu"' : ''}>${positionCopy}</span>
-      <span class="leaderboard-avatar" aria-hidden="true">${escapeHtml(initialsForName(name))}</span>
-      <div><strong>${escapeHtml(name)}</strong><small>${escapeHtml(rank.name)}</small></div>
-      <b class="leaderboard-points ${points > 1000 ? 'is-high' : ''}" title="${points} punktów">${escapeHtml(formatLeaderboardPoints(points))} pkt</b>
-    </article>
-  `;
-}
-
-function renderLeaderboardRows(items = []) {
-  const list = $('#leaderboardList');
-  const me = $('#leaderboardMe');
-  const topFive = items.filter(item => Number(item.ranking_position) <= 5).slice(0, 5);
-  list.innerHTML = topFive.length
-    ? topFive.map((item, index) => leaderboardRowMarkup(item, item.ranking_position || index + 1, {
-        current: Boolean(item.is_current || item.id === currentUser?.id)
-      })).join('')
-    : '<p class="leaderboard-empty">Ranking jest jeszcze pusty.</p>';
-
-  if (!currentUser) {
-    me.innerHTML = '<p class="leaderboard-empty">Zaloguj się, aby zobaczyć swój wynik.</p>';
-    return;
-  }
-  const currentIndex = items.findIndex(item => item.id === currentUser.id);
-  const currentItem = currentIndex >= 0 ? items[currentIndex] : {
-    id: currentUser.id,
-    display_name: displayNameForUser(),
-    points: progress.points
-  };
-  me.innerHTML = leaderboardRowMarkup(currentItem, currentItem.ranking_position || 0, { current: true, personal: true });
-}
-
-function showPrivateLeaderboardGate(message = '', state = '') {
-  $('#privateLeaderboardGate').hidden = false;
-  $('#privateLeaderboardPanel').hidden = true;
-  $('#privateLeaderboardTitle').textContent = '';
-  $('#privateLeaderboardList').innerHTML = '';
-  $('#privateLeaderboardMe').innerHTML = '';
-  const disabled = !supabaseConfigured || !currentUser;
-  $('#privateLeaderboardPassword').disabled = disabled;
-  $('#privateLeaderboardJoin').disabled = disabled;
-  const feedback = $('#privateLeaderboardFeedback');
-  feedback.textContent = message || (disabled
-    ? supabaseConfigured ? 'Zaloguj się, aby dołączyć.' : 'Prywatne rankingi wymagają konfiguracji Supabase.'
-    : '');
-  feedback.dataset.state = state;
-}
-
-function renderPrivateLeaderboardRows(items = []) {
-  const rankingName = String(items[0]?.ranking_name || '').slice(0, 60);
-  const topTen = items.filter(item => Number(item.ranking_position) <= 10);
-  const currentItem = items.find(item => item.is_current);
-  const memberCount = Math.max(0, Number(items[0]?.member_count) || topTen.length);
-  $('#privateLeaderboardGate').hidden = true;
-  $('#privateLeaderboardPanel').hidden = false;
-  $('#privateLeaderboardTitle').textContent = rankingName;
-  $('#privateLeaderboardMeta').textContent = `${polishCount(memberCount, 'uczestnik', 'uczestników', 'uczestników')} · ranking widoczny tylko dla członków`;
-  $('#privateLeaderboardList').innerHTML = topTen.length
-    ? topTen.map(item => leaderboardRowMarkup(item, item.ranking_position, {
-        current: Boolean(item.is_current),
-        privateRanking: true
-      })).join('')
-    : '<p class="leaderboard-empty">W tej grupie nie ma jeszcze wyników.</p>';
-  const showCurrentBelowTopTen = currentItem && Number(currentItem.ranking_position) > 10;
-  $('#privateLeaderboardMeSection').hidden = !showCurrentBelowTopTen;
-  $('#privateLeaderboardMe').innerHTML = showCurrentBelowTopTen
-    ? leaderboardRowMarkup(currentItem, currentItem.ranking_position, {
-        current: true,
-        privateRanking: true,
-        personal: true
-      })
-    : '';
-}
-
-function isPrivateLeaderboardSchemaMissing(error) {
-  return /join_private_leaderboard|get_private_leaderboard|private ranking|schema cache|could not find the function/i.test(String(error?.message || error || ''));
-}
-
-function privateLeaderboardErrorMessage(error, action = 'load') {
-  const code = String(error?.code || '');
-  const message = [error?.message, error?.details, error?.hint].filter(Boolean).join(' ');
-  const diagnostic = `${code} ${message}`;
-  if (/401|403|42501|jwt|permission denied|not authenticated/i.test(diagnostic)) {
-    return 'Sesja lub uprawnienia wygasły. Wyloguj się, zaloguj ponownie i spróbuj jeszcze raz.';
-  }
-  if (/42883|crypt\(|pgcrypto/i.test(diagnostic)) {
-    return 'Brakuje funkcji pgcrypto w bazie. Uruchom ponownie najnowszy plik supabase-setup.sql.';
-  }
-  if (isPrivateLeaderboardSchemaMissing(error)) {
-    return 'Najpierw uruchom najnowszy plik supabase-setup.sql.';
-  }
-  const suffix = code ? ` (kod ${code})` : '';
-  return action === 'join'
-    ? `Nie udało się dołączyć${suffix}. Spróbuj ponownie.`
-    : `Nie udało się sprawdzić dostępu${suffix}. Spróbuj ponownie.`;
-}
-
-async function loadPrivateLeaderboard({ silent = false } = {}) {
-  if (!supabaseConfigured || !currentUser || !cloudClient) {
-    showPrivateLeaderboardGate();
-    return;
-  }
-  if (!silent) {
-    $('#privateLeaderboardFeedback').textContent = 'Sprawdzanie dostępu…';
-    $('#privateLeaderboardFeedback').dataset.state = 'working';
-  }
-  try {
-    const { data, error } = await cloudClient.rpc('get_private_leaderboard');
-    if (error) throw error;
-    if (!Array.isArray(data) || !data.length) {
-      showPrivateLeaderboardGate();
-      return;
-    }
-    renderPrivateLeaderboardRows(data);
-  } catch (error) {
-    console.error('Nie udało się pobrać prywatnego rankingu:', error);
-    showPrivateLeaderboardGate(privateLeaderboardErrorMessage(error), 'error');
-  }
-}
-
-async function joinPrivateLeaderboard(event) {
-  event.preventDefault();
-  if (!cloudClient || !currentUser) {
-    showPrivateLeaderboardGate('Zaloguj się, aby dołączyć.', 'error');
-    return;
-  }
-  const input = $('#privateLeaderboardPassword');
-  const button = $('#privateLeaderboardJoin');
-  const accessCode = input.value;
-  if (!accessCode.trim()) return;
-  button.disabled = true;
-  input.disabled = true;
-  $('#privateLeaderboardFeedback').textContent = 'Sprawdzanie hasła…';
-  $('#privateLeaderboardFeedback').dataset.state = 'working';
-  try {
-    const { data, error } = await cloudClient.rpc('join_private_leaderboard', { access_code: accessCode });
-    if (error) throw error;
-    const resultCode = String(data?.[0]?.ranking_id || 'invalid_private_ranking_code');
-    if (resultCode === 'private_ranking_try_later') {
-      $('#privateLeaderboardFeedback').textContent = 'Za dużo prób. Spróbuj ponownie za 15 minut.';
-      $('#privateLeaderboardFeedback').dataset.state = 'error';
-      return;
-    }
-    if (resultCode === 'invalid_private_ranking_code' || resultCode === 'authentication_required') {
-      $('#privateLeaderboardFeedback').textContent = resultCode === 'authentication_required'
-        ? 'Zaloguj się, aby dołączyć.'
-        : 'Nieprawidłowe hasło.';
-      $('#privateLeaderboardFeedback').dataset.state = 'error';
-      return;
-    }
-    input.value = '';
-    await loadPrivateLeaderboard({ silent: true });
-  } catch (error) {
-    const diagnostic = [error?.code, error?.message, error?.details, error?.hint].filter(Boolean).join(' ');
-    const invalidCode = /invalid_private_ranking_code|nieprawidłow/i.test(diagnostic);
-    const tryLater = /private_ranking_try_later/i.test(diagnostic);
-    $('#privateLeaderboardFeedback').textContent = tryLater
-      ? 'Za dużo prób. Spróbuj ponownie za 15 minut.'
-      : invalidCode
-        ? 'Nieprawidłowe hasło.'
-        : privateLeaderboardErrorMessage(error, 'join');
-    $('#privateLeaderboardFeedback').dataset.state = 'error';
-  } finally {
-    input.value = '';
-    input.disabled = false;
-    button.disabled = false;
-  }
-}
-
-function evaluateLeaderboardMovement(items = []) {
-  if (!currentUser) return;
-  const currentIndex = items.findIndex(item => item.id === currentUser.id);
-  if (currentIndex < 0) return;
-  const currentPosition = Number(items[currentIndex].ranking_position) || currentIndex + 1;
-  const snapshotKey = `mankiw-taylor-rank-snapshot-v1:${currentUser.id}`;
-  const previousPosition = Number(localStorage.getItem(snapshotKey));
-  if (Number.isFinite(previousPosition) && previousPosition > 0 && currentPosition > previousPosition) {
-    const personAbove = items.find(item => Number(item.ranking_position) === currentPosition - 1);
-    const name = String(personAbove?.display_name || '').trim();
-    addNotification({
-      type: 'ranking',
-      title: 'Zmiana w rankingu',
-      message: name
-        ? `${name} wyprzedza Cię w rankingu. Zajmujesz teraz ${currentPosition}. miejsce.`
-        : `Ktoś wyprzedził Cię w rankingu. Zajmujesz teraz ${currentPosition}. miejsce.`
-    });
-  }
-  localStorage.setItem(snapshotKey, String(currentPosition));
-}
-
-async function loadLeaderboard({ silent = false } = {}) {
-  const notice = $('#leaderboardNotice');
-  if (!supabaseConfigured) {
-    notice.textContent = 'Najpierw skonfiguruj Supabase według pliku SUPABASE_SETUP.md.';
-    notice.dataset.state = 'local';
-    renderLeaderboardRows([]);
-    showPrivateLeaderboardGate();
-    return;
-  }
-  if (!currentUser) {
-    notice.textContent = 'Zaloguj się, aby zobaczyć ranking klasy.';
-    notice.dataset.state = 'local';
-    renderLeaderboardRows([]);
-    showPrivateLeaderboardGate();
-    return;
-  }
-  if (!silent) {
-    notice.textContent = 'Pobieranie rankingu…';
-    notice.dataset.state = 'working';
-  }
-  try {
-    const { data, error } = await cloudClient.rpc('get_public_leaderboard');
-    if (error) throw error;
-    const rows = Array.isArray(data) ? data : [];
-    const participantCount = Math.max(0, Number(rows[0]?.participant_count) || rows.length);
-    notice.textContent = `${polishCount(participantCount, 'uczestnik', 'uczestników', 'uczestników')} · aktualizacja na żywo po odświeżeniu`;
-    notice.dataset.state = 'success';
-    evaluateLeaderboardMovement(rows);
-    renderLeaderboardRows(rows);
-    await loadPrivateLeaderboard({ silent });
-  } catch (error) {
-    console.error('Nie udało się pobrać rankingu:', error);
-    notice.textContent = 'Nie udało się pobrać rankingu. Sprawdź konfigurację bazy.';
-    notice.dataset.state = 'error';
-    renderLeaderboardRows([]);
-    showPrivateLeaderboardGate('Nie udało się sprawdzić prywatnych rankingów.', 'error');
-  }
-}
-
-async function applyAuthSession(session, { initial = false } = {}) {
-  const previousUserId = currentUser?.id || null;
-  currentUser = session?.user || null;
-  const authenticatedDestination = currentUser ? pendingAuthenticatedMode : null;
-  if (currentUser) pendingAuthenticatedMode = null;
-  const shouldLoadProgress = Boolean(currentUser && (!authInitialized || previousUserId !== currentUser.id));
-  authInitialized = true;
-  if (currentUser) {
-    if (shouldLoadProgress) showPrivateLeaderboardGate();
-    updateAccountUi();
-    if (shouldLoadProgress) await loadCloudProgress();
-    if (shouldLoadProgress) await loadLeaderboard({ silent: true });
-  } else {
-    currentProfile = null;
-    showPrivateLeaderboardGate();
-    if (previousUserId && !initial) {
-      progress = blankProgress();
-      persistLocalProgress();
-      updateProgress();
-      updateStudyTimer();
-      renderCard();
-    }
-    updateAccountUi();
-    loadLeaderboard({ silent: true });
-  }
-  updateAuthGate({ closeAfterUnlock: Boolean(currentUser && !previousUserId) });
-  if (authenticatedDestination) switchMode(authenticatedDestination);
-  else if (!currentUser && document.body.dataset.mode === 'leaderboard') switchMode('home');
-}
-
-async function initializeCloud() {
-  updateAccountUi();
-  updateAuthGate();
-  if (!supabaseConfigured) {
-    loadLeaderboard();
-    return;
-  }
-  try {
-    cloudClient = window.supabase.createClient(supabaseSettings.url, supabaseSettings.publishableKey, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-    });
-    const { data, error } = await cloudClient.auth.getSession();
-    if (error) throw error;
-    await applyAuthSession(data.session, { initial: true });
-    cloudClient.auth.onAuthStateChange((_event, session) => {
-      window.setTimeout(() => applyAuthSession(session), 0);
-    });
-  } catch (error) {
-    console.error('Nie udało się uruchomić logowania:', error);
-    cloudClient = null;
-    setCloudStatus('Logowanie jest chwilowo niedostępne', 'error');
-    $('#authUnavailable').hidden = false;
-    $('#authSignedOut').hidden = true;
-  }
-}
-
 function updateStudyTimer() {
   const elapsedInBlock = progress.studySeconds % studyRewardSeconds;
   const secondsLeft = Math.max(0, Math.ceil(studyRewardSeconds - elapsedInBlock));
@@ -1762,7 +1131,6 @@ function tickStudyTime() {
     awardPoints(newBlocks * studyRewardPoints, '15 minut aktywnej nauki', $('#appMenuButton'));
   } else if (unsavedStudySeconds >= 15) {
     persistLocalProgress();
-    scheduleCloudSync();
     unsavedStudySeconds = 0;
   }
   updateStudyTimer();
@@ -1771,7 +1139,6 @@ function tickStudyTime() {
 
 function persistStudyTime() {
   persistLocalProgress();
-  scheduleCloudSync();
   lastStudyTick = Date.now();
   unsavedStudySeconds = 0;
 }
@@ -1875,13 +1242,6 @@ function switchSubject(nextSubject) {
 }
 
 function switchMode(mode) {
-  const protectedModes = ['leaderboard'];
-  if (!currentUser && protectedModes.includes(mode)) {
-    pendingAuthenticatedMode = mode;
-    setAuthFeedback('Zaloguj się, aby otworzyć ranking.', 'local');
-    setAuthModal(true);
-    return;
-  }
   if (document.body.classList.contains('focus-mode')) exitFocusMode();
   const secondaryModes = ['test', 'answers', 'scope', 'math', 'legal'];
   const menuMode = secondaryModes.includes(mode) ? 'more' : mode;
@@ -1899,7 +1259,6 @@ function switchMode(mode) {
   document.body.classList.toggle('home-active', mode === 'home');
   document.body.dataset.mode = mode;
   setAppMenu(false, { returnFocus: false });
-  if (mode === 'leaderboard') loadLeaderboard();
   if (mode === 'learn' && !learnSessionState) updateLearnPoolUi();
   if (mode === 'owe') updateOweQuizPool();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3340,7 +2699,6 @@ $('#resetProgress').addEventListener('click', () => {
   renderCard();
   showLearnSetup();
   updateStudyTimer();
-  setAuthModal(false);
 });
 
 function setAppMenu(open, { returnFocus = true } = {}) {
@@ -3351,7 +2709,6 @@ function setAppMenu(open, { returnFocus = true } = {}) {
   document.body.classList.toggle('app-menu-open', open);
   if (open) {
     renderNotifications();
-    if (currentUser) loadLeaderboard({ silent: true });
     window.setTimeout(() => $('#appMenuClose').focus(), 0);
   } else {
     $('#notificationCenter').hidden = true;
@@ -3390,184 +2747,6 @@ function setPointsMenu(open, { showQuests = false } = {}) {
   }
 }
 
-function setAuthMode(mode) {
-  const registering = mode === 'register';
-  $('#loginTab').classList.toggle('active', !registering);
-  $('#registerTab').classList.toggle('active', registering);
-  $('#loginTab').setAttribute('aria-selected', String(!registering));
-  $('#registerTab').setAttribute('aria-selected', String(registering));
-  $('#loginForm').hidden = registering;
-  $('#registerForm').hidden = !registering;
-  $('#authTitle').textContent = registering ? 'Utwórz konto' : 'Zaloguj się';
-  setAuthFeedback();
-}
-
-function setAuthModal(open) {
-  if (open) setAppMenu(false, { returnFocus: false });
-  else pendingAuthenticatedMode = null;
-  $('#authModal').hidden = !open;
-  $('#authBackdrop').hidden = !open;
-  $('#accountButton').setAttribute('aria-expanded', String(open));
-  document.body.classList.toggle('auth-modal-open', open);
-  if (open) {
-    updateAccountUi();
-    window.setTimeout(() => {
-      if (currentUser) $('#authClose').focus();
-      else if (supabaseConfigured) $('#loginEmail').focus();
-      else $('#authClose').focus();
-    }, 0);
-  } else {
-    const target = $('#appMenu').hidden ? $('#appMenuButton') : $('#accountButton');
-    target?.focus();
-  }
-}
-
-async function handleProfileNameUpdate(event) {
-  event.preventDefault();
-  if (!cloudClient || !currentUser) return;
-  const input = $('#profileNameInput');
-  const button = $('#profileNameSave');
-  const displayName = input.value.trim().replace(/\s+/g, ' ');
-  if (displayName.length < 2 || displayName.length > 30) {
-    setProfileNameFeedback('Nazwa musi mieć od 2 do 30 znaków.', 'error');
-    return;
-  }
-  if (displayName === displayNameForUser()) {
-    setProfileNameFeedback('To jest już Twoja aktualna nazwa.', 'success');
-    return;
-  }
-
-  button.disabled = true;
-  input.disabled = true;
-  setProfileNameFeedback('Zapisywanie…', 'working');
-  try {
-    const { error: profileError } = await cloudClient
-      .from('profiles')
-      .update({ display_name: displayName, updated_at: new Date().toISOString() })
-      .eq('id', currentUser.id);
-    if (profileError) throw profileError;
-
-    const { data, error: metadataError } = await cloudClient.auth.updateUser({
-      data: { display_name: displayName }
-    });
-    if (metadataError) console.warn('Nazwa profilu została zapisana bez aktualizacji metadanych konta:', metadataError);
-    if (data?.user) currentUser = data.user;
-    currentProfile = { ...(currentProfile || {}), id: currentUser.id, display_name: displayName };
-    input.value = displayName;
-    updateAccountUi();
-    setProfileNameFeedback('Nazwa użytkownika została zmieniona.', 'success');
-    await loadLeaderboard({ silent: true });
-  } catch (error) {
-    console.error('Nie udało się zmienić nazwy użytkownika:', error);
-    setProfileNameFeedback(readableAuthError(error), 'error');
-  } finally {
-    button.disabled = false;
-    input.disabled = false;
-  }
-}
-
-function showEmailConfirmation(email) {
-  $('#confirmationEmail').textContent = email || 'podany adres';
-  $('#authModal').hidden = true;
-  $('#authBackdrop').hidden = true;
-  document.body.classList.remove('auth-modal-open');
-  $('#emailConfirmationPopup').hidden = false;
-  $('#emailConfirmationBackdrop').hidden = false;
-  window.setTimeout(() => $('#emailConfirmationClose').focus(), 0);
-}
-
-function closeEmailConfirmation() {
-  $('#emailConfirmationPopup').hidden = true;
-  $('#emailConfirmationBackdrop').hidden = true;
-  setAuthMode('login');
-  setAuthModal(true);
-}
-
-async function handleLogin(event) {
-  event.preventDefault();
-  if (!cloudClient) return;
-  const button = event.currentTarget.querySelector('button[type="submit"]');
-  button.disabled = true;
-  setAuthFeedback('Logowanie…', 'working');
-  try {
-    const { data, error } = await cloudClient.auth.signInWithPassword({
-      email: $('#loginEmail').value.trim(),
-      password: $('#loginPassword').value
-    });
-    if (error) throw error;
-    await applyAuthSession(data.session);
-    $('#loginPassword').value = '';
-    setAuthFeedback();
-  } catch (error) {
-    if (/email not confirmed/i.test(String(error?.message || ''))) showEmailConfirmation($('#loginEmail').value.trim());
-    else setAuthFeedback(readableAuthError(error), 'error');
-  } finally {
-    button.disabled = false;
-  }
-}
-
-async function handleRegister(event) {
-  event.preventDefault();
-  if (!cloudClient) return;
-  const form = event.currentTarget;
-  const button = form.querySelector('button[type="submit"]');
-  const displayName = $('#registerName').value.trim().replace(/\s+/g, ' ');
-  if (displayName.length < 2 || displayName.length > 30) {
-    setAuthFeedback('Nazwa w rankingu musi mieć od 2 do 30 znaków.', 'error');
-    return;
-  }
-  button.disabled = true;
-  setAuthFeedback('Tworzenie konta…', 'working');
-  try {
-    const { data, error } = await cloudClient.auth.signUp({
-      email: $('#registerEmail').value.trim(),
-      password: $('#registerPassword').value,
-      options: { data: { display_name: displayName } }
-    });
-    if (error) throw error;
-    $('#registerPassword').value = '';
-    if (data.session) {
-      await applyAuthSession(data.session);
-      setAuthFeedback();
-    } else {
-      showEmailConfirmation($('#registerEmail').value.trim());
-    }
-  } catch (error) {
-    setAuthFeedback(readableAuthError(error), 'error');
-  } finally {
-    button.disabled = false;
-  }
-}
-
-async function handleDeleteAccount() {
-  if (!cloudClient || !currentUser || $('#deleteAccountConfirmation').value.trim() !== 'USUŃ') return;
-  if (!window.confirm('Czy na pewno chcesz bezpowrotnie usunąć konto i cały postęp?')) return;
-  const button = $('#deleteAccountButton');
-  button.disabled = true;
-  setCloudStatus('Usuwanie konta…', 'working');
-  try {
-    const { error } = await cloudClient.rpc('delete_own_account');
-    if (error) throw error;
-    progress = blankProgress();
-    localStorage.removeItem(storageKey);
-    legacyStorageKeys.forEach(key => localStorage.removeItem(key));
-    currentUser = null;
-    currentProfile = null;
-    persistLocalProgress();
-    updateProgress();
-    updateStudyTimer();
-    renderCard();
-    updateAccountUi();
-    setAuthModal(false);
-    switchMode('home');
-    window.alert('Konto i zapisany postęp zostały usunięte.');
-  } catch (error) {
-    console.error('Nie udało się usunąć konta:', error);
-    setCloudStatus('Nie udało się usunąć konta. Uruchom najnowszy plik supabase-setup.sql.', 'error');
-    button.disabled = false;
-  }
-}
-
 $('#appMenuButton').addEventListener('click', () => setAppMenu($('#appMenu').hidden));
 $('#questQuickButton').addEventListener('click', () => setPointsMenu($('#pointsMenu').hidden, { showQuests: true }));
 document.querySelectorAll('[data-subject]').forEach(button => {
@@ -3601,50 +2780,7 @@ $('#pointsQuestsToggle').addEventListener('click', () => {
   setPointsQuestsExpanded($('#pointsQuestsToggle').getAttribute('aria-expanded') !== 'true');
 });
 $('#activateBoost').addEventListener('click', activateDailyBoost);
-$('#accountButton').addEventListener('click', () => setAuthModal($('#authModal').hidden));
-$('#homeAccountCta').addEventListener('click', () => {
-  if (currentUser) switchMode('leaderboard');
-  else {
-    pendingAuthenticatedMode = 'leaderboard';
-    setAuthFeedback('Zaloguj się, aby otworzyć ranking.', 'local');
-    setAuthModal(true);
-  }
-});
-$('#authClose').addEventListener('click', () => setAuthModal(false));
-$('#authBackdrop').addEventListener('click', () => setAuthModal(false));
 $('#darkModeToggle').addEventListener('change', event => applyTheme(event.target.checked ? 'dark' : 'light'));
-$('#emailConfirmationClose').addEventListener('click', closeEmailConfirmation);
-$('#emailConfirmationBackdrop').addEventListener('click', closeEmailConfirmation);
-$('#loginTab').addEventListener('click', () => setAuthMode('login'));
-$('#registerTab').addEventListener('click', () => setAuthMode('register'));
-$('#loginForm').addEventListener('submit', handleLogin);
-$('#registerForm').addEventListener('submit', handleRegister);
-$('#profileNameForm').addEventListener('submit', handleProfileNameUpdate);
-$('#deleteAccountConfirmation').addEventListener('input', event => {
-  $('#deleteAccountButton').disabled = event.target.value.trim() !== 'USUŃ';
-});
-$('#deleteAccountButton').addEventListener('click', handleDeleteAccount);
-$('#refreshLeaderboard').addEventListener('click', loadLeaderboard);
-$('#privateLeaderboardJoinForm').addEventListener('submit', joinPrivateLeaderboard);
-$('#profileLeaderboard').addEventListener('click', () => {
-  setAuthModal(false);
-  switchMode('leaderboard');
-});
-$('#logoutButton').addEventListener('click', async () => {
-  if (!cloudClient) return;
-  $('#logoutButton').disabled = true;
-  setCloudStatus('Wylogowywanie…', 'working');
-  try {
-    const { error } = await cloudClient.auth.signOut();
-    if (error) throw error;
-    await applyAuthSession(null);
-    setAuthMode('login');
-  } catch (error) {
-    setCloudStatus(readableAuthError(error), 'error');
-  } finally {
-    $('#logoutButton').disabled = false;
-  }
-});
 $('#celebrationClose').addEventListener('click', () => {
   $('#rankCelebration').classList.remove('visible');
   window.setTimeout(() => { $('#rankCelebration').hidden = true; }, 250);
@@ -3659,13 +2795,24 @@ if (privacySettingsLink) {
   });
 }
 
+if (new URLSearchParams(window.location.search).get('privacy') === 'manage') {
+  let privacyPanelAttempts = 0;
+  const privacyPanelTimer = window.setInterval(() => {
+    privacyPanelAttempts += 1;
+    if (window.googlefc?.callbackQueue && typeof window.googlefc.showRevocationMessage === 'function') {
+      window.googlefc.callbackQueue.push(window.googlefc.showRevocationMessage);
+      window.clearInterval(privacyPanelTimer);
+    } else if (privacyPanelAttempts >= 20) {
+      window.clearInterval(privacyPanelTimer);
+    }
+  }, 250);
+}
+
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape') {
     if (document.body.classList.contains('focus-mode')) exitFocusMode();
-    else if (!$('#emailConfirmationPopup').hidden) closeEmailConfirmation();
     else if (!$('#questRewardModal').hidden) closeRewardChest();
     else if (!$('#rankCelebration').hidden) $('#celebrationClose').click();
-    else if (!$('#authModal').hidden) setAuthModal(false);
     else if (!$('#pointsMenu').hidden) setPointsMenu(false);
     else if (!$('#appMenu').hidden) setAppMenu(false);
   }
@@ -3711,15 +2858,11 @@ updatePublicModeRoute(initialPublicMode);
 updateOweQuizPool();
 renderNotifications();
 updateStudyTimer();
-initializeCloud();
 
 window.setInterval(tickStudyTime, 1000);
 window.setInterval(() => {
   if (ensureDailyQuests()) updateProgress();
 }, 60 * 1000);
-window.setInterval(() => {
-  if (currentUser && document.visibilityState === 'visible') loadLeaderboard({ silent: true });
-}, 5 * 60 * 1000);
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') persistStudyTime();
   else {

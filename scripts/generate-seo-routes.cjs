@@ -16,7 +16,6 @@ const appRoutes = [
   ['olimpiada-fiszki', 'olympiadFlashcards', 'Fiszki do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii', '155 interaktywnych fiszek z pojęć wymaganych podczas przygotowań do Olimpiady Wiedzy Ekonomicznej.', true],
   ['olimpiada-quiz', 'olympiadQuiz', 'Quiz do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii', '195 pytań quizowych z definicji i zastosowań pojęć do Olimpiady Wiedzy Ekonomicznej.', true],
   ['zagadnienia', 'concepts', 'Pojęcia z mikroekonomii i makroekonomii — słownik | Nauka Ekonomii', 'Słownik 487 pojęć z mikroekonomii i makroekonomii. Znajdź krótkie definicje i przejdź do odpowiedniego rozdziału.', true],
-  ['ranking', 'leaderboard', 'Ranking uczniów | Nauka Ekonomii', 'Ranking użytkowników Nauki Ekonomii. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.', false],
   ['wiecej', 'more', 'Narzędzia do nauki ekonomii | Nauka Ekonomii', 'Testy, wyszukiwarka odpowiedzi, streszczenia, wzory matematyczne oraz informacje o źródłach w jednym miejscu.', true],
   ['test', 'test', 'Test z mikroekonomii i makroekonomii online | Nauka Ekonomii', 'Bezpłatny test z mikroekonomii i makroekonomii. Samodzielnie wpisuj nazwy pojęć, sprawdzaj odpowiedzi i utrwalaj materiał.', true],
   ['odpowiedzi', 'answers', 'Odpowiedzi z ekonomii | Nauka Ekonomii', 'Wyszukuj odpowiedzi na pytania z ekonomii i przechodź do właściwych zagadnień oraz rozdziałów.', false],
@@ -160,8 +159,6 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <script src="/google-analytics.js"></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P2YY78KWV0"></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8851383447848259" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f6f3ed" />
@@ -193,7 +190,7 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
   <link rel="stylesheet" href="/seo-content.css?v=20260905-navigation" />
   <link rel="stylesheet" href="/navigation-icons.css?v=20260905-sidebar" />
   <script defer src="/content-sidebar.js?v=20260905-1"></script>
-  ${toolsPage ? '<link rel="stylesheet" href="/economic-tools.css?v=20260905-1" /><script defer src="/economic-tools-math.js?v=20260905-1"></script><script defer src="/economic-tools.js?v=20260905-1"></script>' : ''}
+${toolsPage ? '  <link rel="stylesheet" href="/economic-tools.css?v=20260905-1" /><script defer src="/economic-tools-math.js?v=20260905-1"></script><script defer src="/economic-tools.js?v=20260905-1"></script>' : ''}
 </head>
 <body class="content-page">
   <a class="skip-link" href="#tresc">Przejdź do treści</a>

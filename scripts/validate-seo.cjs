@@ -19,7 +19,7 @@ function pagePath(url) {
 
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
-assert(urls.length === 53, `Sitemap ma ${urls.length} adresów zamiast 53.`);
+assert(urls.length === 56, `Sitemap ma ${urls.length} adresów zamiast 56.`);
 assert(new Set(urls).size === urls.length, 'Sitemap zawiera zduplikowane adresy.');
 assert(!urls.some(url => /\/(ranking|odpowiedzi)\/$/.test(url)), 'Sitemap zawiera stronę oznaczoną jako noindex.');
 

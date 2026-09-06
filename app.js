@@ -23,8 +23,23 @@ const publicModeRoutes = {
   },
   owe: {
     slug: 'arkusze-olimpijskie/',
-    title: 'Olimpiada Wiedzy Ekonomicznej — pytania i arkusze | Nauka Ekonomii',
-    description: 'Przygotuj się do Olimpiady Wiedzy Ekonomicznej. Rozwiązuj 300 pytań OWE z odpowiedziami na trzech poziomach trudności.'
+    title: 'Arkusze Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii',
+    description: 'Rozwiązuj 300 pytań opartych na archiwalnych arkuszach Olimpiady Wiedzy Ekonomicznej i od razu sprawdzaj odpowiedzi.'
+  },
+  olympiadConcepts: {
+    slug: 'olimpiada-zagadnienia/',
+    title: 'Zagadnienia do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii',
+    description: '155 sprawdzonych definicji pojęć ekonomicznych do przygotowań do Olimpiady Wiedzy Ekonomicznej.'
+  },
+  olympiadFlashcards: {
+    slug: 'olimpiada-fiszki/',
+    title: 'Fiszki do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii',
+    description: '155 interaktywnych fiszek z pojęć wymaganych podczas przygotowań do Olimpiady Wiedzy Ekonomicznej.'
+  },
+  olympiadQuiz: {
+    slug: 'olimpiada-quiz/',
+    title: 'Quiz do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii',
+    description: '195 pytań quizowych z definicji i zastosowań pojęć do Olimpiady Wiedzy Ekonomicznej.'
   },
   concepts: {
     slug: 'zagadnienia/',
@@ -74,10 +89,19 @@ const modeByRouteSlug = Object.fromEntries(
     .filter(([, route]) => route.slug)
     .map(([mode, route]) => [route.slug.replace(/\/$/, ''), mode])
 );
+const legacyOlympiadHashModes = {
+  '#arkusze': 'owe',
+  '#pojecia': 'olympiadConcepts',
+  '#fiszki': 'olympiadFlashcards',
+  '#quizy': 'olympiadQuiz'
+};
 const siteBaseUrl = document.querySelector('base')?.href || new URL('./', window.location.href).href;
 
 function publicModeFromLocation() {
   const slug = decodeURIComponent(window.location.pathname.replace(/\/+$/, '').split('/').pop() || '');
+  if (slug === 'arkusze-olimpijskie' && legacyOlympiadHashModes[window.location.hash]) {
+    return legacyOlympiadHashModes[window.location.hash];
+  }
   return modeByRouteSlug[slug] || 'home';
 }
 
@@ -1911,7 +1935,7 @@ function exitFocusMode() {
 }
 
 function focusModeLabel(panelId) {
-  if (panelId === 'quiz') return 'quizu';
+  if (panelId === 'quiz' || panelId === 'olympiadQuiz') return 'quizu';
   if (panelId === 'learn') return 'nauki';
   return 'fiszek';
 }
@@ -3311,6 +3335,7 @@ $('#resetProgress').addEventListener('click', () => {
   progress = blankProgress();
   learnKnowledge = {};
   try { localStorage.removeItem(learnKnowledgeStorageKey); } catch {}
+  window.dispatchEvent(new Event('study-progress-reset'));
   saveProgress();
   showStarredOnly = false;
   $('#starredFilter').classList.remove('active');
@@ -3688,7 +3713,7 @@ initializeTheme();
 switchSubject(activeSubject);
 const initialPublicMode = publicModeFromLocation();
 switchMode(initialPublicMode);
-applyPublicModeMetadata(initialPublicMode);
+updatePublicModeRoute(initialPublicMode, { replace: true });
 updateOweQuizPool();
 renderNotifications();
 updateStudyTimer();

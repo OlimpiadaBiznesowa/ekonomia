@@ -1,0 +1,114 @@
+/* Moduły olimpijskie dziedziczą komponenty i animacje głównej aplikacji. */
+.olympiad-concept-tools .compact-select {
+  min-height: 42px;
+}
+
+.olympiad-definitions {
+  align-items: stretch;
+}
+
+.olympiad-concept {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.olympiad-definition {
+  margin: 0 0 14px;
+  color: #53605a;
+  font-size: 14px;
+  line-height: 1.58;
+}
+
+.olympiad-note {
+  margin: 0 0 14px;
+  padding-left: 11px;
+  border-left: 2px solid #b9d5cf;
+  color: #42655f;
+  font: 12px/1.52 "DM Sans", Arial, sans-serif;
+}
+
+.olympiad-note strong {
+  color: var(--teal);
+}
+
+.olympiad-source {
+  margin-top: auto;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.olympiad-source a {
+  color: var(--teal);
+  text-underline-offset: 3px;
+}
+
+.olympiad-practice-link {
+  align-self: flex-start;
+  margin-top: 11px;
+  font-size: 11px;
+}
+
+.olympiad-card .card-face.is-definition {
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.55;
+  letter-spacing: 0;
+}
+
+.olympiad-card .card-face:not(.is-definition) {
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(29px, 4vw, 43px);
+  line-height: 1.12;
+  letter-spacing: -1px;
+}
+
+.olympiad-quiz-settings {
+  grid-template-columns: minmax(0, 230px) minmax(0, 250px) minmax(0, 190px) auto;
+}
+
+.olympiad-quiz-settings .study-pool {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.olympiad-quiz-card h3 {
+  font: 500 clamp(16px, 2vw, 20px)/1.55 "DM Sans", Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+html[data-theme="dark"] .olympiad-definition {
+  color: #b7c5c0;
+}
+
+html[data-theme="dark"] .olympiad-note {
+  color: #add0c9;
+  border-color: #38645c;
+}
+
+@media (max-width: 1000px) {
+  .olympiad-quiz-settings {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .olympiad-quiz-settings .study-pool {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .olympiad-quiz-settings {
+    grid-template-columns: 1fr;
+  }
+
+  .olympiad-quiz-settings .study-pool {
+    grid-column: auto;
+  }
+
+  .olympiad-card .card-face {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+}

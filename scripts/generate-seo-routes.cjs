@@ -11,7 +11,10 @@ const appRoutes = [
   ['ucz-sie', 'learn', 'Nauka ekonomii online — tryb adaptacyjny | Nauka Ekonomii', 'Ucz się mikroekonomii i makroekonomii online bez logowania. Adaptacyjne pytania wracają do zagadnień, które wymagają powtórki.', true],
   ['fiszki', 'flashcards', 'Fiszki z mikroekonomii i makroekonomii | Nauka Ekonomii', '487 bezpłatnych fiszek z mikroekonomii i makroekonomii. Powtarzaj pojęcia, oznaczaj trudne zagadnienia i zapisuj postęp bez logowania.', true],
   ['quizy', 'quiz', 'Quiz z mikroekonomii i makroekonomii online | Nauka Ekonomii', 'Bezpłatny quiz z mikroekonomii i makroekonomii z natychmiastowym wynikiem. Wybierz zakres i sprawdź wiedzę bez zakładania konta.', true],
-  ['arkusze-olimpijskie', 'owe', 'Olimpiada Wiedzy Ekonomicznej — pytania i arkusze | Nauka Ekonomii', 'Przygotuj się do Olimpiady Wiedzy Ekonomicznej. Rozwiązuj 300 pytań OWE z odpowiedziami na trzech poziomach trudności.', true],
+  ['arkusze-olimpijskie', 'owe', 'Arkusze Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii', 'Rozwiązuj 300 pytań opartych na archiwalnych arkuszach Olimpiady Wiedzy Ekonomicznej i od razu sprawdzaj odpowiedzi.', true],
+  ['olimpiada-zagadnienia', 'olympiadConcepts', 'Zagadnienia do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii', '155 sprawdzonych definicji pojęć ekonomicznych do przygotowań do Olimpiady Wiedzy Ekonomicznej.', true],
+  ['olimpiada-fiszki', 'olympiadFlashcards', 'Fiszki do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii', '155 interaktywnych fiszek z pojęć wymaganych podczas przygotowań do Olimpiady Wiedzy Ekonomicznej.', true],
+  ['olimpiada-quiz', 'olympiadQuiz', 'Quiz do Olimpiady Wiedzy Ekonomicznej | Nauka Ekonomii', '195 pytań quizowych z definicji i zastosowań pojęć do Olimpiady Wiedzy Ekonomicznej.', true],
   ['zagadnienia', 'concepts', 'Pojęcia z mikroekonomii i makroekonomii — słownik | Nauka Ekonomii', 'Słownik 487 pojęć z mikroekonomii i makroekonomii. Znajdź krótkie definicje i przejdź do odpowiedniego rozdziału.', true],
   ['ranking', 'leaderboard', 'Ranking uczniów | Nauka Ekonomii', 'Ranking użytkowników Nauki Ekonomii. Zaloguj się, aby sprawdzić swoją pozycję, punkty i prywatne grupy.', false],
   ['wiecej', 'more', 'Narzędzia do nauki ekonomii | Nauka Ekonomii', 'Testy, wyszukiwarka odpowiedzi, streszczenia, wzory matematyczne oraz informacje o źródłach w jednym miejscu.', true],
@@ -203,7 +206,7 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
         ${contentSubjectGroup('mikroekonomia', 'Mikroekonomia', 'μ', canonical)}
         ${contentSubjectGroup('makroekonomia', 'Makroekonomia', 'M', canonical)}
         <p>OLIMPIADA</p>
-        <a class="content-owe-link" href="/arkusze-olimpijskie/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"/></svg></span><strong>Arkusze olimpijskie</strong></a>
+        <a class="content-owe-link" href="/arkusze-olimpijskie/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"/></svg></span><strong>Olimpiada</strong></a>
         <p>NARZĘDZIA</p>
         <a class="content-tool-link${canonical.endsWith('/narzedzia/kalkulator-elastycznosci-popytu/') ? ' active' : ''}" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"/></svg></span><strong>Elastyczność popytu</strong></a>
         <a class="content-tool-link${canonical.endsWith('/narzedzia/podaz-i-popyt/') ? ' active' : ''}" href="/narzedzia/podaz-i-popyt/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"/></svg></span><strong>Podaż i popyt</strong></a>

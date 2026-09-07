@@ -531,11 +531,15 @@ let testBasePoints = 0;
 let runtimeNotifications = loadRuntimeNotifications();
 let readNotificationIds = loadReadNotificationIds();
 let activeSubject = 'micro';
+let requestedChapter = 'all';
 try {
-  const requestedSubject = new URLSearchParams(window.location.search).get('subject');
+  const routeParams = new URLSearchParams(window.location.search);
+  const requestedSubject = routeParams.get('subject');
   activeSubject = requestedSubject === 'macro' || requestedSubject === 'micro'
     ? requestedSubject
     : localStorage.getItem(subjectStorageKey) === 'macro' ? 'macro' : 'micro';
+  const chapterParam = routeParams.get('chapter');
+  if (/^[1-9]\d*$/.test(chapterParam || '')) requestedChapter = chapterParam;
 } catch {
   activeSubject = 'micro';
 }
@@ -1239,6 +1243,23 @@ function switchSubject(nextSubject) {
   updateProgress();
   startQuiz();
   startTest();
+}
+
+function applyRequestedChapterSelection() {
+  if (requestedChapter === 'all') return;
+  const chapterExists = subjectData().chapters.some(chapter => chapter.number === Number(requestedChapter));
+  if (!chapterExists) return;
+  selectedFlashcardChapter = requestedChapter;
+  selectedLearnChapter = requestedChapter;
+  selectedQuizChapter = requestedChapter;
+  currentCard = 0;
+  ['#learnChapter', '#flashcardChapter', '#quizChapter'].forEach(selector => {
+    $(selector).value = requestedChapter;
+  });
+  showLearnSetup();
+  updateLearnPoolUi();
+  renderCard();
+  startQuiz();
 }
 
 function switchMode(mode) {
@@ -2852,6 +2873,7 @@ window.addEventListener('popstate', () => {
 
 initializeTheme();
 switchSubject(activeSubject);
+applyRequestedChapterSelection();
 const initialPublicMode = publicModeFromLocation();
 switchMode(initialPublicMode);
 updatePublicModeRoute(initialPublicMode);

@@ -6,6 +6,8 @@ const root = path.resolve(__dirname, '..');
 const siteUrl = 'https://naukaekonomii.pl';
 const siteName = 'Nauka Ekonomii';
 const source = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const generatedEol = process.platform === 'win32' ? '\r\n' : '\n';
+const writeGeneratedFile = (file, contents) => fs.writeFileSync(file, String(contents).replace(/\r?\n/g, generatedEol), 'utf8');
 
 const appRoutes = [
   ['ucz-sie', 'learn', 'Nauka ekonomii online — tryb adaptacyjny | Nauka Ekonomii', 'Ucz się mikroekonomii i makroekonomii online bez logowania. Adaptacyjne pytania wracają do zagadnień, które wymagają powtórki.', true],
@@ -123,7 +125,7 @@ function writeAppRoutes() {
     html = html.replace(/<script type="application\/ld\+json" id="websiteStructuredData">[\s\S]*?<\/script>/i, `<script type="application/ld+json" id="websiteStructuredData">\n${structuredData(route.title, canonical)}\n    </script>`);
     const outputDirectory = path.join(root, route.slug);
     fs.mkdirSync(outputDirectory, { recursive: true });
-    fs.writeFileSync(path.join(outputDirectory, 'index.html'), html, 'utf8');
+    writeGeneratedFile(path.join(outputDirectory, 'index.html'), html);
   }
 }
 
@@ -148,9 +150,10 @@ const brandMark = `
 function contentSubjectGroup(slug, label, mark, canonical) {
   const subject = slug === 'makroekonomia' ? 'macro' : 'micro';
   const active = canonical.startsWith(`${siteUrl}/${slug}/`);
-  return `<details class="content-subject-group${active ? ' active' : ''}">
-      <summary><span>${mark}</span><strong>${label}</strong><i aria-hidden="true">⌄</i></summary>
-      <div><a class="${active ? 'active' : ''}" href="/${slug}/">Wszystkie rozdziały</a><a href="/ucz-sie/?subject=${subject}">Ucz się</a><a href="/fiszki/?subject=${subject}">Fiszki</a><a href="/quizy/?subject=${subject}">Quiz</a><a href="/test/?subject=${subject}">Test</a><a href="/zagadnienia/?subject=${subject}">Zagadnienia</a></div>
+  const chapterCount = subject === 'micro' ? 19 : 18;
+  return `<details class="subject-menu-group${active ? ' menu-has-active' : ''}" data-menu-subject="${subject}">
+      <summary><span class="subject-menu-mark" aria-hidden="true">${mark}</span><span><b>${label}</b><small>${chapterCount} rozdziałów</small></span><i aria-hidden="true">⌄</i></summary>
+      <div class="subject-menu-items"><a href="/ucz-sie/?subject=${subject}" data-menu-mode="learn" data-subject-target="${subject}">Ucz się</a><a href="/fiszki/?subject=${subject}" data-menu-mode="flashcards" data-subject-target="${subject}">Fiszki</a><a href="/quizy/?subject=${subject}" data-menu-mode="quiz" data-subject-target="${subject}">Quiz</a><a href="/test/?subject=${subject}" data-menu-mode="test" data-subject-target="${subject}">Test</a><a href="/zagadnienia/?subject=${subject}" data-menu-mode="concepts" data-subject-target="${subject}">Zagadnienia</a></div>
     </details>`;
 }
 
@@ -187,32 +190,36 @@ function pageShell({ title, description, canonical, body, pageType = 'WebPage', 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/seo-content.css?v=20260905-navigation" />
-  <link rel="stylesheet" href="/navigation-icons.css?v=20260905-sidebar" />
-  <script defer src="/content-sidebar.js?v=20260905-1"></script>
+  <link rel="stylesheet" href="/seo-content.css?v=20260907-unified" />
+  <link rel="stylesheet" href="/navigation-icons.css?v=20260907-unified" />
+  <script defer src="/content-sidebar.js?v=20260907-unified"></script>
 ${toolsPage ? '  <link rel="stylesheet" href="/economic-tools.css?v=20260905-1" /><script defer src="/economic-tools-math.js?v=20260905-1"></script><script defer src="/economic-tools.js?v=20260905-1"></script>' : ''}
 </head>
 <body class="content-page">
   <a class="skip-link" href="#tresc">Przejdź do treści</a>
   <div class="content-page-shell">
-    <aside class="content-sidebar" aria-label="Nawigacja materiałów">
-      <a class="content-brand content-sidebar-brand" href="/" aria-label="Nauka Ekonomii — strona główna">${brandMark}<span><b>Nauka Ekonomii</b></span></a>
-      <nav class="content-sidebar-nav" aria-label="Główna nawigacja">
+    <aside class="content-sidebar workspace-sidebar" aria-label="Główna nawigacja">
+      <a class="workspace-brand" href="/" aria-label="Nauka Ekonomii — strona główna">
+        <span class="brand-book" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H9a3 3 0 0 1 3 3v17a3 3 0 0 0-3-3H4.5A2.5 2.5 0 0 0 2 21.5z"></path><path d="M22 4.5A2.5 2.5 0 0 0 19.5 2H15a3 3 0 0 0-3 3v17a3 3 0 0 1 3-3h4.5a2.5 2.5 0 0 1 2.5 2.5z"></path></svg></span>
+        <span class="brand-wordmark"><b>Nauka Ekonomii</b></span>
+      </a>
+      <nav class="workspace-nav" aria-label="Główna nawigacja">
         <p>TWÓJ PANEL</p>
-        <a class="content-home-link" href="/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path class="icon-accent" d="M9 21v-6h6v6"/></svg></span><strong>Strona główna</strong></a>
-        <p>DZIAŁY NAUKI</p>
+        <a href="/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path><path class="icon-accent" d="M9 21v-6h6v6"></path></svg></span><b>Strona główna</b></a>
         ${contentSubjectGroup('mikroekonomia', 'Mikroekonomia', 'μ', canonical)}
         ${contentSubjectGroup('makroekonomia', 'Makroekonomia', 'M', canonical)}
         <p>OLIMPIADA</p>
-        <a class="content-owe-link" href="/arkusze-olimpijskie/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"/></svg></span><strong>Arkusze OWE</strong></a>
-        <a class="content-owe-link" href="/olimpiada-zagadnienia/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path class="icon-accent" d="M8 8h7M8 12h7M8 16h4"/></svg></span><strong>Zagadnienia</strong></a>
-        <a class="content-owe-link" href="/olimpiada-fiszki/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"/><path class="icon-accent" d="M7 3h10M7 21h10M8 10h8M8 14h5"/></svg></span><strong>Fiszki</strong></a>
-        <a class="content-owe-link" href="/olimpiada-quiz/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6"/><path class="icon-accent" d="m9 16 2 2 4-4"/></svg></span><strong>Quiz</strong></a>
+        <a href="/arkusze-olimpijskie/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 0 1-8 0z"></path><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"></path><path class="icon-accent" d="M12 12v5M8 21h8M9 17h6v4"></path></svg></span><b>Arkusze OWE</b></a>
+        <a href="/olimpiada-zagadnienia/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"></path><path class="icon-accent" d="M8 8h7M8 12h7M8 16h4"></path></svg></span><b>Zagadnienia</b></a>
+        <a href="/olimpiada-fiszki/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="2"></rect><path class="icon-accent" d="M7 3h10M7 21h10M8 10h8M8 14h5"></path></svg></span><b>Fiszki</b></a>
+        <a href="/olimpiada-quiz/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M9 8h6M9 12h6"></path><path class="icon-accent" d="m9 16 2 2 4-4"></path></svg></span><b>Quiz</b></a>
         <p>NARZĘDZIA</p>
-        <a class="content-tool-link${canonical.endsWith('/narzedzia/kalkulator-elastycznosci-popytu/') ? ' active' : ''}" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"/></svg></span><strong>Elastyczność popytu</strong></a>
-        <a class="content-tool-link${canonical.endsWith('/narzedzia/podaz-i-popyt/') ? ' active' : ''}" href="/narzedzia/podaz-i-popyt/"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"/></svg></span><strong>Podaż i popyt</strong></a>
+        <a class="tool-nav-link${canonical.endsWith('/narzedzia/kalkulator-elastycznosci-popytu/') ? ' active' : ''}" href="/narzedzia/kalkulator-elastycznosci-popytu/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"></rect><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h2M14 18h2"></path></svg></span><b>Elastyczność popytu</b></a>
+        <a class="tool-nav-link${canonical.endsWith('/narzedzia/podaz-i-popyt/') ? ' active' : ''}" href="/narzedzia/podaz-i-popyt/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 3v17h17M7 6l12 11M7 17 19 6"></path></svg></span><b>Podaż i popyt</b></a>
+        <p>POZOSTAŁE</p>
+        <a href="/wiecej/"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect class="icon-accent" x="14" y="14" width="6" height="6" rx="1.5"></rect></svg></span><b>Więcej</b></a>
       </nav>
-      <div class="content-sidebar-foot"><span id="contentStreak">0</span><div><strong>Seria nauki</strong><small id="contentStreakLabel">Rozpocznij serię dziś</small></div></div>
+      <div class="workspace-sidebar-foot"><span class="workspace-streak" id="contentStreak">0</span><div><strong>Seria nauki</strong><small id="contentStreakLabel">Rozpocznij serię dziś</small></div></div>
     </aside>
     <div class="content-workspace">
       <header class="content-header">
@@ -268,7 +275,7 @@ function chapterPage(subject, chapter, index) {
   const breadcrumbs = [
     { name: siteName, url: `${siteUrl}/` },
     { name: subject.name, url: `${siteUrl}/${subject.slug}/` },
-    { name: `Rozdział ${chapter.number}`, url: canonical }
+    { name: chapter.title, url: canonical }
   ];
   const topicItems = (outline.topics || chapter.sections).map(topic => `<li>${escapeHtml(topic)}</li>`).join('');
   const questions = guide.qa.map(([question, answer]) => `<details><summary>${escapeHtml(question)}</summary><p>${escapeHtml(answer)}</p></details>`).join('\n');
@@ -280,14 +287,14 @@ function chapterPage(subject, chapter, index) {
   const next = subject.chapters[index + 1];
   const pager = `<nav class="chapter-pagination" aria-label="Nawigacja między rozdziałami">${previous ? `<a href="/${chapterPath(subject, previous)}/"><span>← Poprzedni</span><b>${escapeHtml(previous.title)}</b></a>` : '<span></span>'}${next ? `<a class="next" href="/${chapterPath(subject, next)}/"><span>Następny →</span><b>${escapeHtml(next.title)}</b></a>` : '<span></span>'}</nav>`;
   const body = `
-    ${breadcrumbMarkup([{ name: 'Strona główna', path: '/' }, { name: subject.name, path: `/${subject.slug}/` }, { name: `Rozdział ${chapter.number}`, path: `/${route}/` }])}
+    ${breadcrumbMarkup([{ name: 'Strona główna', path: '/' }, { name: subject.name, path: `/${subject.slug}/` }, { name: chapter.title, path: `/${route}/` }])}
     <article class="chapter-article">
-      <header class="content-hero chapter-hero"><div><span class="eyebrow">${escapeHtml(subject.name)} · rozdział ${chapter.number}</span><h1>${escapeHtml(chapter.title)}</h1><p>${escapeHtml(guide.overview)}</p><div class="hero-actions"><a class="button primary" href="/ucz-sie/?subject=${subjectId}">Ucz się aktywnie</a><a class="button" href="/quizy/?subject=${subjectId}">Rozwiąż quiz</a></div></div><aside><span>W tym opracowaniu</span><b>${concepts.length} pojęć</b><b>${guide.qa.length} pytań kontrolnych</b>${formulas.length ? `<b>${formulas.length} wzorów</b>` : ''}${outline.pages ? `<small>Zakres źródłowy: s. ${escapeHtml(outline.pages)}</small>` : ''}</aside></header>
+      <header class="content-hero chapter-hero"><div><span class="eyebrow">${escapeHtml(subject.name)}</span><h1>${escapeHtml(chapter.title)}</h1><p>${escapeHtml(guide.overview)}</p><nav class="chapter-shortcuts" aria-label="Nauka tego rozdziału"><a href="/ucz-sie/?subject=${subjectId}&amp;chapter=${chapter.number}"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><path d="m4 17 5-5 4 3 7-8"></path><path class="icon-accent" d="M15 7h5v5"></path></svg></span><strong>Ucz się</strong><small>Sesja z tego rozdziału</small></a><a href="/fiszki/?subject=${subjectId}&amp;chapter=${chapter.number}"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="7" y="4" width="13" height="15" rx="2"></rect><path class="icon-accent" d="M7 7H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2"></path></svg></span><strong>Fiszki</strong><small>Powtórka pojęć</small></a><a href="/quizy/?subject=${subjectId}&amp;chapter=${chapter.number}"><span class="nav-icon-wrap" aria-hidden="true"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.6 9a2.6 2.6 0 1 1 4.2 2c-1.1.8-1.8 1.3-1.8 2.5"></path><path class="icon-accent" d="M12 17h.01"></path></svg></span><strong>Quiz</strong><small>Sprawdź swoją wiedzę</small></a></nav></div><aside><span>W tym opracowaniu</span><b>${concepts.length} pojęć</b><b>${guide.qa.length} pytań kontrolnych</b>${formulas.length ? `<b>${formulas.length} wzorów</b>` : ''}${outline.pages ? `<small>Zakres źródłowy: s. ${escapeHtml(outline.pages)}</small>` : ''}</aside></header>
       <div class="article-layout"><div class="article-body">
         <section id="zakres" class="content-section"><div class="section-title"><span>Zakres</span><h2>Czego dotyczy ten rozdział?</h2></div><ul class="topic-list">${topicItems}</ul></section>
-        ${questions ? `<section id="pytania" class="content-section"><div class="section-title"><span>Sprawdź rozumienie</span><h2>Pytania i odpowiedzi</h2></div><div class="qa-list">${questions}</div></section>` : ''}
+${questions ? `        <section id="pytania" class="content-section"><div class="section-title"><span>Sprawdź rozumienie</span><h2>Pytania i odpowiedzi</h2></div><div class="qa-list">${questions}</div></section>` : ''}
         <section id="pojecia" class="content-section"><div class="section-title"><span>Słownik</span><h2>Najważniejsze pojęcia</h2></div><dl class="concept-list">${conceptItems}</dl></section>
-        ${formulas.length ? `<section id="wzory" class="content-section"><div class="section-title"><span>Obliczenia</span><h2>Wzory i zastosowania</h2></div><div class="formula-list">${formulaItems}</div></section>` : ''}
+${formulas.length ? `        <section id="wzory" class="content-section"><div class="section-title"><span>Obliczenia</span><h2>Wzory i zastosowania</h2></div><div class="formula-list">${formulaItems}</div></section>` : ''}
         <aside class="source-note"><b>Jak korzystać z materiału?</b><p>Najpierw przeczytaj streszczenie, następnie odpowiedz samodzielnie na pytania i dopiero potem rozwiń odpowiedzi. Definicje są autorskim opracowaniem dydaktycznym; pełna bibliografia znajduje się na stronie źródeł.</p><a href="/zrodla-i-prawa/">Zobacz źródła i zasady opracowania →</a></aside>
       </div><nav class="article-toc" aria-label="Spis treści strony"><b>Na tej stronie</b><a href="#zakres">Zakres rozdziału</a>${questions ? '<a href="#pytania">Pytania i odpowiedzi</a>' : ''}<a href="#pojecia">Najważniejsze pojęcia</a>${formulas.length ? '<a href="#wzory">Wzory</a>' : ''}<a href="/${subject.slug}/">Wszystkie rozdziały</a></nav></div>
       ${pager}
@@ -317,13 +324,13 @@ function writeContentPages() {
   for (const subject of subjects) {
     const hubDirectory = path.join(root, subject.slug);
     fs.mkdirSync(hubDirectory, { recursive: true });
-    fs.writeFileSync(path.join(hubDirectory, 'index.html'), subjectHub(subject), 'utf8');
+    writeGeneratedFile(path.join(hubDirectory, 'index.html'), subjectHub(subject));
     urls.push(`/${subject.slug}/`);
     subject.chapters.forEach((chapter, index) => {
       const route = chapterPath(subject, chapter);
       const outputDirectory = path.join(root, ...route.split('/'));
       fs.mkdirSync(outputDirectory, { recursive: true });
-      fs.writeFileSync(path.join(outputDirectory, 'index.html'), chapterPage(subject, chapter, index), 'utf8');
+      writeGeneratedFile(path.join(outputDirectory, 'index.html'), chapterPage(subject, chapter, index));
       urls.push(`/${route}/`);
     });
   }
@@ -338,7 +345,7 @@ function writeToolPages() {
     const body = breadcrumbMarkup(crumbs.map(item => ({name:item.name,path:new URL(item.url).pathname}))) + tool.body;
     const directory = path.join(root, tool.slug);
     fs.mkdirSync(directory, {recursive:true});
-    fs.writeFileSync(path.join(directory,'index.html'), pageShell({...tool, canonical, body, toolsPage:true, breadcrumbs:crumbs}), 'utf8');
+    writeGeneratedFile(path.join(directory,'index.html'), pageShell({...tool, canonical, body, toolsPage:true, breadcrumbs:crumbs}));
     return `/${tool.slug}/`;
   });
 }
@@ -347,7 +354,7 @@ function writeSitemap(contentUrls) {
   const appUrls = appRoutes.filter(route => route.indexable).map(route => `/${route.slug}/`);
   const urls = ['/', ...appUrls, ...contentUrls];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(url => `  <url>\n    <loc>${escapeXml(`${siteUrl}${url}`)}</loc>\n  </url>`).join('\n')}\n</urlset>\n`;
-  fs.writeFileSync(path.join(root, 'sitemap.xml'), xml, 'utf8');
+  writeGeneratedFile(path.join(root, 'sitemap.xml'), xml);
   return urls.length;
 }
 

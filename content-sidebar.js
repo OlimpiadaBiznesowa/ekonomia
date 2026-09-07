@@ -23,6 +23,14 @@
     label.textContent = progress.lastStudyDate === dayKey(today) ? `Dziś zaliczone · rekord ${record}` : streak ? 'Wróć dziś, aby utrzymać serię' : 'Rozpocznij serię dziś';
   }
   updateStreak();
+  document.querySelectorAll('.content-sidebar .subject-menu-group').forEach(group => {
+    group.addEventListener('toggle', () => {
+      if (!group.open) return;
+      document.querySelectorAll('.content-sidebar .subject-menu-group').forEach(sibling => {
+        if (sibling !== group) sibling.open = false;
+      });
+    });
+  });
   window.addEventListener('pageshow', updateStreak);
   window.addEventListener('focus', updateStreak);
   window.addEventListener('storage', event => { if (!event.key || keys.includes(event.key)) updateStreak(); });

@@ -259,7 +259,7 @@ function subjectHub(subject) {
 }
 
 function chapterPath(subject, chapter) {
-  return `${subject.slug}/rozdzial-${chapter.number}-${slugify(chapter.title)}`;
+  return `${subject.slug}/${slugify(chapter.title)}`;
 }
 
 function chapterPage(subject, chapter, index) {

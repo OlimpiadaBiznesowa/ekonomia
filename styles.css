@@ -1142,6 +1142,9 @@ html[data-theme="dark"] .quest-reward-modal > p:not(.eyebrow) { color:#c0b8a5; }
 .owe-feedback > div { display:grid; gap:4px; }
 .owe-feedback strong { font-size:13px; }
 .owe-feedback p { margin:0; color:#54615c; font-size:12px; line-height:1.5; }
+.owe-feedback .owe-feedback-explanation { margin-top:4px; padding-top:8px; border-top:1px solid rgba(40,124,116,.2); color:var(--ink); }
+.owe-feedback .owe-feedback-explanation::before { content:"Wyjaśnienie: "; font-weight:700; }
+.owe-feedback.is-wrong .owe-feedback-explanation { border-top-color:rgba(196,92,61,.22); }
 .owe-feedback a { flex:0 0 auto; color:var(--teal); font-size:10px; font-weight:700; text-underline-offset:4px; }
 .owe-selection-hint { margin:15px 0 0; color:var(--muted); font-size:11px; line-height:1.45; }
 .owe-check { margin-top:12px; }
@@ -1161,6 +1164,7 @@ html[data-theme="dark"] .quest-reward-modal > p:not(.eyebrow) { color:#c0b8a5; }
 .owe-review article > strong { font-size:13px; line-height:1.42; }
 .owe-review article p { margin:0; color:var(--muted); font-size:11px; line-height:1.5; }
 .owe-review article p b { color:var(--ink); }
+.owe-review article .owe-review-explanation { padding-top:7px; border-top:1px solid var(--line); }
 .owe-review article a { justify-self:start; color:var(--teal); font-size:10px; font-weight:700; }
 .owe-perfect-result { margin:0; padding:20px; border-radius:8px; color:#1c675e; background:#e4f1ed; font-weight:700; }
 .owe-result-actions { display:flex; align-items:center; gap:20px; margin-top:25px; }

@@ -2488,6 +2488,7 @@ function answerOweQuizQuestion(selection) {
   $('#oweQuizFeedbackCopy').textContent = isCorrect
     ? `Poprawna odpowiedź: ${formatOweAnswers(question, correctIndices)}.`
     : `${correctIndices.length > 1 ? 'Poprawne odpowiedzi to' : 'Poprawna odpowiedź to'} ${formatOweAnswers(question, correctIndices, true)}.`;
+  $('#oweQuizExplanation').textContent = question.explanation || 'Wyjaśnienie opiera się na odpowiedzi wskazanej w oficjalnym kluczu PTE.';
   $('#oweQuizQuestionSource').href = question.sourceUrl;
   $('#oweQuizNext').hidden = false;
   $('#oweQuizNext').focus({ preventScroll: true });
@@ -2538,6 +2539,7 @@ function showOweQuizResult() {
           <span>Poziom ${escapeHtml(oweQuestionDifficulty(question).label)} · archiwum ${escapeHtml(question.year)} · pyt. ${question.number}</span>
           <strong>${escapeHtml(question.question)}</strong>
           <p>Twoja odpowiedź: ${escapeHtml(formatOweAnswers(question, selectedIndices, true) || 'brak')} · <b>${correctIndices.length > 1 ? 'Poprawne' : 'Poprawna'}: ${escapeHtml(formatOweAnswers(question, correctIndices, true))}</b></p>
+          <p class="owe-review-explanation"><b>Wyjaśnienie:</b> ${escapeHtml(question.explanation || 'Odpowiedź jest zgodna z oficjalnym kluczem PTE.')}</p>
           <a href="${escapeHtml(question.sourceUrl)}" target="_blank" rel="noopener noreferrer">Oficjalny klucz PTE ↗</a>
         </article>
       `; }).join('')}`
